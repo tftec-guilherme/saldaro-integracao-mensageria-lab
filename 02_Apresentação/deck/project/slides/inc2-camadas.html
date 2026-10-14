@@ -1,0 +1,94 @@
+<section id="inc2-camadas" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:63px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:17px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Dup detection + sessions + inbox</h2>
+<p style="font-size:24px;line-height:1.2;color:rgba(0,164,239,0.9)">Incidente 2 · Camadas 2 e 3: uma vez só e na ordem certa, no broker e no consumidor</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:560px;height:300px;flex:none;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 28px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/ee5cef7911a2101c0d1c4d97e2ac4ef1" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Camada 2a · broker</p>
+</div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Duplicate detection</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)"><span style="color:#9CDCFE">MessageId = idEvento</span>, janela de 10 min: a confirmação repetida é descartada.</p>
+<p style="font-size:24px;font-weight:700;line-height:1.3;color:#D070FF">120 envios → 40 mensagens</p>
+</div>
+<p style="width:40px;flex:none;font-size:40px;font-weight:700;line-height:1;text-align:center;color:#00A4EF">→</p>
+<div style="width:560px;height:300px;flex:none;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 28px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/bbeb3472b04a4d9adda6f502f672232d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Camada 2b · sessão</p>
+</div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Sessions</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)"><span style="color:#9CDCFE">SessionId = faturaId</span>: um consumidor por fatura, na ordem de chegada.</p>
+<p style="font-size:24px;font-weight:700;line-height:1.3;color:#D070FF">até 8 sessões em paralelo</p>
+</div>
+<p style="width:40px;flex:none;font-size:40px;font-weight:700;line-height:1;text-align:center;color:#00A4EF">→</p>
+<div style="width:560px;height:300px;flex:none;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 28px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/cb4e13854f62ab0e6b61fca281367a6a" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Camada 3 · consumidor</p>
+</div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Inbox + estados com ETag</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Evento já visto completa sem efeito; “registrada” após a baixa é ignorada.</p>
+<p style="font-size:24px;font-weight:700;line-height:1.3;color:#D070FF">1 baixa e 1 aviso por fatura</p>
+</div>
+</div>
+<div style="display:flex;align-items:flex-end;gap:40px">
+<div style="width:1240px;flex:none;display:flex;flex-direction:column;gap:8px">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Overview → Essentials da fila: Sessions e Duplicate detection em Disabled</p>
+<img src="/_blob/b856369e92d273984fda2a856f1e83a1" alt="Overview da sbq-confirmacoes-banco, seção Essentials: Sessions Disabled e Duplicate detection Disabled" style="width:1240px;height:165px;object-fit:contain;background:#0A0E1A;border:2px solid rgba(0,164,239,0.3);border-radius:6px">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.5)">Print do primeiro deploy real, com os nomes de antes da troca</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;background:#1E1E1E;border:2px solid #333333;border-radius:6.4px;overflow:hidden">
+<div style="padding:10px 20px;background:rgba(255,255,255,0.05);border-bottom:1.4px solid #333333">
+<p style="font-size:24px;line-height:1.2;color:#9CA3AF">Pelo CLI</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:14px 20px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">az servicebus queue update</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#9CDCFE">&#160;&#160;--enable-session true</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#FF4343">Bad Request · SubCode=40000</p>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:36px;background:rgba(30,36,48,0.6);border-left:6px solid #F59E0B;border-radius:18.4px;padding:22px 40px">
+<img src="/_blob/5be5c278f70d71eb4dcf9194b58adcaa" alt="" style="width:36px;height:48px;object-fit:contain">
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#F59E0B">Imutáveis: Enable sessions e Enable duplicate detection</h3>
+<p style="font-size:24px;line-height:1.3;color:#E0E0E0">Só se definem na criação da fila. No lab: drenar (ativas e DLQ em 0), apagar no Overview e recriar no Portal com <span style="color:#9CDCFE">+ Queue</span>, as duas caixas marcadas; o <span style="color:#9CDCFE">.bicepparam</span> registra. Plano B: <span style="color:#9CDCFE">deploy.ps1 -Cenario 3 -SemPublicar</span> ou <span style="color:#9CDCFE">-Pronto</span>.</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">14</p>
+</div>
+<aside>Tempo previsto: 30 min (as camadas do broker e do consumidor: Partes 5 e 6 do guia). Mostrar: sbq-confirmacoes-banco → Overview → Essentials e o erro do queue update (SubCode=40000); os contadores em zero e o Delete no Overview; Queues → + Queue com as duas caixas marcadas (Passo 5.5); VS Code com os dois .bicepparam, service-bus.bicep, os triggers ProcessarConfirmacao* e o host.json; o queue show do Passo 5.6; Environment variables do hub.
+
+Comandos ($rg e $sb vêm do Passo 0.1; o queue show completo é o do Passo 5.6):
+az servicebus queue update -g $rg --namespace-name $sb -n sbq-confirmacoes-banco --enable-session true   (Passo 5.1: SubCode=40000)
+az servicebus queue show -g $rg --namespace-name $sb -n sbq-confirmacoes-banco --query countDetails -o jsonc   (Passo 5.2: drenar)
+Plano B: ./scripts/deploy.ps1 -Cenario 3 -Sufixo $cfg.SALDARO_SUFIXO -SemPublicar, ou -Cenario 3 -Pronto
+
+Com a assinatura, sobrou a confirmação repetida, assinada pelo próprio banco. Três camadas: o broker descarta a cópia (janela de 10 minutos, maior que os 5 do timestamp); a sessão dá um consumidor por fatura, na ordem de chegada, que não é ordem de negócio; a inbox e a máquina de estados com ETag fecham a conta.
+
+Tentem ligar sessions na fila que existe: no Overview, bloco Essentials, Sessions e Duplicate detection estão Disabled, sem onde ligar (não em Settings → Properties). O CLI responde: The value for the RequiresSession property of an existing Queue cannot be changed. O caminho do lab, todo no Portal: drenar (ativas e DLQ em 0) e apagar a fila, no Delete do Overview. Antes de criar de novo, no cenario-2-pronto.bicepparam, três linhas em true: webhookHmac (o que vocês ligaram no slide anterior), filaComSessions e filaDupDetection. Esse arquivo registra o que vocês vão criar à mão; sem ele, o próximo deploy pararia na propriedade imutável ou desligaria o HMAC em silêncio.
+
+A fila nova: Queues, + Queue. Nome exato sbq-confirmacoes-banco e os valores do Bicep: Max delivery count 10, Lock duration 1 minuto, Enable dead lettering on message expiration marcado, Enable partitioning desmarcado (também só na criação) e as duas caixas do dia, Enable duplicate detection, janela de 10 minutos, e Enable sessions. Esqueceu uma? Apaga e recria, uns dois minutos a mais. O queue show confere True, True, PT10M, 10 e PT1M; lock ou max delivery com o padrão do painel se acertam no (change) da seção Settings do Overview. Nada reiniciou o hub, mas o Azure e o último deployment discordam: é drift (o check-drift.ps1 mostra), e o arquivo editado faz o próximo deploy confirmar a fila.
+
+Plano B: o -Cenario 3 -SemPublicar recria a fila pelo Bicep com esse arquivo, uns 3 minutos e meio com a fila apagada (o aviso amarelo de consumidor sem sessão é esperado; fila não apagada para o script com IMUTÁVEL); o -Cenario 3 -Pronto entrega as três camadas e recria a fila sozinho.
+
+host.json: maxConcurrentCalls = 4 (sem sessão), maxConcurrentSessions = 8 (com sessão) e sessionIdleTimeout de 10 s; receptor sem sessão numa fila com sessões não funciona, por isso dois triggers, um ligado.
+
+Troquem o consumidor no Portal, chaves sempre opostas: AzureWebJobs.ProcessarConfirmacaoSemSessao.Disabled = true e AzureWebJobs.ProcessarConfirmacaoComSessao.Disabled = false. O app reinicia (20 a 35 s): aqueçam antes de rodar; quem veio pelo plano B aquece de qualquer jeito, porque o deploy reaplicou o APIM. As 20 faturas de novo: a duplicata some, mas a desordem não; regra de negócio mora no consumidor. Liguem Cenario__Inbox e levem workerComSessao e inbox para o mesmo .bicepparam: ele fica igual ao cenario-3-pronto, o ponto de partida do Incidente 3.
+
+Pergunta para a turma: se o duplicate detection já descarta a confirmação repetida, para que a inbox? Deem um cenário em que só ela salva.
+
+Se perguntarem: "Se a fila é FIFO, por que precisa de sessão? E partição não resolve a ordem?" → FAQ-4.
+Se perguntarem: "Se a fila tem duplicate detection, para que inbox e ETag?" → FAQ-5.
+
+Transição: prova.</aside>
+</section>

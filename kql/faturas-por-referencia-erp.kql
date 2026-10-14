@@ -1,0 +1,54 @@
+// faturas-por-referencia-erp.kql · Incidente 1, cenário 3.2 ("O timeout de sexta às 18h")
+// Version-anchor: Q4-2026
+//
+// O que prova: a duplicata do Incidente 1. Para o ERP, cada referenciaErp é UMA fatura, e os
+// reenvios repetem a mesma referenciaErp (o erp-simulado.ps1 gera ERP-<yyyyMMddHHmmss>-<n>). No
+// baseline síncrono, o APIM corta em 30 s (504), o ERP reenvia e o hub cria outra fatura e o banco
+// registra outra cobrança para a mesma referenciaErp: aparecem linhas aqui, com faturas = N e
+// cobrancas = N. Depois do conserto (202 + fila + Idempotency-Key), cada referenciaErp tem 1 fatura
+// e 1 cobrança e o resultado fica VAZIO: é a prova.
+//
+// Fonte: os eventos do hub fatura.recebida (faturaId, clienteId, referenciaErp) e cobranca.emitida
+// (faturaId, idCobranca). A consulta junta os dois pelo faturaId, numa passada só pela tabela.
+// Agrupa por clienteId e referenciaErp: duas empresas clientes podem usar a mesma referência.
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> > Logs (tabela customEvents).
+// Período: o seletor de tempo do Logs. Para isolar a demonstração, acrescente logo abaixo da
+// primeira linha da consulta: | where timestamp > datetime(2026-11-06 18:00:00)
+// Para ver todas as referências (inclusive as sem duplicata), apague a linha "where faturas > 1".
+//
+// Equivalente no Log Analytics (workspace log-saldaro-<sufixo>, tabela AppEvents):
+//   AppEvents
+//   | where Name in ("fatura.recebida", "cobranca.emitida")
+//   | extend faturaId = tostring(Properties.faturaId), referenciaErp = tostring(Properties.referenciaErp),
+//            clienteId = tostring(Properties.clienteId), idCobranca = tostring(Properties.idCobranca)
+//   | summarize refErp = take_anyif(referenciaErp, isnotempty(referenciaErp)),
+//               cliente = take_anyif(clienteId, isnotempty(clienteId)),
+//               cobrancasDaFatura = make_set_if(idCobranca, isnotempty(idCobranca)),
+//               recebidaEm = minif(TimeGenerated, Name == "fatura.recebida")
+//       by faturaId
+//   | where isnotempty(refErp)
+//   | summarize faturas = count(), cobrancas = sum(array_length(cobrancasDaFatura)),
+//               faturaIds = make_set(faturaId, 10), primeiraEm = min(recebidaEm), ultimaEm = max(recebidaEm)
+//       by clienteId = cliente, referenciaErp = refErp
+//   | where faturas > 1 or cobrancas > 1
+customEvents
+| where name in ("fatura.recebida", "cobranca.emitida")
+| extend faturaId = tostring(customDimensions.faturaId),
+         referenciaErp = tostring(customDimensions.referenciaErp),
+         clienteId = tostring(customDimensions.clienteId),
+         idCobranca = tostring(customDimensions.idCobranca)
+| summarize refErp = take_anyif(referenciaErp, isnotempty(referenciaErp)),
+            cliente = take_anyif(clienteId, isnotempty(clienteId)),
+            cobrancasDaFatura = make_set_if(idCobranca, isnotempty(idCobranca)),
+            recebidaEm = minif(timestamp, name == "fatura.recebida")
+    by faturaId
+| where isnotempty(refErp)
+| summarize faturas = count(),
+            cobrancas = sum(array_length(cobrancasDaFatura)),
+            faturaIds = make_set(faturaId, 10),
+            primeiraEm = min(recebidaEm),
+            ultimaEm = max(recebidaEm)
+    by clienteId = cliente, referenciaErp = refErp
+| where faturas > 1 or cobrancas > 1
+| order by faturas desc, cobrancas desc, primeiraEm asc

@@ -1,0 +1,84 @@
+<section id="inc1-sintomas" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:63px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:17px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">O banco demorou 45 s e a Saldaro duplicou cobranças</h2>
+<p style="font-size:24px;line-height:1.2;color:rgba(0,164,239,0.9)">Incidente 1 · Sintomas: o POST /faturas síncrono esperava o banco antes de responder</p>
+</div>
+<div style="display:flex;gap:60px">
+<div style="width:700px;flex:none;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(26,31,46,0.6);border-left:7.5px solid #D83B01;border-radius:0 12px 12px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/296ac0ee1eef0486a8431721f52850db" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:0.76px;color:#FFFFFF">504 aos 30 s</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.85)">O APIM corta com <span style="color:#CE9178">{"erro":"o gateway esperou 30 s e desistiu"}</span>, e o ERP reenvia.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(26,31,46,0.6);border-left:7.5px solid #D83B01;border-radius:0 12px 12px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/8ac10092e5514d9d8016eaac19c03f3e" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:0.76px;color:#FFFFFF">2 faturas, 2 cobranças</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.85)">No <span style="color:#9CDCFE">faturas-por-referencia-erp.kql</span>, a mesma <span style="color:#9CDCFE">referenciaErp</span> com duas faturas e duas cobranças; no banco, uma por <span style="color:#9CDCFE">faturaId</span>.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(26,31,46,0.6);border-left:7.5px solid #D83B01;border-radius:0 12px 12px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/c8209864982e45a0f39a9796c01d5739" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:0.76px;color:#FFFFFF">O hub espera até ~45 s</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.85)">O <span style="color:#9CDCFE">PostFatura</span> termina com 499: ninguém mais ouvia. O banco já gravou a cobrança.</p>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.6)">Na Saldaro 1.0, o worker de polling não drenava a fila. Teto da plataforma: a resposta HTTP do Functions morre aos 230 s; aqui, o APIM corta antes.</p>
+</div>
+<div style="position:relative;width:1040px;height:748px">
+<div style="position:absolute;left:0;top:0;width:180px;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:2px solid rgba(0,164,239,0.3);border-radius:9px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">ERP</p></div>
+<div style="position:absolute;left:280px;top:0;width:180px;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:2px solid rgba(0,164,239,0.3);border-radius:9px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">APIM</p></div>
+<div style="position:absolute;left:560px;top:0;width:180px;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:2px solid rgba(0,164,239,0.3);border-radius:9px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Hub</p></div>
+<div style="position:absolute;left:840px;top:0;width:180px;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:2px solid rgba(0,164,239,0.3);border-radius:9px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Banco</p></div>
+<x-connector x1="90" y1="64" x2="90" y2="740" head="none" style="color:rgba(255,255,255,0.25);border-style:dashed"></x-connector>
+<x-connector x1="370" y1="64" x2="370" y2="740" head="none" style="color:rgba(255,255,255,0.25);border-style:dashed"></x-connector>
+<x-connector x1="650" y1="64" x2="650" y2="740" head="none" style="color:rgba(255,255,255,0.25);border-style:dashed"></x-connector>
+<x-connector x1="930" y1="64" x2="930" y2="740" head="none" style="color:rgba(255,255,255,0.25);border-style:dashed"></x-connector>
+<x-connector x1="90" y1="130" x2="370" y2="130" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="370" y1="190" x2="650" y2="190" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="650" y1="250" x2="930" y2="250" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="370" y1="350" x2="90" y2="350" style="color:#D83B01;border-width:3px"></x-connector>
+<x-connector x1="90" y1="430" x2="370" y2="430" style="color:#D83B01;border-width:3px"></x-connector>
+<x-connector x1="370" y1="490" x2="650" y2="490" style="color:#D83B01;border-width:3px"></x-connector>
+<x-connector x1="650" y1="550" x2="930" y2="550" style="color:#FF4343;border-width:3px"></x-connector>
+<x-connector x1="930" y1="640" x2="650" y2="640" style="color:#9CA3AF;border-width:3px"></x-connector>
+<p style="position:absolute;left:100px;top:88px;width:260px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">POST /faturas</p>
+<p style="position:absolute;left:380px;top:148px;width:260px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">repassa</p>
+<p style="position:absolute;left:660px;top:208px;width:260px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">cobrança 1</p>
+<p style="position:absolute;left:100px;top:308px;width:260px;height:34px;font-size:24px;font-weight:700;line-height:34px;color:#D83B01">504 aos 30 s</p>
+<p style="position:absolute;left:100px;top:388px;width:260px;height:34px;font-size:24px;font-weight:700;line-height:34px;color:#D83B01">reenvio</p>
+<p style="position:absolute;left:380px;top:448px;width:260px;height:34px;font-size:24px;font-weight:700;line-height:34px;color:#D83B01">outra fatura</p>
+<p style="position:absolute;left:660px;top:508px;width:260px;height:34px;font-size:24px;font-weight:700;line-height:34px;color:#FF4343">cobrança 2</p>
+<p style="position:absolute;left:660px;top:568px;width:370px;height:68px;font-size:24px;line-height:34px;color:#9CA3AF">resposta aos ~45 s<br>PostFatura: 499</p>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">8</p>
+</div>
+<aside>Tempo previsto: 15 min (sintomas e hipóteses: Partes 2 e 3 do guia). Mostrar: o terminal com o erp-simulado e o relatório (1 fatura, 2 tentativas, 504|504 e nenhum faturaId devolvido); stsaldaro(sufixo) → Storage browser → Tables → faturas (duas linhas com a mesma referenciaErp e faturaId diferentes); appi-saldaro-(sufixo) → Logs com kql/faturas-por-referencia-erp.kql e a consulta de requests e dependencies (APIM com 504 aos ~30 s, PostFatura com ~45 s e resultCode 499, um PostCobranca por tentativa); apim-saldaro-(sufixo) → APIs → saldaro → Design → Backend (forward-request timeout="30" e o on-error que devolve o 504).
+
+Comandos:
+./scripts/erp-simulado.ps1 -Faturas 1 -MaxTentativas 2 -Caos "latencia=45"
+Get-Content ./kql/faturas-por-referencia-erp.kql -Raw | Set-Clipboard
+KQL de apoio: union requests, dependencies | where timestamp &gt; ago(30m) | where name contains "fatura" or name contains "cobranca" | project timestamp, itemType, quem = cloud_RoleName, name, resultCode, segundos = round(duration / 1000.0, 1) | order by timestamp asc
+
+Vamos reproduzir a sexta-feira: o ERP simulado manda uma fatura só, e o botão de caos latencia=45 faz o banco demorar 45 segundos. O -MaxTentativas 2 deixa a reprodução previsível: uma tentativa e um reenvio, cada um cortado aos 30 segundos, e o relatório sai em pouco mais de um minuto. Rodem junto comigo e não cancelem: o mais importante acontece enquanto vocês esperam.
+
+Aos 30 segundos o terminal mostra um 504. Quem cortou não foi o Functions nem o banco: foi o APIM. A política tem forward-request timeout="30", e um on-error do kit transforma o corte num 504 sempre igual, com o corpo {"erro":"o gateway esperou 30 s e desistiu"}. O ERP faz o que todo cliente bem-comportado faz: espera um pouco e reenvia. Só que o banco já tinha gravado a cobrança antes de começar a esperar, e o hub, ingênuo de propósito, não desiste quando o ERP desiste: aos 45 segundos recebe a resposta do banco, grava a cobrança na fatura e tenta responder 201, mas ninguém mais está ouvindo. No Application Insights: o APIM com 504 em uns 30 s, o PostFatura com uns 45 e resultCode 499, o cliente fechou a conexão antes da resposta (o cliente, aqui, é o APIM), e um PostCobranca por tentativa. O APIM desistiu; o hub terminou o trabalho. Sem linhas ainda? É a ingestão da telemetria, de 2 a 5 minutos.
+
+O estrago: o reenvio não carrega nada que diga "esta fatura já foi enviada", então o hub cria outra fatura, com outro faturaId, e o banco registra outra cobrança antes de responder. No Storage browser, a tabela faturas tem duas linhas com a mesma referenciaErp. O faturas-por-referencia-erp.kql mostra essa referência com duas faturas e duas cobranças; cada faturaId, sozinho, tem uma cobrança só no banco (quantidade = 1). A duplicata é de negócio, e por isso a contagem é por referenciaErp: o pagador vai receber dois boletos.
+
+Na Saldaro 1.0, a mesma sexta teve um segundo sintoma: o worker único de polling não dava conta da fila que se formou no banco relacional. Guardem os dois, porque o conserto ataca os dois de uma vez.
+
+E se a gente só aumentasse o timeout? Mostro a política no Portal: subir os 30 segundos não conserta nada, porque o ERP desiste aos 35 de qualquer jeito e o reenvio continua criando fatura e cobrança novas. Os 230 segundos são o teto da plataforma para resposta HTTP de Function, qualquer que seja o functionTimeout, por causa do idle timeout do balanceador do Azure. Ficar abaixo deles não salva ninguém se o APIM corta aos 30.
+
+Pergunta para a turma: o que o ERP deveria fazer quando não recebe resposta? E como ele saberia se o primeiro POST foi processado ou não?
+
+Transição: hipóteses confirmadas: o cliente não sabe se deu certo, e o banco não perdoa reenvio. Vamos ao padrão que resolve as duas coisas.</aside>
+</section>

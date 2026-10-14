@@ -1,0 +1,85 @@
+// erros-transientes-por-operacao.kql · cenários 3.6 e 3.4
+// Version-anchor: Q4-2026
+//
+// O que prova: onde e quando começaram as falhas transientes. Uma linha por operação (Function do
+// hub ou do banco: EmitirCobranca, ProcessarConfirmacaoSemSessao, PostFatura...) com quantas
+// exceções transientes houve, quantas operações (operation_Id distintos) foram afetadas e qual foi
+// a PRIMEIRA, com o operation_Id e o faturaId dela. No 3.6, com falhaTransiente=50, a primeira
+// falha precisa aparecer aqui em menos de 5 min; minutosDesdeAPrimeira mostra há quanto tempo ela
+// aconteceu.
+//
+// Uma falha, mais de uma linha: com o worker isolated, a mesma exceção é gravada pelo host do
+// Functions, em linhas sem cloud_RoleName (as mais numerosas), e pelo próprio worker, com
+// cloud_RoleName = nome do Function App (func-saldaro-hub-<sufixo> ou func-saldaro-banco-<sufixo>).
+// Foi o que o primeiro deploy real mostrou (2026-10-14, Flex Consumption). Por isso a consulta só
+// conta as linhas do worker (cloud_RoleName startswith "func-saldaro-"); sem esse filtro, a mesma
+// falha entra mais de uma vez na contagem. Para olhar só o hub, troque o filtro pelo nome exato:
+//   | where cloud_RoleName == "func-saldaro-hub-<sufixo>"
+// Mesmo assim, leia ocorrencias como ordem de grandeza, não como a contagem exata de entregas que
+// falharam: o que esta consulta prova é a primeira falha. Para ver as linhas de cada origem no seu
+// ambiente (se as do host também vierem com cloud_RoleName, a coluna sdkVersion separa os dois):
+//   exceptions
+//   | where timestamp > ago(30m)
+//   | summarize linhas = count() by cloud_RoleName, sdkVersion, type
+//
+// De onde vem o nome da operação: nas exceções do worker isolated, operation_Name vem vazio, nas
+// linhas do host e nas do worker. O nome da Function fica em customDimensions, na chave
+// AzureFunctions_FunctionName, que só o worker preenche. Agrupar por operation_Name daria uma linha
+// só, com a operação em branco: foi o que o primeiro deploy real mostrou. Em requests e traces, o
+// operation_Name vem preenchido.
+//
+// Como "transiente" é reconhecido: tipo ou mensagem da exceção com timeout, 503/429/408,
+// "Service Unavailable", "transient" ou "transiente". A falha transiente simulada do hub
+// (simulaTransiente) entra aqui desde que o tipo ou a mensagem da exceção dela contenha "transiente".
+// Exceções de schema inválido (valor "1.250,00") NÃO entram: essas são permanentes e vão para a DLQ.
+// Para ligar a exceção à fatura, a consulta procura o faturaId nos customEvents da mesma operação.
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> > Logs (tabelas exceptions e
+// customEvents). Período: o seletor de tempo do Logs. Para isolar uma rajada, acrescente logo
+// abaixo da primeira linha da consulta: | where timestamp > datetime(2026-11-10 09:30:00)
+//
+// Depois do conserto do 3.4 (retry agendado), as falhas transientes deixam de virar exceção e
+// aparecem como retentativas. Para vê-las:
+//   customEvents
+//   | where name == "mensagem.retry.agendado"
+//   | summarize retentativas = count(), faturas = dcount(tostring(customDimensions.faturaId))
+//       by tentativa = toint(customDimensions.tentativa)
+//   | order by tentativa asc
+//
+// Equivalente no Log Analytics (workspace log-saldaro-<sufixo>, tabelas AppExceptions e AppEvents;
+// cloud_RoleName vira AppRoleName):
+//   AppExceptions
+//   | where AppRoleName startswith "func-saldaro-"
+//   | where ExceptionType matches regex @"(?i)transient|transiente|timeout|taskcanceled|httprequest|servicebus|requestfailed|socket"
+//        or OuterMessage matches regex @"(?i)\b(503|429|408)\b|service unavailable|too many requests|transient|transiente|timed? ?out|tempo esgotado|temporariamente"
+//   | extend operacao = tostring(Properties.AzureFunctions_FunctionName)
+//   | join kind=leftouter (AppEvents
+//       | where isnotempty(tostring(Properties.faturaId))
+//       | summarize faturaId = take_any(tostring(Properties.faturaId)) by OperationId) on OperationId
+//   | summarize arg_min(TimeGenerated, OperationId, faturaId, ExceptionType, OuterMessage),
+//               ocorrencias = count(), operacoesAfetadas = dcount(OperationId), ultima = max(TimeGenerated)
+//       by operacao
+exceptions
+| where cloud_RoleName startswith "func-saldaro-" // só as linhas do worker: o host repete a falha sem cloud_RoleName
+| where type matches regex @"(?i)transient|transiente|timeout|taskcanceled|httprequest|servicebus|requestfailed|socket"
+     or outerMessage matches regex @"(?i)\b(503|429|408)\b|service unavailable|too many requests|transient|transiente|timed? ?out|tempo esgotado|temporariamente"
+| extend operacao = tostring(customDimensions.AzureFunctions_FunctionName) // operation_Name vem vazio em exceptions
+| join kind=leftouter (
+    customEvents
+    | where isnotempty(tostring(customDimensions.faturaId))
+    | summarize faturaId = take_any(tostring(customDimensions.faturaId)) by operation_Id
+  ) on operation_Id
+| summarize arg_min(timestamp, operation_Id, faturaId, type, outerMessage),
+            ocorrencias = count(),
+            operacoesAfetadas = dcount(operation_Id),
+            ultima = max(timestamp)
+    by operacao
+| project operacao, ocorrencias, operacoesAfetadas,
+          primeiraFalha = timestamp,
+          minutosDesdeAPrimeira = datetime_diff('minute', now(), timestamp),
+          ultima,
+          operationIdDaPrimeira = operation_Id,
+          faturaIdDaPrimeira = faturaId,
+          tipo = type,
+          mensagem = outerMessage
+| order by primeiraFalha asc

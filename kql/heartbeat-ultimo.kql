@@ -1,0 +1,34 @@
+// heartbeat-ultimo.kql · cenário 3.6 ("O agendador que morreu em silêncio")
+// Version-anchor: Q4-2026
+//
+// O que prova: quando a conciliação concluiu pela última vez, e com que resultado. O hub emite
+// conciliacao.heartbeat só no FIM de uma execução bem-sucedida (nunca no início): se o heartbeat
+// parou, a conciliação parou, mesmo sem nenhum erro nos painéis. Com a conciliação a cada 5 min,
+// minutosDesdeOUltimo acima de 15 é o mesmo sinal que dispara o alrt-heartbeat-ausente.
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> > Logs (tabela customEvents).
+// Período: o seletor de tempo do Logs. Para um intervalo exato, acrescente logo abaixo da
+// primeira linha da consulta: | where timestamp > datetime(2026-11-10 09:00:00)
+// Sem heartbeat no período, volta uma linha com heartbeatsNoPeriodo = 0 e o resto vazio.
+// As propriedades do evento ficam em customDimensions (texto); se vierem como métricas, em
+// customMeasurements: o coalesce aceita as duas formas.
+//
+// Equivalente no Log Analytics (workspace log-saldaro-<sufixo>, tabela AppEvents):
+//   AppEvents
+//   | where Name == "conciliacao.heartbeat"
+//   | extend faturasVerificadas = coalesce(toint(Properties.faturasVerificadas), toint(Measurements.faturasVerificadas)),
+//            divergencias = coalesce(toint(Properties.divergencias), toint(Measurements.divergencias)),
+//            duracaoMs = coalesce(todouble(Properties.duracaoMs), todouble(Measurements.duracaoMs))
+//   | summarize arg_max(TimeGenerated, faturasVerificadas, divergencias, duracaoMs, AppRoleInstance, OperationId),
+//               heartbeatsNoPeriodo = count()
+//   | extend minutosDesdeOUltimo = datetime_diff('minute', now(), TimeGenerated)
+customEvents
+| where name == "conciliacao.heartbeat"
+| extend faturasVerificadas = coalesce(toint(customDimensions.faturasVerificadas), toint(customMeasurements.faturasVerificadas)),
+         divergencias = coalesce(toint(customDimensions.divergencias), toint(customMeasurements.divergencias)),
+         duracaoMs = coalesce(todouble(customDimensions.duracaoMs), todouble(customMeasurements.duracaoMs))
+| summarize arg_max(timestamp, faturasVerificadas, divergencias, duracaoMs, cloud_RoleInstance, operation_Id),
+            heartbeatsNoPeriodo = count()
+| extend minutosDesdeOUltimo = datetime_diff('minute', now(), timestamp)
+| project ultimoHeartbeat = timestamp, minutosDesdeOUltimo, heartbeatsNoPeriodo,
+          faturasVerificadas, divergencias, duracaoMs, instancia = cloud_RoleInstance, operation_Id

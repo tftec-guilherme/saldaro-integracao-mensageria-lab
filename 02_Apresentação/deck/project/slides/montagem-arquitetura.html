@@ -1,0 +1,76 @@
+<section id="montagem-arquitetura" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:48px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:17px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">O que vamos montar: a Saldaro 2.0 no Azure</h2>
+<p style="font-size:24px;line-height:1.2;color:rgba(0,164,239,0.9)">Tudo no rg-saldaro-lab, à mão, no Portal: o mesmo ambiente que o Bicep do cenário 0 cria</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">A jornada da cobrança</p>
+<div style="display:flex;align-items:stretch;gap:10px">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;background:rgba(255,255,255,0.05);border:3px solid rgba(0,164,239,0.3);border-radius:9px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;text-align:center;color:#FFFFFF">ERP do cliente</h3>
+<p style="font-size:24px;line-height:1.3;text-align:center;color:#00A4EF">POST /faturas</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:22px;background:#00A4EF;align-self:center;flex:none"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;background:rgba(255,255,255,0.05);border:3px solid rgba(0,164,239,0.3);border-radius:9px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;text-align:center;color:#FFFFFF">APIM</h3>
+<p style="font-size:24px;line-height:1.3;text-align:center;color:#00A4EF">porta única</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:22px;background:#00A4EF;align-self:center;flex:none"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;background:rgba(255,255,255,0.05);border:3px solid rgba(0,164,239,0.3);border-radius:9px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;text-align:center;color:#FFFFFF">Hub</h3>
+<p style="font-size:24px;line-height:1.3;text-align:center;color:#00A4EF">registra a cobrança</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:22px;background:#00A4EF;align-self:center;flex:none"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;background:rgba(255,255,255,0.05);border:3px solid rgba(0,164,239,0.3);border-radius:9px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;text-align:center;color:#FFFFFF">Banco simulado</h3>
+<p style="font-size:24px;line-height:1.3;text-align:center;color:#00A4EF">webhook de volta</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:22px;background:#00A4EF;align-self:center;flex:none"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;background:rgba(255,255,255,0.05);border:3px solid rgba(0,164,239,0.3);border-radius:9px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;text-align:center;color:#FFFFFF">Service Bus</h3>
+<p style="font-size:24px;line-height:1.3;text-align:center;color:#00A4EF">baixa da fatura</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:22px;background:#00A4EF;align-self:center;flex:none"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;background:rgba(255,255,255,0.05);border:3px solid rgba(0,164,239,0.3);border-radius:9px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;text-align:center;color:#FFFFFF">Event Grid</h3>
+<p style="font-size:24px;line-height:1.3;text-align:center;color:#00A4EF">avisa o parceiro</p>
+</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:24px">
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Porta única</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">APIM, para o ERP e o banco.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Processamento</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Hub e banco no Functions Flex.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Mensageria</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Service Bus (3 filas) e Event Grid.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Estado e segredos</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Storage (tabelas) e Key Vault.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Observação</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Application Insights sobre Log Analytics.</p>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+</div>
+<aside>Tempo previsto: 3 min. Mostrar: o diagrama deste slide e, ao lado, o Portal aberto na assinatura, ainda sem o rg-saldaro-lab.
+
+Antes de clicar em qualquer coisa, a planta da casa. A Saldaro 2.0 tem cinco papéis. A porta única é o APIM: o ERP da empresa cliente e o banco parceiro só falam com ele. O processamento são dois Function Apps no Flex Consumption: o hub, que é a Saldaro, e o banco simulado, que faz o papel do parceiro. A mensageria é o Service Bus, com três filas, e o Event Grid, que avisa o parceiro quando a fatura é baixada. O estado mora no Storage, em tabelas, e os segredos no Key Vault. E os olhos são o Application Insights, gravando num workspace do Log Analytics. Cada peça que a gente criar hoje responde a uma pergunta: o que quebra se ela não existir?
+
+Insight do mundo real: quem já montou isso em projeto sabe que o desenho cabe num slide, mas a ordem de criação e as permissões entre as peças é que derrubam a primeira tentativa. É por isso que a montagem tem ordem.
+
+Referências: guia 01_Aulas/Lab0_Montagem_no_Portal_Guia.md (diagrama e Tabela de Recursos); FAQ das tecnologias, perguntas 1, 4 e 10.
+
+Transição: em que ordem a gente monta, e por quê.</aside>
+</section>

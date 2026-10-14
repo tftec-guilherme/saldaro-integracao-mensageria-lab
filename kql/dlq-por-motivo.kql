@@ -1,0 +1,44 @@
+// dlq-por-motivo.kql · Incidente 3, cenário 3.4 ("A mensagem que ninguém conseguia processar")
+// Version-anchor: Q4-2026
+//
+// O que prova: o que o hub mandou para a DLQ, por motivo. Com dlqComMotivo ligado, a confirmação
+// com valor em texto ("1.250,00") vai para a DLQ na primeira entrega com o motivo SchemaInvalida,
+// e a falha transiente que esgota o retry agendado vai com TentativasEsgotadas. Antes do conserto,
+// a DLQ só recebe MaxDeliveryCountExceeded, que não diz nada sobre a causa.
+//
+// Limite importante: aqui só aparecem os dead-letters feitos pelo hub (evento mensagem.deadletter).
+// Os da plataforma (MaxDeliveryCountExceeded, TTLExpiredException) são aplicados pelo próprio
+// Service Bus e não passam pelo Application Insights: veja-os com ./scripts/triagem-dlq.ps1, no
+// Service Bus Explorer do Portal ou na métrica DeadletteredMessages da fila. A prova final do
+// incidente (DLQ vazia depois do reprocessamento) é a triagem sem opções.
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> > Logs (tabela customEvents).
+// Período: o seletor de tempo do Logs. Para isolar uma rajada, acrescente logo abaixo da
+// primeira linha da consulta: | where timestamp > datetime(2026-11-10 14:00:00)
+//
+// Ao longo do tempo, por motivo:
+//   customEvents
+//   | where name == "mensagem.deadletter"
+//   | summarize mensagens = count() by motivo = tostring(customDimensions.motivo), bin(timestamp, 1m)
+//   | render timechart
+//
+// Equivalente no Log Analytics (workspace log-saldaro-<sufixo>, tabela AppEvents):
+//   AppEvents
+//   | where Name == "mensagem.deadletter"
+//   | extend motivo = tostring(Properties.motivo), faturaId = tostring(Properties.faturaId),
+//            idEvento = tostring(Properties.idEvento)
+//   | summarize mensagens = count(), faturas = dcount(faturaId), primeira = min(TimeGenerated),
+//               ultima = max(TimeGenerated), exemplos = make_set(idEvento, 5)
+//       by motivo
+customEvents
+| where name == "mensagem.deadletter"
+| extend motivo = tostring(customDimensions.motivo),
+         faturaId = tostring(customDimensions.faturaId),
+         idEvento = tostring(customDimensions.idEvento)
+| summarize mensagens = count(),
+            faturas = dcount(faturaId),
+            primeira = min(timestamp),
+            ultima = max(timestamp),
+            exemplos = make_set(idEvento, 5)
+    by motivo
+| order by mensagens desc

@@ -1,0 +1,115 @@
+<section id="inc3-classificar" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:63px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:17px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Permanente vai para a DLQ com motivo; transiente espera e tenta de novo</h2>
+<p style="font-size:24px;line-height:1.2;color:rgba(0,164,239,0.9)">Incidente 3 · O conserto: classificar o erro, agendar o retry e triar a DLQ</p>
+</div>
+<div style="display:flex;gap:60px">
+<div style="width:1140px;flex:none;display:flex;flex-direction:column;gap:24px">
+<div style="position:relative;width:1140px;height:530px">
+<div style="position:absolute;left:0;top:0;width:300px;height:100px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 18px;background:rgba(255,255,255,0.05);border:2px solid rgba(0,164,239,0.3);border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Mensagem chega</p>
+<p style="font-size:24px;line-height:1.2;color:#9CA3AF">peek-lock</p>
+</div>
+<div style="position:absolute;left:400px;top:0;width:300px;height:100px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.08);border:2px solid #F59E0B;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Desserializa?</p>
+</div>
+<div style="position:absolute;left:800px;top:0;width:340px;height:100px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 18px;background:rgba(216,59,1,0.1);border:2px solid #D83B01;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">DLQ na 1ª entrega</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.2;color:#CE9178">SchemaInvalida</p>
+</div>
+<div style="position:absolute;left:400px;top:180px;width:300px;height:100px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.08);border:2px solid #F59E0B;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Falha transiente?</p>
+</div>
+<div style="position:absolute;left:800px;top:180px;width:340px;height:100px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 18px;background:rgba(72,187,120,0.08);border:2px solid #48BB78;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Inbox, estados, baixa</p>
+<p style="font-size:24px;line-height:1.2;color:#48BB78">e Complete</p>
+</div>
+<div style="position:absolute;left:400px;top:360px;width:300px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(245,158,11,0.08);border:2px solid #F59E0B;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">n ≤ 3?</p>
+<p style="font-size:24px;line-height:1.2;color:#9CA3AF">n = tentativa + 1</p>
+</div>
+<div style="position:absolute;left:0;top:360px;width:300px;height:170px;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 18px;background:rgba(0,164,239,0.08);border:2px solid #00A4EF;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Cópia agendada</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.2;color:#9CDCFE">{idEvento}-t{n}</p>
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.75)">+10, +20, +40 s</p>
+</div>
+<div style="position:absolute;left:800px;top:360px;width:340px;height:100px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 18px;background:rgba(216,59,1,0.1);border:2px solid #D83B01;border-radius:9px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">DLQ</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.2;color:#CE9178">TentativasEsgotadas</p>
+</div>
+<x-connector x1="300" y1="50" x2="400" y2="50" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="700" y1="50" x2="800" y2="50" style="color:#D83B01;border-width:3px"></x-connector>
+<x-connector x1="550" y1="100" x2="550" y2="180" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="700" y1="230" x2="800" y2="230" style="color:#48BB78;border-width:3px"></x-connector>
+<x-connector x1="550" y1="280" x2="550" y2="360" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="700" y1="410" x2="800" y2="410" style="color:#D83B01;border-width:3px"></x-connector>
+<x-connector x1="400" y1="410" x2="300" y2="410" style="color:#00A4EF;border-width:3px"></x-connector>
+<x-connector x1="150" y1="360" x2="150" y2="100" style="color:#00A4EF;border-width:3px;border-style:dashed"></x-connector>
+<p style="position:absolute;left:712px;top:10px;width:80px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">não</p>
+<p style="position:absolute;left:562px;top:122px;width:80px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">sim</p>
+<p style="position:absolute;left:712px;top:190px;width:80px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">não</p>
+<p style="position:absolute;left:562px;top:302px;width:80px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">sim</p>
+<p style="position:absolute;left:712px;top:370px;width:80px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">não</p>
+<p style="position:absolute;left:318px;top:370px;width:80px;height:34px;font-size:24px;line-height:34px;color:#E0E0E0">sim</p>
+<p style="position:absolute;left:164px;top:196px;width:220px;height:68px;font-size:24px;line-height:34px;color:#9CDCFE">volta à fila</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#1E1E1E;border:2px solid #333333;border-radius:6.4px;padding:14px 22px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#DCDCAA">DeadLetterMessageAsync<span style="color:#D4D4D4">(message, deadLetterReason: </span><span style="color:#CE9178">"SchemaInvalida"</span><span style="color:#D4D4D4">, …)</span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#9CDCFE">ScheduledEnqueueTime <span style="color:#D4D4D4">= agora + 5 s × 2^n</span></p>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:22px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/310c2df6c87e564ffa9f2e5d2ffe28cb" alt="" style="width:36px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">triagem-dlq.ps1</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Peek na DLQ, agrupado por <span style="color:#9CDCFE">DeadLetterReason</span>, com exemplos.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:22px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/ab5e159581f3ddb858593ae04ce5773d" alt="" style="width:36px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">-Reprocessar</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Corrige o <span style="color:#9CDCFE">valor</span> e reprocessa com <span style="color:#9CDCFE">MessageId = {original}-r{n}</span>, o mesmo <span style="color:#9CDCFE">SessionId</span> e <span style="color:#9CDCFE">reprocessadoDe</span>.</p>
+</div>
+<div style="display:flex;align-items:flex-start;gap:28px;background:rgba(30,36,48,0.6);border-left:6px solid #F59E0B;border-radius:18.4px;padding:22px 32px">
+<img src="/_blob/5be5c278f70d71eb4dcf9194b58adcaa" alt="" style="width:36px;height:48px;object-fit:contain">
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#F59E0B">maxDeliveryCount: 10 → 3</h3>
+<p style="font-size:24px;line-height:1.3;color:#E0E0E0">O permanente sai na 1ª entrega e o transiente é agendado: as 3 entregas viram rede de segurança.</p>
+</div>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">18</p>
+</div>
+<aside>Tempo previsto: 12 min (o conserto: Parte 4 do guia). Mostrar: VS Code com ProcessadorDeBaixa.cs, ClassificadorDeConfirmacao.cs e PoliticaDeRetry.cs (procure CONCEITO:); os dois toggles em Environment variables do hub (Passo 4.2); sbq-confirmacoes-banco → Overview → seção Settings → (change) ao lado de Max delivery count, de 10 para 3, OK (Passo 4.3); os dois .bicepparam; o Passo 4.4 e o Contar-Fila com as ~32 do incidente na DLQ.
+
+Comandos (@fila e Contar-Fila vêm do Passo 1.1):
+git diff --no-index infra/parameters/cenario-3-pronto.bicepparam infra/parameters/cenario-4-pronto.bicepparam
+az servicebus queue update @fila --max-delivery-count 3 -o none   (sem o (change) do Portal)
+az servicebus queue show @fila --query "{maxDeliveryCount:maxDeliveryCount, lockDuration:lockDuration}" -o table
+Contar-Fila
+Plano B: ./scripts/deploy.ps1 -Cenario 4 -Pronto -SemPublicar
+
+O conserto começa por uma pergunta que o worker não fazia: este erro passa sozinho ou não?
+
+Permanente é o que se repete igual em toda tentativa: schema inválido, regra de negócio violada. Com Cenario:DlqComMotivo, o worker manda a mensagem para a DLQ na primeira entrega, com DeadLetterMessageAsync e deadLetterReason SchemaInvalida, e a descrição leva a mensagem do erro. Os triggers usam AutoCompleteMessages = false e recebem ServiceBusMessageActions: quem decide o destino da mensagem é o código, não o runtime.
+
+Transiente é o que passa com o tempo, e reentregar na hora é inútil: dez tentativas em segundos contra uma falha de 45. Com Cenario:RetryAgendado, o worker envia uma cópia agendada para daqui a 5 segundos vezes 2 elevado a n, com a propriedade tentativa, e completa a original. Dez, vinte, quarenta: setenta segundos de fôlego contra uma falha de 45. No primeiro deploy, a terceira nem foi usada. Se nem a terceira resolver, DLQ com TentativasEsgotadas. A cópia sai com MessageId = {idEvento}-t{n}: com o mesmo MessageId, o duplicate detection, agora ligado, a descartaria em silêncio, porque mensagem agendada também passa pela detecção.
+
+Aplicar, tudo no Portal. Os toggles: no func-saldaro-hub-(sufixo), Environment variables, Cenario__DlqComMotivo e Cenario__RetryAgendado em true, e o app reinicia, uns 20 a 35 segundos. A política da fila: no Overview da sbq-confirmacoes-banco, na seção Settings, (change) ao lado de Max delivery count, de 10 para 3, e OK. Três cliques, menos de um minuto. Ao contrário de sessions, essa propriedade muda numa fila existente: nada é recriado, e a DLQ do incidente continua lá. O queue show do Passo 4.4 confere 3 e PT1M. E o Bicep? O cenario-3-pronto e o cenario-4-pronto diferem em três linhas, os dois toggles e maxDeliveryCount = 3: o arquivo do estado pronto já declara o que vocês clicaram; o último deployment, não. É drift de propósito: um deploy.ps1 -Cenario 4, o estado inicial, devolveria o 10 e desligaria os toggles, e quem fecha a conta é um deploy do cenario-4-pronto. Por que três? O maxDeliveryCount vira rede de segurança para o erro que ninguém previu. Plano B: deploy.ps1 -Cenario 4 -Pronto -SemPublicar, com a fila parada, uns 4 minutos no primeiro deploy; no what-if, a fila aparece como Deploy (!), sem valores: nada é recriado. Para todos, a prova começa pelo aquecimento: o hub acabou de reiniciar, e o plano B ainda reaplicou o APIM.
+
+O que ficou de antes é a triagem, que vocês executam na prova: o triagem-dlq.ps1 faz peek na DLQ e agrupa por DeadLetterReason. Com -Reprocessar, corrige o valor em texto para número e reprocessa com MessageId = {original}-r{n}, o mesmo SessionId e reprocessadoDe, e só então completa a da DLQ; a inbox olha o idEvento do corpo, não o MessageId, e nada é baixado duas vezes. O -DescartarMotivo joga fora, e essa decisão é de negócio, nunca do script.
+
+Pergunta para a turma: que outros erros do hub vocês classificariam como permanentes? E um 429 do banco parceiro: permanente ou transiente?
+
+Se perguntarem: "Por que retry agendado à mão? O Functions não tem retry policy?" → FAQ-6.
+
+Transição: prova.</aside>
+</section>

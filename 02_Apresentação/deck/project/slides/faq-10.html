@@ -1,0 +1,57 @@
+<section id="faq-10" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:60px 90px 128px;display:flex;flex-direction:column;gap:40px">
+<img src="/_blob/aff1cbbdb2b36dc2b2fb450635ee2cf3" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;gap:30px">
+<div style="width:7.5px;flex:none;align-self:stretch;background:#00A4EF"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;color:#FFFFFF">Por que HMAC no webhook, e não mTLS, OAuth ou lista de IPs?</h2>
+<p style="font-size:26px;line-height:1.2;color:rgba(255,255,255,0.6)">FAQ-10 · HMAC × mTLS × IP × OAuth</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:24px">
+<div style="min-height:340px;display:flex;flex-direction:column;gap:16px;padding:26px 26px;background:rgba(0,164,239,0.1);border:2px solid #00A4EF;border-radius:9px">
+<div style="display:flex;align-items:center;gap:14px">
+<img src="/_blob/204b7a0f6e83c862824f9dbf195f26a8" alt="" style="width:30px;height:28px;object-fit:contain">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#FFFFFF">HMAC</h3>
+</div>
+<p style="font-size:28px;line-height:1.3;color:#9CDCFE">O corpo veio de quem tem o segredo?</p>
+<div style="height:2px;background:rgba(0,164,239,0.3)"></div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Prova o corpo. No kit, com timestamp e janela de 300 s.</p>
+</div>
+<div style="min-height:340px;display:flex;flex-direction:column;gap:16px;padding:26px 26px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.08);border-radius:9px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#FFFFFF">mTLS</h3>
+<p style="font-size:28px;line-height:1.3;color:#9CDCFE">Quem abriu a conexão?</p>
+<div style="height:2px;background:rgba(255,255,255,0.1)"></div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Prova quem conectou.</p>
+</div>
+<div style="min-height:340px;display:flex;flex-direction:column;gap:16px;padding:26px 26px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.08);border-radius:9px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#FFFFFF">Lista de IPs</h3>
+<p style="font-size:28px;line-height:1.3;color:#9CDCFE">Quem consegue chegar?</p>
+<div style="height:2px;background:rgba(255,255,255,0.1)"></div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Só filtra quem chega; depende de IPs de saída estáveis.</p>
+</div>
+<div style="min-height:340px;display:flex;flex-direction:column;gap:16px;padding:26px 26px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.08);border-radius:9px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#FFFFFF">OAuth</h3>
+<p style="font-size:28px;line-height:1.3;color:#9CDCFE">Quem chama, com um token que expira?</p>
+<div style="height:2px;background:rgba(255,255,255,0.1)"></div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.75)">Exige que o banco consiga obter token.</p>
+</div>
+</div>
+<div style="width:1299px;height:36px;border:3px solid #48BB78;border-top:none;border-radius:0 0 12px 12px"></div>
+<div style="width:1299px;display:flex;justify-content:center">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF;padding:12px 24px;background:rgba(72,187,120,0.1);border:2px solid #48BB78;border-radius:9px"><span style="color:#48BB78">Produção:</span> HMAC mais IPs ou mTLS (ADR 0007)</p>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">32</p>
+</div>
+<aside>Tempo previsto: 1 a 2 min, fora da soma das 4h (slide de bolso). Mostrar: a comparação do slide; se ajudar, apim-saldaro-(sufixo) → APIs → Saldaro Hub - webhooks (saldaro-webhooks, sem subscription), para mostrar onde um ip-filter ou um validate-client-certificate entrariam em produção.
+
+Porque cada mecanismo responde uma pergunta diferente. HMAC prova que o corpo veio de quem tem o segredo e não foi alterado; mTLS prova quem abriu a conexão; lista de IPs reduz quem consegue chegar; OAuth prova quem chama, com um token que expira. A Microsoft usa HMAC em webhooks dela: os outgoing webhooks do Teams mandam um HMAC-SHA256 do corpo, e o receptor recalcula com o segredo e compara. O kit usa HMAC com o timestamp dentro do conteúdo assinado: só depende de um segredo compartilhado e cobre integridade e, com a janela de 300 segundos, repetição.
+
+As outras três defesas existem no APIM em todos os tiers, inclusive no Consumption: ip-filter, validate-client-certificate para mTLS e validate-jwt ou validate-azure-ad-token para OAuth. Mas cada uma cobra o seu preço. Lista de IPs sozinha é fraca: depende de o parceiro publicar IPs de saída estáveis. mTLS no Consumption exige ligar Request client certificate em Custom domains, não aceita certificados de CA para validar a cadeia e, atrás de um Application Gateway, o certificado nem chega ao APIM. OAuth exige que o banco consiga obter token. Por isso o ADR 0007 manda, em produção, somar à assinatura a lista de IPs ou o mTLS, conforme o contrato com o banco.
+
+Transição: de volta ao slide 13. A assinatura é a defesa que vocês ligam agora; as outras entram em produção, somadas a ela.</aside>
+</section>

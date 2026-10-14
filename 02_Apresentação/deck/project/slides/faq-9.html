@@ -1,0 +1,55 @@
+<section id="faq-9" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:60px 90px 128px;display:flex;flex-direction:column;gap:40px">
+<img src="/_blob/aff1cbbdb2b36dc2b2fb450635ee2cf3" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;gap:30px">
+<div style="width:7.5px;flex:none;align-self:stretch;background:#00A4EF"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;color:#FFFFFF">Se o Durable dá o 202 de graça, por que fazer à mão?</h2>
+<p style="font-size:26px;line-height:1.2;color:rgba(255,255,255,0.6)">FAQ-9 · Durable × request-reply feito à mão</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:18px 30px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Mesmo padrão; à mão, cada peça aparece</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">Asynchronous Request-Reply: o 202, a fila, o status barato e a <span style="font-family:monospace;color:#9CDCFE">Idempotency-Key</span></p>
+</div>
+<div style="display:grid;grid-template-columns:300px 1fr 1fr;gap:10px">
+<div></div>
+<div style="display:flex;align-items:center;padding:16px 24px;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:4.5px"><h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#FFFFFF">Durable Functions</h3></div>
+<div style="display:flex;align-items:center;padding:16px 24px;background:rgba(0,164,239,0.1);border:2px solid #00A4EF;border-radius:4.5px"><h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#FFFFFF">Saldaro, à mão</h3></div>
+<div style="display:flex;align-items:center;padding:0 8px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:rgba(255,255,255,0.85)">Enquanto processa</p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px"><p style="font-family:monospace;font-size:30px;font-weight:700;line-height:1.2;color:#DCDCAA">202</p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(0,164,239,0.06);border:2px solid rgba(0,164,239,0.3);border-radius:4.5px"><p style="font-family:monospace;font-size:30px;font-weight:700;line-height:1.2;color:#DCDCAA">200</p></div>
+<div style="display:flex;align-items:center;padding:0 8px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:rgba(255,255,255,0.85)">No fim</p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px"><p style="font-family:monospace;font-size:30px;font-weight:700;line-height:1.2;color:#DCDCAA">200</p></div>
+<div style="display:flex;align-items:center;gap:16px;padding:12px 24px;background:rgba(0,164,239,0.06);border:2px solid rgba(0,164,239,0.3);border-radius:4.5px"><p style="font-family:monospace;font-size:30px;font-weight:700;line-height:1.2;color:#DCDCAA">303</p><p style="font-size:24px;line-height:1.3;color:#FFFFFF">para a fatura</p></div>
+<div style="display:flex;align-items:center;padding:0 8px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:rgba(255,255,255,0.85)">URL de status</p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px"><p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Com a chave <span style="font-family:monospace;color:#CE9178">code=</span></p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(0,164,239,0.06);border:2px solid rgba(0,164,239,0.3);border-radius:4.5px"><p style="font-size:24px;line-height:1.3;color:#FFFFFF">Só leitura</p></div>
+<div style="display:flex;align-items:center;padding:0 8px"><p style="font-size:26px;font-weight:700;line-height:1.2;color:rgba(255,255,255,0.85)">Estado</p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px"><p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Task Hub, com histórico e replay</p></div>
+<div style="display:flex;align-items:center;padding:12px 24px;background:rgba(0,164,239,0.06);border:2px solid rgba(0,164,239,0.3);border-radius:4.5px"><p style="font-size:24px;line-height:1.3;color:#FFFFFF">Tabela <span style="font-family:monospace;color:#9CDCFE">faturas</span></p></div>
+</div>
+<div style="display:grid;grid-template-columns:300px 1fr 1fr;gap:10px;background:rgba(30,36,48,0.6);border:2px solid #F59E0B;border-radius:9px;padding:18px 0">
+<div style="display:flex;align-items:center;gap:14px;padding:0 20px">
+<img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#F59E0B">Quando escolher</p>
+</div>
+<div style="display:flex;align-items:center;padding:0 24px"><p style="font-size:24px;line-height:1.3;color:#E0E0E0">Durable vence: várias etapas, timers, compensação</p></div>
+<div style="display:flex;align-items:center;padding:0 24px"><p style="font-size:24px;line-height:1.3;color:#E0E0E0">Uma etapa só: fila e status bastam</p></div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">31</p>
+</div>
+<aside>Tempo previsto: 1 a 2 min, fora da soma das 4h (slide de bolso). Mostrar: a comparação do slide; se ajudar, a tabela do Passo 5.6 do guia do Incidente 1 (o Durable da D04 ao lado da Saldaro).
+
+Porque o Durable entrega o mesmo padrão pronto, e aqui o objetivo é ver cada peça. O padrão Asynchronous Request-Reply do Architecture Center tem quatro: o 202 com Location e Retry-After; a fila; o status barato, que responde 200 enquanto processa e 303 para o recurso no fim; e a Idempotency-Key, que torna o reenvio inofensivo.
+
+No Durable, o CreateCheckStatusResponse devolve o 202 com o statusQueryGetUri no Location, e o status responde 202 enquanto a orquestração roda e 200 no fim. Funciona, mas tem dois detalhes: as URLs de gerenciamento da resposta carregam uma chave de acesso no parâmetro code e incluem terminate, raise event e purge; e o estado vive num Task Hub, com histórico e replay. Com uma etapa só, fila e status são mais simples e expõem menos superfície: a URL de status da Saldaro é só leitura.
+
+E o teto que empurra para esse padrão vale para os dois: 230 segundos para uma Function responder HTTP, em qualquer plano. O Durable vence quando o fluxo tem várias etapas com estado, como fan-out e fan-in, timers, aprovação humana e saga com compensação, ou quando dura horas ou dias e precisa de cancelamento e eventos externos prontos.
+
+Transição: de volta ao slide de onde a pergunta veio. No 4, guardem a comparação para o fim do Incidente 1; no 10, ela fecha a prova.</aside>
+</section>

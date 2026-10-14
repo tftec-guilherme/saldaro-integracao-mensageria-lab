@@ -1,0 +1,29 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "APPLICATIONINSIGHTS_CONNECTION_STRING": "<connection string do appi-saldaro-<sufixo>; pode ficar vazio localmente>",
+
+    "ServiceBusConnection": "<connection string do sb-saldaro-<sufixo> (RootManageSharedAccessKey)>",
+    "TablesConnection": "UseDevelopmentStorage=true",
+    "EventGridTopicEndpoint": "<endpoint do tópico evgt-saldaro-faturas-<sufixo>>",
+    "EventGridTopicKey": "<chave do tópico>",
+
+    "BancoBaseUrl": "<https://<defaultHostName do banco>/api, ou http://localhost:7072/api>",
+    "BancoApiKey": "<o mesmo BancoApiKey configurado no banco simulado>",
+    "WebhookSecret": "<o mesmo WebhookSecret configurado no banco simulado>",
+    "UrlBasePublica": "http://localhost:7071/api",
+    "WebhookUrlPublica": "http://localhost:7071/api/webhooks/banco",
+
+    "Cenario__AsyncRequestReply": "false",
+    "Cenario__WebhookHmac": "false",
+    "Cenario__Inbox": "false",
+    "Cenario__DlqComMotivo": "false",
+    "Cenario__RetryAgendado": "false",
+    "Cenario__Heartbeat": "false",
+
+    "AzureWebJobs.ProcessarConfirmacaoComSessao.Disabled": "true",
+    "AzureWebJobs.ProcessarConfirmacaoSemSessao.Disabled": "false"
+  }
+}

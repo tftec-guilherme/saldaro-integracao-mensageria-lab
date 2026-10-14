@@ -1,0 +1,101 @@
+<section id="inc3-sintomas" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:63px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:17px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">“1.250,00” derrubou o worker 3.800 vezes</h2>
+<p style="font-size:24px;line-height:1.2;color:rgba(0,164,239,0.9)">Incidente 3 · Sintomas: o contrato do banco mudou, e a DLQ encheu sem dizer por quê</p>
+</div>
+<div style="display:flex;gap:60px">
+<div style="width:700px;flex:none;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(26,31,46,0.6);border-left:7.5px solid #D83B01;border-radius:0 12px 12px 0;padding:22px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/8ac10092e5514d9d8016eaac19c03f3e" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:0.76px;color:#FFFFFF">Valor como texto</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.85)">O banco atualizou a API e passou a mandar <span style="color:#9CDCFE">valor</span> como texto: “1.250,00”.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(26,31,46,0.6);border-left:7.5px solid #D83B01;border-radius:0 12px 12px 0;padding:22px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/296ac0ee1eef0486a8431721f52850db" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:0.76px;color:#FFFFFF">10 entregas, motivo inútil</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.85)">Exceção e reentrega até a DLQ: <span style="color:#9CDCFE">MaxDeliveryCountExceeded</span> e “Message could not be consumed after 10 delivery attempts.”</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(26,31,46,0.6);border-left:7.5px solid #D83B01;border-radius:0 12px 12px 0;padding:22px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/c8209864982e45a0f39a9796c01d5739" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:0.76px;color:#FFFFFF">Boas na mesma DLQ</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.85)">Uma falha transiente de 45 s esgotou as entregas em segundos.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:22px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/8463bb77ddbfcccd32ff79d661c85433" alt="" style="width:40px;height:34px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Ninguém sabia o que era o quê</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Reprocessar tudo baixaria faturas erradas; descartar tudo perderia pagamentos.</p>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">DLQ no Service Bus Explorer: 32 de 32 com MaxDeliveryCountExceeded</p>
+<img src="/_blob/de9bf4d38b7b1d933de9f2e5b58f3ac5" alt="Service Bus Explorer da sbq-confirmacoes-banco, aba Dead-letter com 32 mensagens em Peek Mode: Delivery Count 10, Session ID e Dead Letter Reason MaxDeliveryCountExceeded em todas" style="width:1040px;height:195px;object-fit:contain;background:#0A0E1A;border:2px solid rgba(0,164,239,0.3);border-radius:6px">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.5)">Print do primeiro deploy real, com os nomes de antes da troca</p>
+</div>
+<div style="display:flex;gap:30px">
+<div style="flex:1;display:flex;flex-direction:column;background:#1E1E1E;border:2px solid #333333;border-radius:6.4px;overflow:hidden">
+<div style="padding:10px 20px;background:rgba(255,255,255,0.05);border-bottom:1.4px solid #333333">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#D83B01">Envenenada</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:16px 20px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4"><span style="color:#9CDCFE">"tipo"</span>: <span style="color:#CE9178">"cobranca.paga"</span>,</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4"><span style="color:#9CDCFE">"valor"</span>: <span style="color:#FF4343">"1.250,00"</span>,</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#9CA3AF">DeadLetterReason:</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#CE9178">&#160;&#160;MaxDeliveryCountExceeded</p>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;background:#1E1E1E;border:2px solid #333333;border-radius:6.4px;overflow:hidden">
+<div style="padding:10px 20px;background:rgba(255,255,255,0.05);border-bottom:1.4px solid #333333">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#48BB78">Boa, com falha transiente</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:16px 20px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4"><span style="color:#9CDCFE">"valor"</span>: <span style="color:#B5CEA8">1250.00</span>,</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4"><span style="color:#9CDCFE">"simulaTransiente"</span>: <span style="color:#569CD6">true</span>,</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#9CA3AF">DeadLetterReason:</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#CE9178">&#160;&#160;MaxDeliveryCountExceeded</p>
+</div>
+</div>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.6)">Na história, 3.800. No primeiro deploy, 32: 20 corrigíveis e 12 boas (as boas variam com o sorteio).</p>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">17</p>
+</div>
+<aside>Tempo previsto: 19 min (o incidente, a preparação, os sintomas e as hipóteses: Partes 1 a 3 do guia). Mostrar: o Contar-Fila e a triagem de aquecimento; as rajadas e a DLQ chegando a ~32; o Service Bus Explorer da fila, aba Dead-letter, Peek from start; Logs com as exceções e o ritmo das reentregas (Passos 3.1 e 3.2); a triagem só leitura.
+
+Comandos:
+./scripts/triagem-dlq.ps1   (aquecimento; cada triagem leva uns 2,5 min)
+./scripts/erp-simulado.ps1 -Faturas 10 -Caos "valorComVirgula=true"
+./scripts/erp-simulado.ps1 -Faturas 20 -Caos "falhaTransiente=50"
+./scripts/triagem-dlq.ps1
+
+Quarta-feira, 14h. O banco parceiro publicou uma atualização da API e, sem avisar ninguém, passou a mandar o valor como texto no formato brasileiro: "1.250,00" em vez de 1250.00. O ERP não tem culpa nenhuma; o contrato mudou do lado de quem confirma o pagamento.
+
+O ponto de partida é o estado pronto do Incidente 2; quem chegou agora roda ./scripts/deploy.ps1 -Cenario 4 -Sufixo (seu sufixo), uns 6 minutos, e aquece antes da primeira rajada: no primeiro deploy, sem aquecimento, a rajada de 10 levou 107 segundos, com 6 timeouts do cliente que nem chegaram ao APIM. Antes do incidente, a triagem uma vez: ela compila a ferramenta. Contem uns 2 minutos e meio, nesta e nas próximas (149 segundos na primeira, de 134 a 145 nas seguintes, no primeiro deploy): disparem e sigam a história.
+
+Primeira rajada, dez faturas com valorComVirgula=true: a "registrada" e a "paga" de cada uma chegam com o valor em texto. Cada uma é veneno: o valor não é número, exceção. O hub abandona, o Service Bus reentrega na hora e, depois da décima entrega, a mensagem vai para a DLQ com o motivo genérico MaxDeliveryCountExceeded e uma descrição que não ajuda: "Message could not be consumed after 10 delivery attempts."
+
+Segunda rajada, vinte faturas só com falhaTransiente=50: mensagens boas, mas metade dos "paga" chega com uma falha transiente simulada de 45 segundos. As dez entregas acabam em poucos segundos, muito antes de a falha passar. Duas rajadas porque o worker desserializa antes de olhar a falha transiente. A DLQ fechou em 32 no primeiro deploy, 20 envenenadas e 12 boas, todas com o mesmo motivo; as boas variam com o sorteio dos "paga": contem com umas 10.
+
+No Explorer, aba Dead-letter, Peek from start: o peek funciona mesmo com sessão, e as colunas contam metade da história: Delivery Count 10, o Session ID, que é o faturaId, e o Dead Letter Reason. Uma mensagem tem o valor em texto (no primeiro deploy, "10.306,96"); a outra é um pagamento perfeito, com simulaTransiente = true. As duas dizem MaxDeliveryCountExceeded. Na história foram 3.800; aqui, umas 32 contam a mesma história.
+
+Provem o diagnóstico. As exceções do consumidor mostram duas famílias: ConfirmacaoInvalidaException, apontando para valor, e FalhaTransienteSimuladaException. Não somem as linhas: cada tipo aparece duas vezes, uma do host, sem cloud_RoleName e bem mais numerosa, e outra do worker; filtrem por cloud_RoleName. O que prova são os tipos e as mensagens. O ritmo: 204 abandonos em uns 2 minutos no primeiro deploy, reentrega imediata porque o hub chama AbandonMessageAsync e o Service Bus não tem atraso configurável. A triagem só leitura mostra um grupo só: quem sabia por que a mensagem falhou era o consumidor, e ele não disse.
+
+E agora? Reprocessar tudo como está devolve o veneno para a DLQ, e uma cópia reprocessada com o mesmo MessageId, dentro da janela do duplicate detection, seria descartada em silêncio. Um conserto apressado que lesse o texto só até a vírgula registraria R$ 1,25 onde o banco disse R$ 1.250,00. Descartar tudo perde pagamentos de verdade. Sem motivo, a DLQ não é uma ferramenta: é um depósito.
+
+Pergunta para a turma: olhando só para estas duas mensagens, como vocês decidiriam qual reprocessar? O que faltou o worker registrar?
+
+Transição: classificar antes de agir.</aside>
+</section>

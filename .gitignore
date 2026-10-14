@@ -1,0 +1,46 @@
+# Segredos e configuração local
+.env
+.env.*
+!.env.example
+*.secrets.env
+local.settings.json
+*.key
+*.pem
+*.pfx
+.azure/
+
+# Notas privadas do instrutor e rascunhos: nunca versionar
+.local/
+.scratch/
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
+
+# Saídas dos scripts da aula (CSV do erp-simulado.ps1)
+scripts/saida/
+
+# Dependências e build (.NET, Node, Python)
+bin/
+obj/
+.vs/
+*.user
+TestResults/
+node_modules/
+dist/
+build/
+__pycache__/
+.venv/
+*.log
+
+# Vídeos: ficam no Blob da TFTEC, nunca no git
+*.mp4
+*.mkv
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+~$*
+.$*.drawio.bkp

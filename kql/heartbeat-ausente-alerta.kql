@@ -1,0 +1,39 @@
+// heartbeat-ausente-alerta.kql · cenário 3.6 ("O agendador que morreu em silêncio")
+// Version-anchor: Q4-2026
+//
+// O que prova: é a consulta da regra de alerta alrt-heartbeat-ausente (scheduled query avaliada
+// a cada 5 min, janela de 15 min). Ela devolve os heartbeats da conciliação na janela. ZERO
+// linhas = a conciliação não concluiu nenhuma vez em 15 min = o alerta dispara (o "dead man's
+// switch": o alerta é pela ausência do sinal, não pela presença de um erro).
+//
+// Como a regra usa esta consulta: medida "Table rows" (contagem de linhas), operador "Less than",
+// limite 1. No Bicep (Microsoft.Insights/scheduledQueryRules): timeAggregation 'Count', sem
+// metricMeasureColumn, operator 'LessThan', threshold 1, evaluationFrequency PT5M, windowSize PT15M.
+// Rodando à mão no Logs: nenhuma linha = o alerta estaria disparando agora.
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> (tabela customEvents). Se a regra
+// apontar para o workspace log-saldaro-<sufixo>, use o equivalente AppEvents abaixo.
+// A linha "ago(15m)" deixa o resultado igual ao da regra quando você roda à mão; na regra, a
+// janela de 15 min também vale. A ingestão leva de 2 a 5 min: conte isso no tempo até o e-mail.
+//
+// Variante para regra com medida numérica (metricMeasureColumn "heartbeats", Total, LessThan 1):
+//   customEvents
+//   | where name == "conciliacao.heartbeat"
+//   | where timestamp > ago(15m)
+//   | summarize heartbeats = count()
+//
+// Equivalente no Log Analytics (tabela AppEvents):
+//   AppEvents
+//   | where Name == "conciliacao.heartbeat"
+//   | where TimeGenerated > ago(15m)
+//   | project TimeGenerated, faturasVerificadas = toint(Properties.faturasVerificadas),
+//             divergencias = toint(Properties.divergencias), instancia = AppRoleInstance
+customEvents
+| where name == "conciliacao.heartbeat"
+| where timestamp > ago(15m)
+| project timestamp,
+          faturasVerificadas = coalesce(toint(customDimensions.faturasVerificadas), toint(customMeasurements.faturasVerificadas)),
+          divergencias = coalesce(toint(customDimensions.divergencias), toint(customMeasurements.divergencias)),
+          duracaoMs = coalesce(todouble(customDimensions.duracaoMs), todouble(customMeasurements.duracaoMs)),
+          instancia = cloud_RoleInstance
+| order by timestamp desc

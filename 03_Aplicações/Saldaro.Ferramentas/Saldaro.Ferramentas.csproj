@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Saldaro.Ferramentas: console da aula (triagem da DLQ, worker legado do 3.7 e rajada do 3.8).
+    Como rodar: veja o comentário no topo do Program.cs.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Saldaro.Ferramentas</RootNamespace>
+    <AssemblyName>Saldaro.Ferramentas</AssemblyName>
+    <!-- Os separadores pt-BR ("1.250,00") ficam fixos no código (Formatos.cs), então a ferramenta
+         não depende dos dados de cultura (ICU) do sistema operacional. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <!-- As versões ficam em ../Directory.Packages.props (Central Package Management). -->
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Saldaro.Ferramentas.Tests" />
+  </ItemGroup>
+
+</Project>

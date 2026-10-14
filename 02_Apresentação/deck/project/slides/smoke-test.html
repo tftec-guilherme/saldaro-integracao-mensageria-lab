@@ -1,0 +1,72 @@
+<section id="smoke-test" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:63px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:17px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Uma fatura, ponta a ponta, em menos de 2 minutos</h2>
+<p style="font-size:24px;line-height:1.2;color:rgba(0,164,239,0.9)">POST /faturas → cobrança no banco simulado → webhook → baixa → notificação</p>
+</div>
+<div style="display:flex;gap:60px">
+<div style="width:740px;flex:none;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:36px;height:32px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">A prova do dia de sol</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)"><span style="color:#9CDCFE">smoke-test.ps1</span> verde: a fatura chega a notificada em ~30 s; o <span style="color:#9CDCFE">faturaId</span> costura a jornada.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #D83B01;border-radius:0 9px 9px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/296ac0ee1eef0486a8431721f52850db" alt="" style="width:36px;height:32px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Ingênuo de propósito</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Endpoint síncrono, SAS key, fila sem sessions e nenhum alerta.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/3d4ba8953f651ce280a992f45af346f6" alt="" style="width:36px;height:32px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Simplificação de laboratório</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">ADR 0007: HTTP triggers anônimos e APIM sem subscription; em produção, credencial por empresa cliente e backend só via APIM.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 30px">
+<div style="display:flex;align-items:center;gap:16px">
+<img src="/_blob/5aa993d66ab607f5af89db74bcbe57b6" alt="" style="width:36px;height:32px;object-fit:contain">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Recursos do kit</h3>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">rg-saldaro-lab · stsaldaro&lt;sufixo&gt;</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">sb-saldaro-&lt;sufixo&gt; · apim-saldaro-&lt;sufixo&gt;</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">func-saldaro-hub-&lt;sufixo&gt;</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">func-saldaro-banco-&lt;sufixo&gt;</p>
+</div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Investigate → Search pelo faturaId: a jornada inteira</p>
+<img src="/_blob/a037ec3950eb6a371977ab1bfe69b5e4" alt="Application Insights, Search pelo faturaId: 13 traces da mesma fatura, do POST ao GET de status com 303" style="width:1000px;height:300px;object-fit:contain;background:#0A0E1A;border:2px solid rgba(0,164,239,0.3);border-radius:6px">
+<div style="height:6px"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">End-to-end transaction details do POST: APIM → hub → tabela → banco</p>
+<img src="/_blob/fe8ad6883d641b8a8c1b9cc757d30296" alt="End-to-end transaction details do POST /faturas: APIM, PostFatura, gravação na tabela faturas e chamada ao PostCobranca do banco simulado" style="width:1000px;height:285px;object-fit:contain;background:#0A0E1A;border:2px solid rgba(0,164,239,0.3);border-radius:6px">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.5)">Prints do primeiro deploy real, com os nomes de antes da troca</p>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">6</p>
+</div>
+<aside>Tempo previsto: 12 min. Mostrar: o terminal com ./scripts/smoke-test.ps1 (ele imprime o faturaId e o operation_Id do POST); GET {SALDARO_APIM_URL}/faturas/{id}; appi-saldaro-(sufixo) → Investigate → Search (antigo Transaction search) pelo faturaId entre aspas, e o End-to-end transaction details do POST; a tabela de recursos no Portal. Os prints do slide são do primeiro deploy real, com os nomes de antes da troca.
+
+Uma fatura, ponta a ponta. Rodem o smoke test e acompanhem: o POST /faturas chama o banco simulado e só responde quando o banco devolve a cobrança; alguns segundos depois o banco paga e manda o webhook; a confirmação entra na fila, o worker faz a baixa e o Event Grid dispara a notificação ao parceiro, pela fila sbq-notificacoes-parceiro. No primeiro deploy real a fatura chegou a notificada em uns 30 segundos; o critério é menos de dois minutos, e o script termina verde.
+
+Se perguntarem a qual parceiro: aqui, parceiro é o termo guarda-chuva para banco parceiro e ERP, e a notificação ao parceiro vai sempre ao ERP da empresa cliente, pelo callbackUrl da fatura, nunca ao banco.
+
+No Application Insights, em Search, procurem pelo faturaId que o script imprimiu, entre aspas: aparecem os eventos da jornada inteira, de fatura.recebida a fatura.baixada. Cliquem no fatura.recebida: o End-to-end transaction details mostra o PostFatura chamando o banco simulado, porque a chamada HTTP síncrona leva o contexto de trace. Daí em diante a correlação técnica pode se perder: a fila de storage do banco, o webhook, o Service Bus e o Event Grid são fronteiras assíncronas, e o webhook, a baixa e a notificação podem chegar com outros operation_Id. Não é erro. É por isso que o faturaId vai em todos os eventos do hub: ele é a correlação de negócio, e é ele, não o operation_Id, que prova a jornada. Guardem esse print: é com ele que vamos comparar quando tudo quebrar.
+
+Reparem no que é ingênuo de propósito no baseline: o endpoint é síncrono, a connection string é a RootManageSharedAccessKey, a fila de confirmações não tem sessions nem dup detection, não existe alerta nenhum. Nenhum desses itens é um bug; é o jeito que muita gente sobe o primeiro ambiente. Hoje a gente paga a conta de cada um.
+
+Uma coisa fica fora dessa conta e vale para o dia todo: os HTTP triggers do kit são anônimos e o APIM não pede subscription, uma simplificação de laboratório registrada na ADR 0007; em produção, cada empresa cliente chamaria com a sua credencial no APIM, e o hub só aceitaria tráfego vindo dele.
+
+Pergunta para a turma: olhando a tabela de recursos, qual deles vocês acham que vai nos trair primeiro?
+
+Transição: sexta-feira, 18h. O banco entrou em manutenção.</aside>
+</section>

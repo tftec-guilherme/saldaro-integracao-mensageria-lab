@@ -1,0 +1,38 @@
+// baixa-duplicada.kql · Incidente 2, cenário 3.3 ("O webhook que chegou duas vezes")
+// Version-anchor: Q4-2026
+//
+// O que prova: faturas baixadas mais de uma vez. Cada linha é uma fatura com mais de um evento
+// fatura.baixada. No baseline, webhooks duplicados (duplicar=3) e fora de ordem (embaralhar=true)
+// geram linhas aqui, e quantidadeBaixas passa de 1 na tabela faturas. Depois do conserto (HMAC,
+// duplicate detection, sessions e inbox), o resultado fica VAZIO: é a prova do incidente.
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> > Logs (tabela customEvents).
+// Período: o seletor de tempo do Logs. Para isolar uma rajada, acrescente logo abaixo da
+// primeira linha da consulta: | where timestamp > datetime(2026-11-10 09:30:00)
+// eventosDistintos = 1 com baixas > 1: o MESMO evento do banco foi processado de novo (faltou
+// idempotência); eventosDistintos > 1: eventos diferentes baixaram a fatura (faltou máquina de
+// estados / ordem por sessão).
+//
+// Equivalente no Log Analytics (workspace log-saldaro-<sufixo>, tabela AppEvents):
+//   AppEvents
+//   | where Name == "fatura.baixada"
+//   | extend faturaId = tostring(Properties.faturaId), idEvento = tostring(Properties.idEvento),
+//            clienteId = tostring(Properties.clienteId)
+//   | summarize baixas = count(), eventosDistintos = array_length(make_set(idEvento)),
+//               idsEvento = make_set(idEvento, 10), primeira = min(TimeGenerated), ultima = max(TimeGenerated)
+//       by faturaId, clienteId
+//   | where baixas > 1
+customEvents
+| where name == "fatura.baixada"
+| extend faturaId = tostring(customDimensions.faturaId),
+         idEvento = tostring(customDimensions.idEvento),
+         clienteId = tostring(customDimensions.clienteId)
+| summarize baixas = count(),
+            eventosDistintos = array_length(make_set(idEvento)),
+            idsEvento = make_set(idEvento, 10),
+            primeira = min(timestamp),
+            ultima = max(timestamp)
+    by faturaId, clienteId
+| where baixas > 1
+| extend segundosEntreAPrimeiraEAUltima = datetime_diff('second', ultima, primeira)
+| order by baixas desc, primeira asc

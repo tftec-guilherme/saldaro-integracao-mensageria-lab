@@ -1,0 +1,127 @@
+<section id="inc1-prova" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:60px 90px 128px;display:flex;flex-direction:column;gap:44px">
+<img src="/_blob/aff1cbbdb2b36dc2b2fb450635ee2cf3" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;gap:30px">
+<div style="width:7.5px;height:114px;flex:none;background:#00A4EF"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:54px;font-weight:700;line-height:1.2;color:#FFFFFF">Como saber que consertamos</h2>
+<p style="font-size:26px;line-height:1.2;color:rgba(255,255,255,0.6)">Incidente 1 · O banco continua lento, e o ERP nem percebe</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:30px">
+<div style="display:flex;gap:37px">
+<div style="width:1000px;flex:none;display:grid;grid-template-columns:repeat(2, 1fr);gap:24px">
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">1 · 202 em menos de 500 ms</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">Aquecido, mesmo com o banco a 60 s (<span style="color:#9CDCFE">latencia=60</span>).</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">2 · 200, depois 303</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">200 enquanto processa; 303 para a fatura em 75 a 90 s.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">3 · Zero 5xx na rajada</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">1.000 faturas com <span style="color:#9CDCFE">-Paralelismo 20 -IdempotencyKey</span>: 1.000 × 202 em ~47 s; a fila drena em ~2 min.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">4 · Nenhuma duplicata</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">KQL vazio na janela da rajada: 1 fatura e 1 cobrança por <span style="color:#9CDCFE">referenciaErp</span>; no banco, quantidade = 1 por <span style="color:#9CDCFE">faturaId</span>.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">5 · Mesma chave, mesmo id</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">O reenvio com a mesma <span style="color:#9CDCFE">Idempotency-Key</span> devolve o mesmo <span style="color:#9CDCFE">faturaId</span>.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:#F59E0B"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/5be5c278f70d71eb4dcf9194b58adcaa" alt="" style="width:24px;height:32px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#F59E0B">Comparem com o Durable da D04</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">O <span style="color:#9CDCFE">statusQueryGetUri</span> é este padrão pronto, em outro dialeto: 202 → 200 lá; 200 → 303 aqui.</p>
+</div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;background:#1E1E1E;border:2px solid #333333;border-radius:6.4px;overflow:hidden">
+<div style="padding:12px 24px;background:rgba(255,255,255,0.05);border-bottom:1.4px solid #333333">
+<p style="font-size:24px;line-height:1.2;color:#9CA3AF">PowerShell · a rajada do primeiro deploy</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;padding:22px 26px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4"><span style="color:#00A4EF">PS&gt;</span> ./scripts/erp-simulado.ps1</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#9CDCFE">&#160;&#160;-Faturas 1000 -Paralelismo 20</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#9CDCFE">&#160;&#160;-IdempotencyKey</p>
+<div style="height:10px"></div>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">Faturas ........ <span style="color:#FFB900"><b>1.000</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">202 Accepted ... <span style="color:#FFB900"><b>1.000</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">5xx ............ <span style="color:#FFB900"><b>0</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">429 ............ <span style="color:#FFB900"><b>0</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">p50 ............ <span style="color:#FFB900"><b>220 ms</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">p95 ............ <span style="color:#FFB900"><b>639 ms</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">máx. ........... <span style="color:#FFB900"><b>8,4 s</b></span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">Duração ........ <span style="color:#FFB900"><b>47 s</b></span></p>
+</div>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">10</p>
+</div>
+<aside>Tempo previsto: 20 min (a prova, o post-mortem de 3 min e as lições de 2 min: Partes 5 a 7 do guia). Mostrar: o POST do Passo 5.1 (banco a 60 s, cronômetro no cliente) e o status com curl.exe (Passo 5.2); o erp-simulado com 1.000 faturas e o relatório; o Overview da sbq-faturas-recebidas enchendo e esvaziando; o faturas-por-referencia-erp.kql depois que a fila drenar; o reenvio com a mesma Idempotency-Key (Passo 5.5).
+
+Comandos:
+curl.exe -s -w " | HTTP %{http_code} %{redirect_url}" $statusUrl
+./scripts/erp-simulado.ps1 -Faturas 1000 -Paralelismo 20 -IdempotencyKey
+Get-Content ./kql/faturas-por-referencia-erp.kql -Raw | Set-Clipboard
+(Invoke-RestMethod -Method Post -Uri "$($cfg.SALDARO_APIM_URL)/faturas" -ContentType 'application/json' -Body $corpo -Headers $cabecalhos).faturaId
+
+Cinco checagens, os Passos 5.1 a 5.5 do guia, uma de cada vez, e cada um de vocês confere no próprio ambiente.
+
+Primeira: o banco continua lento, agora com latencia=60, e o POST responde 202 em menos de meio segundo com o app aquecido, medido no cronômetro do próprio cliente, com Location e Retry-After: 5. A primeira chamada depois do reinício vem fria: no primeiro deploy, 2,2 segundos, com o hub escalando do zero e abrindo a conexão com o Service Bus. Rodem de novo: aquecido, ficou entre uns 90 e 450 ms. O critério vale para o sistema aquecido.
+
+Segunda: o status com o curl.exe, que não segue redirecionamento: 200 com o estado atual enquanto a fatura anda e, quando ela baixa, 303 com o Location do recurso. O 303 chega uns 75 a 90 segundos depois do POST, e não aos 60: o banco ainda espera uns 5 segundos para "pagar", o webhook atravessa a fila do banco e a do hub, e o polling só pergunta de 5 em 5 segundos.
+
+Terceira: a rajada. Mil faturas com paralelismo 20 e -IdempotencyKey, uma chave por fatura, reusada se algum POST precisar de reenvio. No primeiro deploy: mil 202, zero 5xx e zero 429 em 47 segundos, com p50 de 220 ms, p95 de 639 ms e o pior POST em 8,4 segundos. Deixem o Overview da sbq-faturas-recebidas aberto enquanto ela enche e esvazia: esse morro no gráfico de mensagens ativas é o load leveling acontecendo. As filas drenaram em uns 2 minutos desde o início da rajada, sem nada na DLQ e sem esbarrar na cota do Flex.
+
+Quarta: nenhuma duplicata de negócio. Quando a fila drenar, rodem o faturas-por-referencia-erp.kql com o período restrito aos minutos da rajada: vazio. A consulta só lista referenciaErp com mais de uma fatura ou cobrança; sem a linha where faturas &gt; 1 or cobrancas &gt; 1, cada referência da rajada aparece com uma e uma. A da reprodução, se entrar no período, continua com duas: é o histórico do incidente. A checagem complementar do guia vai direto ao banco, com os faturaId do CSV em scripts/saida/: quantidade = 1 nos mil.
+
+Quinta: reenviem o mesmo POST com a mesma Idempotency-Key. Volta o mesmo faturaId, nada novo entra na fila e o banco continua com uma cobrança para ele.
+
+Lembrem do Durable da Disciplina 04: o statusQueryGetUri é este mesmo padrão pronto, com outro dialeto. Ele devolve 202 enquanto a orquestração roda e 200 quando acaba, em vez do nosso 200 com status e 303. O que importa é o cliente saber qual contrato está seguindo.
+
+Três minutos de post-mortem, cinco linhas. Na causa raiz, não escrevam "o banco ficou lento": ele vai ficar lento de novo; a pergunta é por que isso virou cobrança duplicada. Fecho com as lições do guia: não segurar a conexão esperando um parceiro lento, a chave de idempotência é do cliente, e idempotência é de ponta a ponta, porque o EmitirCobranca também entrega pelo menos uma vez.
+
+Pergunta para a turma: qual das cinco checagens vocês colocariam num alerta de produção, e com que limite?
+
+Transição: pausa de 10 minutos. Na volta, dia 10, 9h30.</aside>
+</section>

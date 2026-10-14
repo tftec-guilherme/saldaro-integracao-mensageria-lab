@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- As versões ficam em ../Directory.Packages.props (Central Package Management). -->
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Saldaro.BancoSimulado\Saldaro.BancoSimulado.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- O teste de codificação da fila confere o host.json real do banco. -->
+    <None Include="..\Saldaro.BancoSimulado\host.json" Link="banco-host.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- CNPJ de teste gerado por algoritmo: o mesmo arquivo dos testes do hub, sem cópia. -->
+    <Compile Include="..\Saldaro.Hub.Tests\CnpjDeTeste.cs" Link="CnpjDeTeste.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

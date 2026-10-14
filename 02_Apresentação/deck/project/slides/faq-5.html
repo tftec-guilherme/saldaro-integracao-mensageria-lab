@@ -1,0 +1,65 @@
+<section id="faq-5" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:60px 90px 128px;display:flex;flex-direction:column;gap:36px">
+<img src="/_blob/aff1cbbdb2b36dc2b2fb450635ee2cf3" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;gap:30px">
+<div style="width:7.5px;flex:none;align-self:stretch;background:#00A4EF"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;color:#FFFFFF">Se a fila tem duplicate detection, para que inbox e Idempotency-Key?</h2>
+<p style="font-size:26px;line-height:1.2;color:rgba(255,255,255,0.6)">FAQ-5 · Uma camada por repetição: ERP, banco, reentrega</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:stretch;gap:10px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 28px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/96779f6fbc54ea2650d87f0048949ec2" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Reenvio do ERP</p>
+</div>
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Idempotency-Key</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">Insert condicional na tabela <span style="color:#9CDCFE">idempotencia</span>: o ERP recebe o mesmo <span style="color:#9CDCFE">faturaId</span>.</p>
+<div style="flex:1"></div>
+<p style="font-size:24px;line-height:1.3;padding-top:12px;border-top:1.4px solid rgba(255,255,255,0.1);color:#D070FF"><span style="font-weight:700">Deixa passar:</span> a confirmação repetida pelo banco</p>
+</div>
+<p style="width:40px;flex:none;align-self:center;font-size:40px;font-weight:700;line-height:1;text-align:center;color:#00A4EF">→</p>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 28px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/ee5cef7911a2101c0d1c4d97e2ac4ef1" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Confirmação repetida</p>
+</div>
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Duplicate detection</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)"><span style="color:#9CDCFE">MessageId = idEvento</span>, janela de 10 min: só compara o MessageId.</p>
+<div style="flex:1"></div>
+<p style="font-size:24px;line-height:1.3;padding-top:12px;border-top:1.4px solid rgba(255,255,255,0.1);color:#D070FF"><span style="font-weight:700">Deixa passar:</span> a reentrega processada duas vezes e o que escapa da janela</p>
+</div>
+<p style="width:40px;flex:none;align-self:center;font-size:40px;font-weight:700;line-height:1;text-align:center;color:#00A4EF">→</p>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:24px 28px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/cb4e13854f62ab0e6b61fca281367a6a" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#00A4EF">Reentrega do Service Bus</p>
+</div>
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Inbox + ETag</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.8)">A gravação condicional com ETag impede a baixa dupla; a inbox é atalho e auditoria.</p>
+<div style="flex:1"></div>
+<p style="font-size:24px;line-height:1.3;padding-top:12px;border-top:1.4px solid rgba(255,255,255,0.1);color:#D070FF"><span style="font-weight:700">Deixa passar:</span> a janela entre gravar a baixa e publicar o FaturaBaixada (caso para o Outbox)</p>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:36px;background:rgba(30,36,48,0.6);border-left:6px solid #F59E0B;border-radius:18.4px;padding:22px 40px">
+<img src="/_blob/5be5c278f70d71eb4dcf9194b58adcaa" alt="" style="width:36px;height:48px;object-fit:contain">
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#F59E0B">Reentrega processada duas vezes? Só o consumidor impede</h3>
+<p style="font-size:24px;line-height:1.3;color:#E0E0E0">Idempotent Consumer: não troque a lógica idempotente do consumidor pela deduplicação do broker.</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">27</p>
+</div>
+<aside>Tempo previsto: 1 a 2 min, fora da soma das 4h (slide de bolso). Ganchos: slides 9 e 14. Mostrar: os três funis do slide; se ajudar, stsaldaro&lt;sufixo&gt; → Storage browser → Tables → inbox (uma linha por idEvento) e idempotencia (uma linha por Idempotency-Key).
+
+Não é redundante, porque cada camada pega uma repetição diferente. A duplicate detection do Service Bus só descarta a cópia que o produtor enviar de novo com o mesmo MessageId, dentro da janela: 10 minutos por padrão, de 20 segundos a 7 dias. Nenhuma outra parte da mensagem é comparada, ela só se liga na criação da fila e pesa no throughput. E ela não impede o consumidor de processar duas vezes a mesma mensagem depois de uma reentrega. O padrão Idempotent Consumer do Architecture Center é direto: não troque a lógica idempotente do consumidor pela deduplicação do broker.
+
+No kit são três camadas, uma para cada repetição. A Idempotency-Key no POST, com insert condicional na tabela idempotencia, para o reenvio do ERP; o broker não serviria ali, porque o ERP precisa receber de volta o mesmo faturaId. O MessageId = idEvento, com janela de 10 minutos, para a confirmação repetida pelo banco. E a inbox, com a máquina de estados e o ETag, para a reentrega do Service Bus e para o que escapa da janela. Quem impede a baixa dupla, no fim, é a gravação condicional com ETag; a inbox é atalho e auditoria.
+
+Transição: de volta ao slide de onde a pergunta veio: no 9, a Idempotency-Key é a primeira dessas camadas; no 14, é a pergunta para a turma ganhando a resposta.</aside>
+</section>

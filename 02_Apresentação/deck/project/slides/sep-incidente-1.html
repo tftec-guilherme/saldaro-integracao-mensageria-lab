@@ -1,0 +1,44 @@
+<section id="sep-incidente-1" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:70px">
+<img src="/_blob/88e760337556bef6c75b1037069d6bae" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<p style="position:absolute;left:0;top:292px;width:1920px;height:400px;font-size:400px;font-weight:700;line-height:1;text-align:center;color:rgba(255,255,255,0.04);transform:scale(1.875)">01</p>
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.2)"></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:43px">
+<h2 style="font-size:72px;font-weight:700;line-height:1.2;letter-spacing:1.5px;text-align:center;color:#FFFFFF">INCIDENTE 1</h2>
+<p style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:0.76px;text-align:center;color:#00A4EF">“O timeout de sexta às 18h”</p>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:28px">
+<div style="display:flex;align-items:center;gap:15px">
+<img src="/_blob/83adcf6f5814337edf81f94345436824" alt="" style="width:30px;height:24px;object-fit:contain">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.8)">Sexta-feira, 18h02: o banco parceiro entra em manutenção</p>
+</div>
+<div style="display:flex;align-items:center;gap:15px">
+<img src="/_blob/935a2526322eba6071673c9c7eaf7cad" alt="" style="width:30px;height:24px;object-fit:contain">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.8)">Sintomas: 504 aos 30 s, o ERP reenvia e a cobrança duplica</p>
+</div>
+<div style="display:flex;align-items:center;gap:15px">
+<img src="/_blob/d5d49403d84697e1e4c67b2d7cf71feb" alt="" style="width:30px;height:24px;object-fit:contain">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.8)">O padrão: 202 Accepted + endereço de status + fila</p>
+</div>
+<div style="display:flex;align-items:center;gap:15px">
+<img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:24px;object-fit:contain">
+<p style="font-size:24px;line-height:1.2;color:rgba(255,255,255,0.8)">Prova: 1.000 faturas em rajada, zero 5xx</p>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">7</p>
+</div>
+<aside>Tempo previsto: 5 min (a história e o terminal pronto: Parte 1 do guia). Mostrar: o separador; o terminal da turma com os Passos 1.1 e 1.2 do guia (.env.local carregado e AsyncRequestReply = False no /saude).
+
+Comandos:
+$cfg = Get-Content ./scripts/.env.local -Raw | ConvertFrom-StringData
+(Invoke-RestMethod "$($cfg.SALDARO_HUB_URL)/saude").toggles | Format-List
+
+Incidente 1: “O timeout de sexta às 18h”. A partir de agora vocês estão de plantão.
+
+Sexta-feira, 18h02. O banco parceiro avisou, numa caixa de e-mail que ninguém monitorava, que entraria em janela de manutenção, e passou a responder em 40, 60, às vezes 90 segundos. O POST /faturas da Saldaro era síncrono: só respondia ao ERP depois que o banco devolvia a cobrança. Às 19h10, quando o banco voltou ao normal, umas 800 faturas dos ERPs tinham virado duas ou três faturas no hub, cada uma com a sua cobrança no banco, e o suporte passou a noite atendendo pagadores com dois boletos.
+
+Enquanto eu conto, preparem o terminal, na raiz do repositório: carreguem o scripts/.env.local numa variável $cfg e perguntem ao hub, no endpoint /saude, em que estado ele está. O toggle AsyncRequestReply tem que aparecer False: é o baseline do Lab 0. Se aparecer True, alguém já consertou; o guia diz como voltar.
+
+Transição: sintomas.</aside>
+</section>

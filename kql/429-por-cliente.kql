@@ -1,0 +1,60 @@
+// 429-por-cliente.kql · cenário 3.1 ("O parceiro que não dormia")
+// Version-anchor: Q4-2026
+//
+// O que prova: o rate limit do APIM isola as empresas clientes. No cenario-1-pronto, a API saldaro
+// exige subscription key, há uma subscription por empresa cliente (cliente-a e cliente-b) e o
+// rate-limit é de 60 chamadas por minuto por subscription. Na inundação, a linha do cliente-a mostra
+// os 429 e a do cliente-b segue só com 2xx (r429 = 0). Agrupa pela subscription (o que o APIM usa
+// para contar) e, como apoio, pelo header x-cliente-id (o que o hub usa como clienteId).
+//
+// Dimensões: o Microsoft Learn não lista as chaves que o diagnóstico do APIM grava em
+// customDimensions. Service ID, Subscription Name, Request-x-cliente-id e Response-Retry-After foram
+// conferidas no primeiro deploy real do kit (2026-10-14); Product Name vem de exemplos publicados.
+// Se o seu ambiente mostrar outros nomes, confira com:
+//   requests | where isnotempty(tostring(customDimensions["Service ID"])) | take 5 | project customDimensions
+//   - customDimensions["Service ID"]: nome do APIM; separa os requests do gateway dos das Functions.
+//   - customDimensions["Subscription Name"]: subscription da chamada (vazio quando não há chave).
+//   - customDimensions["Product Name"]: produto (vazio aqui: as subscriptions são de escopo da API).
+//   - customDimensions["Request-x-cliente-id"]: o header x-cliente-id. O diagnóstico só grava os
+//     headers de requisição listados nele (frontend.request.headers no Bicep), com o prefixo
+//     "Request-" seguido do nome do header como foi configurado.
+//   - customDimensions["Response-Retry-After"]: o header Retry-After da resposta, em segundos (no 429,
+//     quanto falta para a janela liberar; frontend.response.headers no Bicep, prefixo "Response-").
+// As contagens supõem amostragem de 100% no diagnóstico do APIM (sampling desligado no lab).
+//
+// Escopo: recurso Application Insights appi-saldaro-<sufixo> > Logs (tabela requests). Período: o
+// seletor de tempo do Logs. Para isolar a inundação, acrescente logo abaixo da primeira linha da
+// consulta: | where timestamp > datetime(2026-11-10 02:10:00)
+//
+// Por minuto (mostra o 429 depois de umas 60 chamadas no minuto; no primeiro deploy real, depois de 56):
+//   requests
+//   | where isnotempty(tostring(customDimensions["Service ID"])) or url has ".azure-api.net"
+//   | summarize chamadas = count(), r429 = countif(resultCode == "429")
+//       by subscription = tostring(customDimensions["Subscription Name"]), bin(timestamp, 1m)
+//   | render timechart
+//
+// Equivalente no Log Analytics (workspace log-saldaro-<sufixo>, tabela AppRequests; resultCode
+// vira ResultCode e customDimensions vira Properties):
+//   AppRequests
+//   | where isnotempty(tostring(Properties["Service ID"])) or Url has ".azure-api.net"
+//   | extend subscription = tostring(Properties["Subscription Name"]), produto = tostring(Properties["Product Name"]),
+//            clienteHeader = tostring(Properties["Request-x-cliente-id"])
+//   | summarize chamadas = count(), r429 = countif(ResultCode == "429"), r2xx = countif(ResultCode startswith "2"),
+//               r5xx = countif(ResultCode startswith "5"), primeiro429 = minif(TimeGenerated, ResultCode == "429")
+//       by subscription, produto, clienteHeader
+requests
+| where isnotempty(tostring(customDimensions["Service ID"])) or url has ".azure-api.net"
+| extend subscription = tostring(customDimensions["Subscription Name"]),
+         produto = tostring(customDimensions["Product Name"]),
+         clienteHeader = tostring(customDimensions["Request-x-cliente-id"])
+| extend subscription = iff(isempty(subscription), "(sem subscription)", subscription),
+         produto = iff(isempty(produto), "(sem produto)", produto),
+         clienteHeader = iff(isempty(clienteHeader), "(sem header)", clienteHeader)
+| summarize chamadas = count(),
+            r429 = countif(resultCode == "429"),
+            r2xx = countif(resultCode startswith "2"),
+            r5xx = countif(resultCode startswith "5"),
+            primeiro429 = minif(timestamp, resultCode == "429")
+    by subscription, produto, clienteHeader
+| extend percentual429 = round(100.0 * r429 / chamadas, 1)
+| order by r429 desc, chamadas desc

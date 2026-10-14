@@ -1,0 +1,82 @@
+<section id="faq-6" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:60px 90px 128px;display:flex;flex-direction:column;gap:40px">
+<img src="/_blob/aff1cbbdb2b36dc2b2fb450635ee2cf3" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;gap:30px">
+<div style="width:7.5px;flex:none;align-self:stretch;background:#00A4EF"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;color:#FFFFFF">Por que retry agendado à mão? O Functions não tem retry policy?</h2>
+<p style="font-size:26px;line-height:1.2;color:rgba(255,255,255,0.6)">FAQ-6 · DLQ, maxDeliveryCount e retry</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:center;gap:28px;background:rgba(30,36,48,0.6);border-left:6px solid #F59E0B;border-radius:18.4px;padding:20px 32px">
+<img src="/_blob/5be5c278f70d71eb4dcf9194b58adcaa" alt="" style="width:36px;height:48px;object-fit:contain">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#F59E0B">Trigger de Service Bus não tem retry policy</h3>
+<p style="font-size:24px;line-height:1.3;color:#E0E0E0">Retry policy é para Timer, Event Hubs, Kafka e Cosmos DB; no Service Bus, quem decide é o broker.</p>
+</div>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:rgba(216,59,1,0.05);border:2px solid rgba(216,59,1,0.45);border-radius:9px;padding:26px 32px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#FFFFFF">Reentrega imediata</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">Gasta o <span style="font-family:monospace;color:#9CDCFE">maxDeliveryCount</span> em segundos</p>
+</div>
+<div style="position:relative;width:780px;height:180px">
+<div style="position:absolute;left:0;top:10px;width:702px;height:56px;display:flex;align-items:center;justify-content:center;background:rgba(216,59,1,0.14);border:2px dashed rgba(216,59,1,0.7);border-radius:6px"><p style="font-size:24px;line-height:1.2;color:#FFFFFF">falha de 45 s</p></div>
+<div style="position:absolute;left:0;top:104px;width:780px;height:3px;background:rgba(255,255,255,0.35)"></div>
+<div style="position:absolute;left:0;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:10px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:20px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:30px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:40px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:50px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:60px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:70px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:80px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<div style="position:absolute;left:90px;top:88px;width:5px;height:34px;background:#D83B01"></div>
+<p style="position:absolute;left:0;top:136px;width:520px;font-size:24px;line-height:1.3;color:#E0E0E0">10 tentativas em segundos</p>
+<div style="position:absolute;left:701px;top:92px;width:3px;height:28px;background:rgba(255,255,255,0.6)"></div>
+<p style="position:absolute;left:657px;top:136px;width:90px;font-size:24px;line-height:1.3;text-align:center;color:rgba(255,255,255,0.6)">45 s</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;background:rgba(216,59,1,0.1);border:2px solid #D83B01;border-radius:9px;padding:16px 22px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Tudo na DLQ: <span style="font-family:monospace;font-weight:400;color:#CE9178">MaxDeliveryCountExceeded</span></p>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">Mensagem boa junto com a envenenada</p>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:rgba(72,187,120,0.05);border:2px solid rgba(72,187,120,0.45);border-radius:9px;padding:26px 32px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h3 style="font-size:30px;font-weight:700;line-height:1.2;color:#FFFFFF">Transiente: cópia agendada</h3>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">+10, +20 e +40 s: a falha passa</p>
+</div>
+<div style="position:relative;width:780px;height:180px">
+<div style="position:absolute;left:0;top:10px;width:439px;height:56px;display:flex;align-items:center;justify-content:center;background:rgba(216,59,1,0.14);border:2px dashed rgba(216,59,1,0.7);border-radius:6px"><p style="font-size:24px;line-height:1.2;color:#FFFFFF">falha de 45 s</p></div>
+<div style="position:absolute;left:0;top:104px;width:780px;height:3px;background:rgba(255,255,255,0.35)"></div>
+<div style="position:absolute;left:438px;top:92px;width:3px;height:28px;background:rgba(255,255,255,0.6)"></div>
+<p style="position:absolute;left:394px;top:136px;width:90px;font-size:24px;line-height:1.3;text-align:center;color:rgba(255,255,255,0.6)">45 s</p>
+<div style="position:absolute;left:85px;top:92px;width:26px;height:26px;border-radius:13px;background:#00A4EF"></div>
+<div style="position:absolute;left:280px;top:92px;width:26px;height:26px;border-radius:13px;background:#00A4EF"></div>
+<div style="position:absolute;left:670px;top:92px;width:26px;height:26px;border-radius:13px;background:#48BB78"></div>
+<p style="position:absolute;left:53px;top:136px;width:90px;font-size:24px;line-height:1.3;text-align:center;color:#9CDCFE">+10 s</p>
+<p style="position:absolute;left:248px;top:136px;width:90px;font-size:24px;line-height:1.3;text-align:center;color:#9CDCFE">+20 s</p>
+<p style="position:absolute;left:638px;top:136px;width:90px;font-size:24px;line-height:1.3;text-align:center;color:#48BB78">+40 s</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;background:rgba(216,59,1,0.1);border:2px solid #D83B01;border-radius:9px;padding:16px 22px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">Permanente: DLQ na 1ª entrega</p>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">Com motivo: <span style="font-family:monospace;color:#CE9178">SchemaInvalida</span></p>
+</div>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">28</p>
+</div>
+<aside>Tempo previsto: 1 a 2 min, fora da soma das 4h (slide de bolso). Mostrar: a comparação do slide; se ajudar, o Service Bus Explorer da sbq-confirmacoes-banco, aba Dead-letter, com MaxDeliveryCountExceeded e Delivery Count 10.
+
+Porque o Functions não oferece retry policy para o trigger de Service Bus. As retry policies existem para Timer, Event Hubs, Kafka e Cosmos DB; no Service Bus, o tratamento de mensagem envenenada não é configurável no Functions: quem decide é o broker. E o clientRetryOptions do host.json só refaz as chamadas ao Service Bus, não a execução da função. Já a reentrega do broker é imediata: abandonar a mensagem, ou deixar o lock expirar, devolve a mensagem para a frente da fila e soma uma entrega; passou do maxDeliveryCount, ela vai para a DLQ com MaxDeliveryCountExceeded, e isso não se desliga. Foi o que vimos no Incidente 3: dez tentativas em segundos contra uma falha de 45, e mensagem boa na DLQ junto com a envenenada.
+
+Então a espera é responsabilidade da aplicação: mandar uma cópia agendada, com ScheduledEnqueueTime e MessageId próprio, e completar a original. Para o erro permanente, o contrário: DLQ na primeira entrega, com motivo e descrição; o Learn recomenda registrar o tipo da exceção no motivo. O maxDeliveryCount baixo fica como rede de segurança para o erro que ninguém previu.
+
+Transição: de volta ao slide 17 ou ao 18. No 17, é a hipótese que a gente prova a seguir; no 18, é o conserto que vocês ligam no Portal agora.</aside>
+</section>

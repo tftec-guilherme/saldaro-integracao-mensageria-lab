@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "TablesConnection": "UseDevelopmentStorage=true",
+    "BancoApiKey": "<mesmo-valor-do-BancoApiKey-do-hub>",
+    "WebhookSecret": "<mesmo-valor-do-WebhookSecret-do-hub>"
+  },
+  "Host": {
+    "LocalHttpPort": 7072
+  }
+}

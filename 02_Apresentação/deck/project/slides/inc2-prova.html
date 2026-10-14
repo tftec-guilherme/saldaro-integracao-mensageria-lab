@@ -1,0 +1,131 @@
+<section id="inc2-prova" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:60px 90px 128px;display:flex;flex-direction:column;gap:44px">
+<img src="/_blob/aff1cbbdb2b36dc2b2fb450635ee2cf3" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;gap:30px">
+<div style="width:7.5px;height:114px;flex:none;background:#00A4EF"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:54px;font-weight:700;line-height:1.2;color:#FFFFFF">Como saber que consertamos</h2>
+<p style="font-size:26px;line-height:1.2;color:rgba(255,255,255,0.6)">Incidente 2 · P1 a P6, na ordem das camadas: a mesma tempestade, outro desfecho</p>
+</div>
+</div>
+<div style="display:flex;gap:30px">
+<div style="width:1060px;flex:none;display:grid;grid-template-columns:repeat(2, 1fr);gap:24px">
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 24px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">P1 · Forjado → 401</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">No meio da tempestade: nada entra na fila e o <span style="color:#9CDCFE">quantidadeBaixas</span> não muda.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 24px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">P2 · KQL vazio</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">O <span style="color:#9CDCFE">baixa-duplicada.kql</span>, desde o início da prova, volta sem nenhuma linha.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 24px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">P3 · 1 baixa, notificada</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">As 20 faturas com <span style="color:#9CDCFE">quantidadeBaixas = 1</span>: a “registrada” atrasada não desbaixa.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 24px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">P4 · Uma fatura por vez</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)"><span style="color:#9CDCFE">prop__SessionId = faturaId</span> e <span style="color:#9CDCFE">prop__SequenceNumber</span> crescente, mesmo com concorrência 4.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 24px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">P5 · 1 aviso por fatura</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)">120 webhooks viram 40 processamentos: o broker descartou 80 cópias.</p>
+</div>
+</div>
+<div style="display:flex;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.05);border-radius:4.5px;overflow:hidden">
+<div style="width:6px;flex:none;background:rgba(0,164,239,0.5)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:22px 24px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:56px;height:56px;flex:none;border-radius:28px;background:rgba(0,164,239,0.1);display:flex;align-items:center;justify-content:center"><img src="/_blob/9c0435ceafb367a1d45c1189b0244c1d" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#FFFFFF">P6 · O Bicep descreve o conserto</h3>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.7)"><span style="color:#9CDCFE">requiresSession</span>, <span style="color:#9CDCFE">requiresDuplicateDetection</span> e os cinco toggles do <span style="color:#9CDCFE">cenario-3-pronto</span>.</p>
+</div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;background:#1E1E1E;border:2px solid #333333;border-radius:6.4px;overflow:hidden">
+<div style="padding:10px 22px;background:rgba(255,255,255,0.05);border-bottom:1.4px solid #333333">
+<p style="font-size:24px;line-height:1.2;color:#9CA3AF">Logs · kql/baixa-duplicada.kql</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;padding:18px 22px">
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#4EC9B0">customEvents</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">| where timestamp &gt; datetime(…)</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">| where name == <span style="color:#CE9178">"fatura.baixada"</span></p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">| summarize baixas = count()</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">&#160;&#160;&#160;&#160;by faturaId, clienteId</p>
+<p style="font-family:monospace;font-size:24px;line-height:1.25;white-space:nowrap;color:#D4D4D4">| where baixas &gt; 1</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;padding:16px 22px;background:rgba(72,187,120,0.08);border-top:1.4px solid #333333">
+<div style="display:flex;align-items:center;gap:12px">
+<img src="/_blob/933392c7429d4a0fe03a043ad7d569b5" alt="" style="width:26px;height:24px;object-fit:contain">
+<p style="font-size:24px;font-weight:700;line-height:1.2;color:#48BB78">Depois do conserto: nenhuma linha</p>
+</div>
+<p style="font-size:24px;line-height:1.3;color:rgba(255,255,255,0.6)">Antes: ~20 linhas, cada uma com baixas = 3.</p>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:28px;background:rgba(30,36,48,0.6);border-left:6px solid #F59E0B;border-radius:18.4px;padding:24px 32px">
+<img src="/_blob/5be5c278f70d71eb4dcf9194b58adcaa" alt="" style="width:36px;height:48px;object-fit:contain">
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:26px;font-weight:700;line-height:1.2;color:#F59E0B">Post-mortem: 3 min</h3>
+<p style="font-size:24px;line-height:1.3;color:#E0E0E0">A causa raiz tem pelo menos duas decisões: confiar num webhook sem assinatura e ter um consumidor que não era idempotente.</p>
+</div>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">15</p>
+</div>
+<aside>Tempo previsto: 14 min (a prova e o post-mortem de 3 min: Partes 7 e 8 do guia). Mostrar: o terminal com a mesma tempestade, o POST forjado no meio dela (401) e o laço do guia até a fila zerar; appi-saldaro-(sufixo) → Logs com kql/baixa-duplicada.kql vazio, os traces da ProcessarConfirmacaoComSessao (em customDimensions, prop__SessionId, prop__SequenceNumber e prop__DeliveryCount) e a contagem de requests (WebhookBanco × ProcessarConfirmacaoComSessao); az storage entity query nas tabelas faturas e inbox (ou o Storage browser do stsaldaro(sufixo)); a fila recriada no Portal.
+
+Comandos:
+./scripts/erp-simulado.ps1 -Faturas 20 -Caos "duplicar=3;embaralhar=true"
+Send-ConfirmacaoForjada -FaturaId $faturaId   (a função do Passo 2.5; tem que responder HTTP 401)
+
+Seis critérios, os P1 a P6 do guia, na ordem das camadas.
+
+P1: a mesma tempestade, com o POST forjado no meio dela. Ele volta 401, e a fatura de estudo continua com o mesmo quantidadeBaixas. Quem quiser ir além pode mandar o mesmo POST com um X-Saldaro-Signature inventado: 401 também.
+
+P2 e P3: esperem a fila zerar, mais um minuto de telemetria, e rodem o baixa-duplicada.kql desde o início da prova: vazio. Na tabela faturas, as 20 faturas aparecem com quantidadeBaixas = 1 e status notificada, mesmo com o "registrada" chegando 8 segundos depois do "paga": a máquina de estados ignorou o evento atrasado. No primeiro deploy, 19 das 20 já estavam notificada aos 51 segundos, e a última veio logo depois.
+
+P4: a concorrência do worker não mudou, mas agora ela é por sessão. Nos traces da ProcessarConfirmacaoComSessao, as linhas de uma fatura trazem em customDimensions as chaves com o prefixo prop__: prop__SessionId igual ao faturaId, prop__SequenceNumber crescente e prop__DeliveryCount. Primeiro o "paga", depois o "registrada", sem sobreposição. Na consulta, filtrem com contains, não com has: o has procura termos inteiros e não acha SessionId dentro de prop__SessionId. A linha "Trigger Details" do host também traz o SessionId, no texto da mensagem. Não precisamos de duas instâncias para provar isso: a disputa já acontecia dentro de uma.
+
+P5: uma notificação por fatura. E o broker trabalhando: uns 120 WebhookBanco com sucesso, um com 401, o forjado, e só 40 execuções do consumidor, todas sem falha. O Service Bus aceitou os 120 envios e descartou 80 cópias em silêncio. Na inbox, duas linhas por fatura, uma por idEvento: a do "paga" e a do "registrada".
+
+P6: o clique consertou; o código de infraestrutura garante que o conserto fica. O .bicepparam editado tem os cinco toggles do cenario-3-pronto, e a fila que vocês criaram no Portal mostra requiresSession e requiresDuplicateDetection ligados: o arquivo e o Azure dizem o mesmo. Se alguém apagar a fila amanhã, o próximo deploy a recria igual. E o baixa-duplicada.kql, que antes listava as 20 faturas, é o critério que eu deixaria como alerta permanente.
+
+Três minutos de post-mortem. Para este, a causa raiz tem pelo menos duas decisões: confiar num webhook sem assinatura e ter um consumidor que não era idempotente. Escrevam as duas.
+
+Pergunta para a turma: qual destas camadas vocês considerariam opcional num sistema de baixo volume? E qual nunca?
+
+Transição: quarta-feira, 14h. O banco parceiro publicou uma atualização da API e mudou o formato do valor.</aside>
+</section>
