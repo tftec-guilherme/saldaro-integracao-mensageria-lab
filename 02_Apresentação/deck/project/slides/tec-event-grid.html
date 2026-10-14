@@ -1,0 +1,38 @@
+<section id="tec-event-grid" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Event Grid + fila: avisar sem acoplar</h2>
+<p style="font-size:26px;line-height:1.3;color:rgba(0,164,239,0.9)"><b>Problema da Saldaro:</b> avisar o ERP do parceiro de cada fatura baixada sem acoplar o hub a ele e sem perder o aviso quando o parceiro cai.</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1.5;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#00A4EF">Por que este, e não as alternativas</p>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Opção</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Critério que decide</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Para a Saldaro</th></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Event Grid → fila do Service Bus</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Push com filtro e vários assinantes; a fila dá peek-lock, reentrega e DLQ</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#48BB78">Escolhido: parceiro fora não apaga o aviso</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Hub chama o parceiro direto</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Acopla o hub a cada consumidor e à disponibilidade dele</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Descartado: um novo assinante (BI, conciliação) obrigaria a mudar o hub</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Event Grid direto na Function</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Trigger recomendado pelo Learn, mas aponta para a função já publicada e usa chave</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence em reação leve, sem reentrega pelo consumidor</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Configuração que vamos escolher</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">Tópico evgt-saldaro-faturas-&lt;sufixo&gt;: Cloud Event Schema v1.0, identidade system-assigned<br>Role Azure Service Bus Data Sender do tópico só na fila sbq-notificacoes-parceiro<br>Event subscription evgs-notificar-parceiro → Service Bus Queue, com a identidade do tópico<br>Retry padrão (30 tentativas ou 24 h); dead-letter desligado no lab</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,185,0,0.08);border-left:6px solid #FFB900;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFB900">Custo</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)"><b>R$ 0 no lab</b> (grátis até 100 mil operações por mês)<br>Cobra por operação: publicação, entrega e filtro avançado. Sem medidor por hora; cabe no Free Trial.</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">8</p>
+</div>
+<aside>Tempo previsto: 2 min. Mostrar no Portal: o tópico evgt-saldaro-faturas do seu sufixo e a event subscription evgs-notificar-parceiro, com Endpoint Type Service Bus Queue e a identidade System Assigned; depois, na fila sbq-notificacoes-parceiro, Access control (IAM), com a role Azure Service Bus Data Sender dada ao tópico.
+
+O que falar: quando a fatura é baixada, o ERP do parceiro precisa saber. O jeito ingênuo é o hub chamar o parceiro direto. Aí o hub passa a conhecer cada consumidor, e no dia em que entrar um BI ou uma conciliação externa é preciso mexer no hub. Com o Event Grid, o hub publica o FaturaBaixada uma vez, como um fato, sem saber quem consome; um novo interessado é só mais uma event subscription. Só que o Event Grid sozinho não basta: ele entrega at least once, sem garantia de ordem e sem deduplicar, e, no push, se o assinante falha repetidamente, os eventos acabam descartados. Por isso a event subscription entrega numa fila do Service Bus, a sbq-notificacoes-parceiro, e a função NotificarParceiro consome dela com o mesmo peek-lock, reentrega e DLQ dos incidentes. O Architecture Center chama esse desenho de crossover: se o evento exige um workflow, o Event Grid o manda para uma fila do Service Bus. E por que não o Event Grid trigger direto na Function, que é o que o Learn recomenda para Functions? Porque esse destino aponta para a função, que só existe depois da publicação do código, e o Event Grid a chamaria com uma chave de acesso. Essa decisão está na ADR-0005. Configuração: tópico em CloudEvents 1.0, a especificação aberta que o Architecture Center manda preferir, com identidade system-assigned. Essa identidade tem Azure Service Bus Data Sender só nessa fila, e a event subscription entrega com ela, sem chave nenhuma no caminho; por isso nada quebra quando a Leitura 3.5 ligar o disableLocalAuth. Nova tentativa no padrão: até 30 tentativas ou 24 horas. O dead-letter do Event Grid fica desligado no lab; em produção, ligue. Custo: zero no lab. A cobrança é por operação, com 100 mil operações grátis por mês, e não há medidor por hora. Pergunta para a turma: se o parceiro ficar fora do ar, onde está o aviso nesse meio tempo? Deixe responderem antes de mostrar: na fila, sendo reentregue, e no limite na DLQ.
+
+Transição: quem consome as filas e publica no tópico é código. A próxima peça é onde ele roda: o Azure Functions, com o hub e o banco simulado.</aside>
+</section>

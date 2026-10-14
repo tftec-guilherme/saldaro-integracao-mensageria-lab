@@ -1,0 +1,42 @@
+<section id="tec-apim" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">API Management: uma porta única e governada para o hub</h2>
+<p style="font-size:26px;line-height:1.3;color:rgba(0,164,239,0.9)"><b>Problema da Saldaro:</b> o ERP e o banco precisam de um endereço estável, com corte de 30 s e, no 3.1, rate limit por empresa cliente.</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1.5;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#00A4EF">Por que este, e não as alternativas</p>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Opção</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Critério que decide</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Para a Saldaro</th></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>APIM Consumption</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Corte, limite e log por chamada</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#48BB78">Escolhido: sem custo fixo</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Function direto</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Chave de função não autentica o cliente</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence: Function interna, um só chamador</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>WAF (Application Gateway ou Front Door)</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Barra ataque web; não governa a API</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Soma: fica na frente do APIM em produção</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>APIM Standard v2</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Cobra por hora; tem VNet e limite por chave</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence: backend em VNet ou chamada acima de 30 s</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Configuração que vamos escolher</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">Tier Consumption, em Brazil South<br>APIs saldaro (ERP) e saldaro-webhooks (banco)<br>Corte do backend aos 30 s, com 504<br>Sem subscription no baseline; rate limit só no 3.1</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,185,0,0.08);border-left:6px solid #FFB900;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFB900">Custo</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">1 milhão de chamadas grátis por mês, por assinatura<br>Acima disso, ~US$ 4,25 por milhão; no lab, R$ 0</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">10</p>
+</div>
+<aside>Tempo previsto: 4 min. Mostrar no Portal: o APIM apim-saldaro com o seu sufixo, em APIs, as duas APIs (saldaro e saldaro-webhooks) e a policy do Passo 10.8, com o forward-request de 30 s. Cuidado de telão: Ao salvar a policy, o Portal mostra um aviso por causa das chaves do JSON no set-body: é só aviso; Save grava normalmente.
+
+O que falar: o ERP e o banco parceiro não falam com a Function, falam com um endereço estável, o azure-api.net do apim-saldaro com o seu sufixo. Autenticação, limite, timeout, transformação e log por operação são preocupações transversais, e o padrão Gateway Offloading tira isso do código e põe num lugar só. Chave de função não basta: o guia de segurança do Functions diz que o único jeito de proteger de verdade o endpoint é autenticar o cliente. O preço do padrão: um salto de rede a mais, um componente que precisa estar sempre de pé, nada de regra de negócio no gateway, e ele só protege se o backend aceitar tráfego apenas dele. No lab, o backend está aberto de propósito: o erp-simulado.ps1 -Direto é o gateway bypass (ADR-0007).
+APIM contra WAF: não é um ou outro. O WAF, no Application Gateway ou no Front Door, compara a requisição com o Core Rule Set da OWASP, barra bots e filtra por geografia, mas não sabe quem é a empresa cliente nem quanto ela pode chamar. O APIM governa a API: quem chama, quanto, por quanto tempo, com que contrato e com que telemetria. Em produção, o WAF fica na frente e o APIM atrás. No lab só tem o APIM, porque os incidentes são de integração, não de ataque web, e o WAF tem parcela fixa por hora, fora do Free Trial.
+Consumption contra v2: é o mesmo produto, cobrado por chamada, com o primeiro milhão incluído e SLA de 99,95%. Perde o rate-limit-by-key, a rede privada e o cache interno, e tem teto de 30 s por requisição. No 3.1, contornamos com uma subscription por empresa cliente e o rate-limit, que conta por subscription. O Standard v2 vence quando o backend está em VNet, quando é preciso limitar por chave ou passar de 30 s, mas cobra por hora. O corte de 30 s do Incidente 1 coincide com o teto do tier.
+Pergunta para a turma: no projeto de vocês, quem fica na frente da API hoje, o WAF, o APIM ou os dois?
+
+Transição: com a porta de entrada definida, seguimos para a próxima peça do hub.</aside>
+</section>

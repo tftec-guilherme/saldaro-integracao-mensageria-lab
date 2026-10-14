@@ -9,11 +9,16 @@
   "cover": "capa",
   "order": [
     "capa",
-    "regras-do-dia",
-    "saldaro",
-    "revisao-d04",
-    "sep-lab0",
+    "precisa-resolver",
     "montagem-arquitetura",
+    "tec-observabilidade",
+    "tec-storage",
+    "tec-service-bus",
+    "tec-key-vault",
+    "tec-event-grid",
+    "tec-functions",
+    "tec-apim",
+    "custo",
     "montagem-ordem",
     "smoke-test",
     "sep-incidente-1",
@@ -31,46 +36,28 @@
     "inc3-prova",
     "post-mortem",
     "desafio",
-    "encerramento",
-    "faq-1",
-    "faq-2",
-    "faq-3",
-    "faq-4",
-    "faq-5",
-    "faq-6",
-    "faq-7",
-    "faq-8",
-    "faq-9",
-    "faq-10"
+    "encerramento"
   ],
   "sections": {
     "s1": {
-      "description": "Abertura: a capa, as regras do dia, a Saldaro e a revisão da Disciplina 04.",
+      "description": "Abertura: o que a Saldaro precisa resolver e o que vamos montar.",
       "start": "capa"
     },
     "s2": {
-      "description": "Lab 0: a Saldaro 2.0 montada no Portal, peça por peça, e provada pelo smoke test.",
-      "start": "sep-lab0"
+      "description": "Por que cada tecnologia: uma peça por slide, na ordem da montagem, com as alternativas, a configuração e o custo.",
+      "start": "tec-observabilidade"
     },
     "s3": {
-      "description": "Incidente 1: o timeout de sexta às 18h e o request-reply assíncrono.",
-      "start": "sep-incidente-1"
+      "description": "Quanto custa, a ordem da montagem e a Saldaro funcionando.",
+      "start": "custo"
     },
     "s4": {
-      "description": "Incidente 2: o webhook duplicado, fora de ordem e forjado.",
-      "start": "sep-incidente-2"
+      "description": "Quando dá errado: os três incidentes.",
+      "start": "sep-incidente-1"
     },
     "s5": {
-      "description": "Incidente 3: a DLQ sem motivo, a classificação do erro e a triagem.",
-      "start": "sep-incidente-3"
-    },
-    "s6": {
       "description": "Fechamento: post-mortem coletivo, desafio para casa, limpeza e referências.",
       "start": "post-mortem"
-    },
-    "s7": {
-      "description": "Apêndice: perguntas que a turma vai fazer (FAQ-1 a FAQ-10), slides de bolso fora das 4 h.",
-      "start": "faq-1"
     }
   },
   "faces": {

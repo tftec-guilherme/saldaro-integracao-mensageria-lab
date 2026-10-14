@@ -1,0 +1,38 @@
+<section id="tec-storage" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Table Storage: estado barato, sem cobrar duas vezes</h2>
+<p style="font-size:26px;line-height:1.3;color:rgba(0,164,239,0.9)"><b>Problema da Saldaro:</b> guardar o estado de cada fatura por centavos e nunca cobrar duas vezes, com o insert condicional da Idempotency-Key e o ETag.</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1.5;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#00A4EF">Por que este, e não as alternativas</p>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Opção</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Critério que decide</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Para a Saldaro</th></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Table Storage</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Leitura por chave, insert condicional (409) e ETag (412), por centavos</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#48BB78">Escolhido: no storage que o Functions já exige</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Cosmos DB for Table</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Latência com SLA, índices secundários, distribuição global</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence com escala alta; o lab não precisa</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Azure SQL</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Transação entre fatura, inbox e outbox; joins e restrições</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence num razão contábil de verdade</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Configuração que vamos escolher</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)"><b>stsaldaro&lt;sufixo&gt;</b>: StorageV2, Standard LRS, Hot<br>5 tabelas: faturas, inbox, idempotencia, conciliacao e cobrancas<br>Sem esquema: o desenho é a PartitionKey e a RowKey</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,185,0,0.08);border-left:6px solid #FFB900;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFB900">Custo</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)"><b>~R$ 1/mês</b> a conta inteira, se ficar ligada; no lab, centavos.<br>Cobra por GB armazenado e por transação.</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">5</p>
+</div>
+<aside>Tempo previsto: 2 min. Mostrar no Portal: o stsaldaro do seu sufixo, em Data storage, Tables, com as cinco tabelas: faturas, inbox, idempotencia, conciliacao e cobrancas.
+
+O que falar: o hub precisa de pouco. Guarda poucas entidades, sempre lidas pela chave, com a PartitionKey igual ao faturaId, e precisa de duas operações que sustentam os consertos. A primeira é o insert condicional: o insert falha com 409, EntityAlreadyExists, se a chave já existe. É a Idempotency-Key do Incidente 1: o primeiro POST grava; o reenvio do ERP recebe 409, lê o faturaId gravado e devolve o mesmo, sem criar outra fatura nem outra cobrança. É atômico, diferente de consultar e depois gravar. A segunda é a concorrência otimista: o update com If-Match só grava se o ETag ainda for o lido; senão falha com 412, e quem perde a disputa relê e reavalia. É o que segura a baixa duplicada do Incidente 2. O Table Storage faz isso por centavos, no mesmo storage account que o Functions já exige. O Cosmos DB for Table usa a mesma API e o mesmo SDK e vence quando é preciso latência com SLA, índices secundários e distribuição global. O Azure SQL vence quando uma transação precisa cobrir fatura, inbox e outbox juntas, com joins e restrições: o caso de um razão contábil de verdade. O limite que a turma leva para casa: no Table Storage, a transação atômica só vale na mesma tabela e na mesma PartitionKey, até 100 entidades. Como inbox e fatura ficam em tabelas diferentes, quem impede a baixa dupla é a máquina de estados com ETag. Configuração: StorageV2, Standard LRS, a redundância mais barata, porque o dado do lab se reconstrói fácil; as cinco tabelas nascem só com o nome, sem esquema nem índice. O desenho está na PartitionKey e na RowKey, e mudar depois é difícil e caro. Custo: uns R$ 1 por mês a conta inteira; no lab, centavos. Pergunte à turma: no sistema de vocês, o que impede o mesmo pedido de virar duas cobranças?
+
+Transição: o estado está guardado; agora, como a fatura anda entre as peças? Com o Service Bus, o próximo slide.</aside>
+</section>

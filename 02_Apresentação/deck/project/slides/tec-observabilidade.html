@@ -1,0 +1,38 @@
+<section id="tec-observabilidade" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Application Insights: a jornada da fatura num lugar só</h2>
+<p style="font-size:26px;line-height:1.3;color:rgba(0,164,239,0.9)"><b>Problema da Saldaro:</b> enxergar uma fatura que atravessa APIM, Functions, Service Bus e Event Grid, seguindo um só faturaId.</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1.5;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#00A4EF">Por que este, e não as alternativas</p>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Opção</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Critério que decide</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Para a Saldaro</th></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Application Insights workspace-based</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">APM: costura a transação distribuída pelo operation_Id</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#48BB78">Escolhido: a jornada inteira no Search, por faturaId</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Log de cada serviço no seu lugar</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Mostra um recurso, mas perde a junção pelo faturaId</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence para olhar um recurso isolado</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Um Application Insights por app</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Times e ciclos de vida diferentes</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence com times separados; aqui a jornada é uma só</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Configuração que vamos escolher</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)"><b>log-saldaro-&lt;sufixo&gt;</b>: Pay-as-you-go, retenção de 30 dias<br><b>appi-saldaro-&lt;sufixo&gt;</b>: workspace-based, Brazil South<br>Hub, banco simulado e APIM no mesmo Application Insights<br>Sampling desligado: a prova conta eventos por faturaId</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,185,0,0.08);border-left:6px solid #FFB900;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFB900">Custo</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)"><b>5 GB/mês grátis</b> por conta de cobrança; o lab gera megabytes: R$ 0.<br>Acima disso, ~US$ 4,60/GB em Brazil South (~R$ 25/GB).</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">4</p>
+</div>
+<aside>Tempo previsto: 2 min. Mostrar no Portal: o appi-saldaro do seu sufixo, na Overview, em Essentials, o Logs workspace apontando para o log-saldaro; depois o Search com o faturaId do smoke test e o End-to-end transaction details do POST. Cuidado de telão: Ao abrir Logs no Portal, use o KQL mode e desligue o Agent.
+
+O que falar: três nomes que a turma confunde. O Azure Monitor é a plataforma. O Log Analytics é onde o dado mora e é consultado com KQL. O Application Insights é o APM, a camada que entende transação distribuída, e hoje é sempre workspace-based: o modo clássico, sem workspace, foi aposentado, e ingestão e retenção são cobradas no workspace. Na Saldaro, a fatura entra pelo APIM, passa pelo hub nas Functions, pelas filas do Service Bus e pelo Event Grid. Com o log de cada serviço no seu lugar, dá para olhar um recurso, mas a jornada se perde nas fronteiras, e a prova pede a junção pelo faturaId. Um Application Insights por app vence quando times e ciclos de vida são diferentes; aqui a jornada é uma só, então hub, banco simulado e APIM mandam para o mesmo. Configuração: workspace Pay-as-you-go com retenção de 30 dias, em Brazil South, e sampling desligado, porque a prova conta eventos por faturaId e um evento amostrado sumiria. Em produção é o contrário: sampling ligado e calibrado, tirando requisições e exceções da amostragem. Custo: os primeiros 5 GB por mês por conta de cobrança são grátis e o lab gera megabytes, então sai R$ 0; acima disso, uns US$ 4,60 por GB em Brazil South. Pergunte à turma: quem já perdeu uma investigação porque o log estava espalhado em três lugares? Se alguém perguntar de Prometheus: o Azure Monitor workspace é outro produto, para métricas com PromQL, e vence quando a equipe já usa Prometheus.
+
+Transição: agora enxergamos a fatura; mas onde ela guarda o estado? No Table Storage, o próximo slide.</aside>
+</section>

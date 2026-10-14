@@ -1,0 +1,46 @@
+<section id="tec-key-vault" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Key Vault e identidade gerenciada: segredo com dono</h2>
+<p style="font-size:26px;line-height:1.3;color:rgba(0,164,239,0.9)"><b>Problema da Saldaro:</b> guardar o segredo do webhook e a chave do banco sem senha espalhada nem credencial expirando às 3h da manhã.</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1.5;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#00A4EF">Por que este, e não as alternativas</p>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Opção</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Critério que decide</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Para a Saldaro</th></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Key Vault + identidade gerenciada</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Segredo com dono, versão e auditoria; acesso por role, sem credencial para girar</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#48BB78">Escolhido: a Leitura 3.5 migra para cá</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Segredo no app setting</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Criptografado em repouso, mas sem gestão de segredo</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence no que não é segredo, como a connection string do App Insights</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Connection string</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Credencial que vaza, gira e expira</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence quando o cliente não obtém token do Entra ID</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Configuração que vamos escolher</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">Key Vault Standard, permissão por RBAC, soft-delete de 7 dias<br>Baseline: cofre vazio e connection string de propósito<br>Leitura 3.5: identidade gerenciada do hub e Key Vault references</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,185,0,0.08);border-left:6px solid #FFB900;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFB900">Custo</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">~R$ 0 no lab: US$ 0,03 por 10 mil operações de segredo, sem taxa fixa<br>Identidade gerenciada: sem custo extra</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">7</p>
+</div>
+<aside>Tempo previsto: 2 min. Mostrar no Portal: o kv-saldaro do seu sufixo, na Overview (Soft-delete = Enabled, Purge protection = Disabled) e na aba Properties (Permission model = Azure role-based access control); depois o func-saldaro-hub, em Settings, Environment variables, com WebhookSecret e BancoApiKey em texto. Cuidado de telão: em Environment variables, use Show value só na linha; o Show values mostra todos os segredos no telão.
+
+O que falar: dois segredos sustentam a conversa entre o hub e o banco. O BancoApiKey vai no header x-api-key quando o hub registra a cobrança; o WebhookSecret é a chave do HMAC com que o banco assina cada webhook. No baseline, os dois estão em texto nos app settings, e o hub fala com Service Bus e Storage por connection string. É ingênuo de propósito: é a herança que a Leitura 3.5 conserta.
+
+Pergunte à turma: o app setting já não é criptografado? É, em repouso. Mas o Learn diz que, se você precisa gerir segredo, ele vai para um key vault: dono, versão, auditoria e rotação. E o App Configuration não concorre com o cofre: centraliza configuração e feature flags e complementa o Key Vault, sem substituí-lo.
+
+A outra metade é a identidade gerenciada. Com ela, não há connection string para vazar, girar ou expirar, e o acesso vira role com escopo mínimo e auditável. O incidente da 3.5 é justamente um segredo que expirou às 3h. Usamos a system-assigned porque é a mais simples e boa para auditoria; a user-assigned vence quando a role precisa existir antes do app.
+
+O cofre nasce agora, vazio e com RBAC, porque duas escolhas não têm volta: o prazo do soft-delete, que fica em 7 dias, e a purge protection, desligada no lab para o limpar.ps1 conseguir purgar. Em produção, ligada. Repare: ser Owner da assinatura não deixa ninguém ler segredo; para isso existe a role Key Vault Secrets Officer. Na 3.5, o hub ganha Key Vault Secrets User e os app settings viram Key Vault references: o código continua lendo o mesmo app setting, e a plataforma busca o valor no cofre com a identidade do app.
+
+Custo: o cofre cobra por operação, US$ 0,03 por 10 mil operações de segredo, e a plataforma guarda as references em cache, então as leituras são poucas. A identidade gerenciada não tem custo extra.
+
+Transição: guarde a frase "segredo que expira às 3h"; ela volta na Leitura 3.5, quando o cofre deixa de estar vazio. Vamos para a próxima peça da Saldaro.</aside>
+</section>

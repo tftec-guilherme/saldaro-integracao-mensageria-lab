@@ -1,0 +1,47 @@
+<section id="tec-functions" data-transition="fade" style="background:#0F1419;color:#FFFFFF;font-family:Montserrat, Arial, sans-serif;padding:37px 60px 128px;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/93e92d216d6347d3e420fe2b8e6f13ed" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:1026px;width:1920px;height:54px;background:rgba(0,0,0,0.3);border-top:1.4px solid rgba(255,255,255,0.05)"></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:48px;font-weight:700;line-height:1.2;letter-spacing:-0.74px;color:#FFFFFF">Azure Functions no Flex: escala na rajada, paga pelo uso</h2>
+<p style="font-size:26px;line-height:1.3;color:rgba(0,164,239,0.9)"><b>Problema da Saldaro:</b> aguentar a rajada de 1.000 faturas e, no resto do tempo, voltar a zero e pagar só pelo que executa.</p>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1.5;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;line-height:1.2;color:#00A4EF">Por que este, e não as alternativas</p>
+<table style="width:100%;border-collapse:collapse">
+<tr><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Opção</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Critério que decide</th><th style="font-size:24px;text-align:left;padding:10px 14px;background:rgba(0,164,239,0.15);color:#FFFFFF">Para a Saldaro</th></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Functions no Flex Consumption</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Código por evento; escala por função e volta a zero</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#48BB78">Escolhido: hub e banco simulado</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Logic Apps</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Designer, conectores e gente no meio</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence em baixo volume, B2B e aprovação humana</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Container Apps ou App Service</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Controle da imagem; API web contínua</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Vence com imagem própria, GPU ou plano dedicado</td></tr>
+<tr><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFFFFF"><b>Consumption ou Premium</b></td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8)">Consumption é legado; Premium paga 1 instância sempre</td><td style="font-size:24px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)">Premium vence em tráfego contínuo, sem cold start</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.05);border-left:6px solid #00A4EF;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFFFFF">Configuração que vamos escolher</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">Flex Consumption (FC1), um plano por app<br>.NET 10 isolated, 512 MB por instância<br>Teto por grupo de escala: 10 no hub, 5 no banco (~13 núcleos, dentro dos 15 do Free Trial)</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;background:rgba(255,185,0,0.08);border-left:6px solid #FFB900;border-radius:0 9px 9px 0;padding:20px 24px">
+<h3 style="font-size:28px;font-weight:700;line-height:1.2;color:#FFB900">Custo</h3>
+<p style="font-size:24px;line-height:1.35;color:rgba(255,255,255,0.85)">~R$ 0 na franquia: 100 mil GB-s e 250 mil execuções por mês, por assinatura<br>No Free Trial, a página de preços não deixa claro se ela vale</p>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:60px;top:1036px;width:1812px;height:34px;display:flex;justify-content:space-between;align-items:center">
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
+<p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">9</p>
+</div>
+<aside>Tempo previsto: 2 min. Mostrar no Portal: o func-saldaro-hub do seu sufixo, em Settings, Scale and concurrency (Instance memory = 512 MB, On demand maximum instance count = 10); no func-saldaro-banco, a mesma tela com teto 5. Se der tempo, Diagnose and solve problems, buscando Flex Consumption Quota. Cuidado de telão: em Environment variables, use Show value só na linha; o Show values mostra todos os segredos no telão.
+
+O que falar: o hub é código orientado a eventos com regra de negócio: idempotência, máquina de estados, HMAC. Tem triggers nativos de HTTP, Service Bus e Timer e passa boa parte do tempo parado. É o perfil do Azure Functions. O Logic Apps brilha quando a integração se monta com conectores e com gente no meio, em baixo volume; o Container Apps, quando o time quer controlar a imagem; o App Service, para API web síncrona e contínua num plano dedicado; o AKS, quando o time já opera Kubernetes.
+
+Dentro do Functions, o plano. O Learn chama o Flex Consumption de plano serverless recomendado e marca o Consumption como legado: em Linux, ele não recebe versões novas, o .NET 10 nem roda nele, e se aposenta em 30/09/2028. O Premium elimina o cold start com instâncias sempre aquecidas, mas cobra pelo menos uma instância o tempo todo; o Dedicated cobra a máquina ligada.
+
+O Flex escala por grupo de funções: as HTTP juntas e cada trigger de fila sozinho, até 1.000 instâncias, e volta a zero. É isso que o Incidente 1 exercita com a rajada de 1.000 faturas.
+
+A configuração tem um porquê de Free Trial: lá, a cota do Flex é de 15 núcleos por região. Com 512 MB, cada instância vale 0,25 núcleo; com teto de 10 no hub e 5 no banco, por grupo, o pior caso fica em uns 13 núcleos. Com os 2.048 MB do padrão, a mesma escala pediria uns 51. E .NET 10 isolated porque, no Functions, o .NET 8 sai de suporte em 10/11/2026, e o isolated é o único modelo de C# que o Flex aceita. Restrições para lembrar: um app por plano, sem deployment slots e sem edição de C# no Portal; por isso os consertos da aula vêm prontos atrás de toggles.
+
+Custo: o Flex cobra por GB-s e por execução. A franquia é de 100 mil GB-s e 250 mil execuções por mês, por assinatura, e o lab fica em ~R$ 0. A ressalva: a página de preços diz que ela vale em assinaturas pagas e não cita o Free Trial; se não valer, o pouco que os apps executam sai do crédito de US$ 200.
+
+Transição: guarde o teto de 10 instâncias; ele volta no Incidente 1, quando a rajada chegar. Vamos para a próxima peça da Saldaro.</aside>
+</section>
