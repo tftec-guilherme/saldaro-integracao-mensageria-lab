@@ -514,7 +514,7 @@ Três conferências:
 
 - `status` é `baixada` ou `notificada` (a notificação ao parceiro é o último passo e pode já ter acontecido);
 - a diferença entre `baixadaEm` e `criadaEm` fica abaixo de 120 segundos;
-- `quantidadeBaixas` é `1`.
+- `quantidadeBaixas` é `1` ou, às vezes, `0`. No baseline, a `cobranca.registrada`, processada junto com a baixa, pode regravar o contador que leu antes dela: é a atualização perdida que o Incidente 2 conserta, e não um defeito do seu ambiente. Mais que `1`, só no Incidente 2.
 
 Saída **ilustrativa**, resumida (os campos exatos são os que `GetFatura` devolve, em `03_Aplicações/Saldaro.Hub`):
 

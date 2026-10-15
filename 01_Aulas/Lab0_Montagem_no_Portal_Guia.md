@@ -174,6 +174,15 @@ dotnet --list-sdks     # uma linha começando com 10.0.
 pwsh --version         # 7.4 ou mais novo
 ```
 
+**Todos os blocos de PowerShell deste guia rodam no PowerShell 7 (`pwsh`).** O "PowerShell" do menu Iniciar, e de muitos perfis do Windows Terminal, é o Windows PowerShell 5.1, que não tem alguns dos métodos usados aqui. Na janela que você vai usar, confira com `$PSVersionTable.PSVersion`: precisa começar com `7`. Se começar com `5`, digite `pwsh` e siga nessa mesma janela.
+
+Deixe também o az na assinatura onde você vai montar, porque os blocos `az` deste guia usam a assinatura ativa:
+
+```powershell
+az account show --query name -o tsv                        # a assinatura ativa
+az account set --subscription "<nome da sua assinatura>"   # se não for a da montagem
+```
+
 ### Passo 1.2: Clonar o kit
 
 ```powershell
@@ -1317,9 +1326,12 @@ O hub e o banco simulado combinam dois segredos: o `BancoApiKey` (o hub manda no
 
 ```powershell
 # Ficam só na memória desta sessão: nada vai para a tela nem para arquivo
-$webhookSecret = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
-$bancoApiKey   = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$b = New-Object byte[] 32; $rng.GetBytes($b); $webhookSecret = [Convert]::ToBase64String($b)
+$b = New-Object byte[] 32; $rng.GetBytes($b); $bancoApiKey   = [Convert]::ToBase64String($b)
 ```
+
+Esta forma funciona no PowerShell 7 e também no Windows PowerShell 5.1. A versão curta, `[RandomNumberGenerator]::GetBytes(32)`, só existe no PowerShell 7, e no 5.1 dá o erro "does not contain a method named 'GetBytes'".
 
 Quando os Passos 8.7 e 8.8 pedirem, copie cada um para a área de transferência e cole no Portal:
 
@@ -1503,6 +1515,8 @@ Confira a versão do runtime com `az functionapp list-flexconsumption-runtimes -
 
 ## Etapa 9 — Publicar o código pelo VS Code (~15 min)
 
+> **Dois caminhos, o mesmo resultado.** Os Passos 9.1 a 9.3 publicam pelo VS Code. Se o **Deploy to Function App** falhar, ou se você preferir o terminal, use o bloco **Equivalente `az`** no fim desta etapa (`dotnet publish` + zip + `config-zip`). É o caminho que a validação do kit usou, e foi o que destravou a publicação na aula ao vivo. Depois de publicar, por qualquer caminho, faça o Passo 9.4: se a **Overview** do app não lista nenhuma Function, o código não chegou.
+
 ### Passo 9.1: Preparar o VS Code
 
 1. Confira as extensões **Azure Functions** e **C#** (Passo 1.1).
@@ -1543,7 +1557,10 @@ Esperado: no banco, `settingsPreenchidos` com `bancoApiKey`, `webhookSecret` e `
 <summary>Equivalente <code>az</code>: <code>dotnet publish</code> + zip + <code>config-zip</code>, como o <code>deploy.ps1</code> faz</summary>
 
 ```powershell
-$s = 'abcd'
+# No PowerShell 7, na raiz do kit (a pasta do README), com o az na assinatura do rg-saldaro-lab
+az account set --subscription "<nome da sua assinatura>"
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$s = 'abcd'   # o seu sufixo
 $tmp = Join-Path ([System.IO.Path]::GetTempPath()) 'saldaro-publicar'
 Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
 foreach ($app in @(
@@ -2295,6 +2312,9 @@ A Etapa 10 do [Lab 0](Lab0_Fundacao_Guia.md#etapa-10--entender-o-baseline-ingên
 
 | Problema | Causa provável | Solução |
 |----------|---------------|---------|
+| No Passo 8.6, "Method invocation failed ... does not contain a method named 'GetBytes'"; ou, no bloco `az` da Etapa 9, "Unable to find type [System.IO.Compression.ZipFile]" | **Windows PowerShell 5.1** no lugar do PowerShell 7 (aconteceu na aula ao vivo) | Digite `pwsh` na mesma janela e rode de novo. Confira com `$PSVersionTable.PSVersion`, que precisa começar com `7` (Passo 1.1). O bloco atual do Passo 8.6 já funciona nos dois |
+| O `config-zip` da Etapa 9 falha com `ResourceGroupNotFound`, ou o `az` diz que o Function App não existe | **Assinatura errada no az**: ele publica na assinatura ativa, que pode não ser a da montagem (aconteceu na aula ao vivo) | `az account show --query name -o tsv`; depois `az account set --subscription "<nome da sua assinatura>"` e rode o bloco de novo |
+| Depois de publicar, a **Overview** do Function App não lista nenhuma Function | **O pacote não chegou**: o Deploy do VS Code ou o `config-zip` falhou, às vezes com uma mensagem que passa despercebida | Leia o **View Output** do VS Code ou a saída do `az`. Se não ficar claro, publique pelo bloco **Equivalente `az`** da Etapa 9, que é o caminho validado, e repita o Passo 9.4 |
 | Aviso vermelho embaixo do nome ao criar Storage, Service Bus, Key Vault, Event Grid, Function App ou APIM: o nome já está em uso ou indisponível | **Nome global em uso**: alguém no mundo já tem esse nome | Troque o sufixo de **todos** os recursos, não só daquele: os scripts montam os nomes a partir de um sufixo só. Se já criou recursos com o sufixo antigo, apague o `rg-saldaro-lab` e recomece |
 | O nome `kv-saldaro-<sufixo>` está indisponível, mas você não tem nenhum cofre com ele | **Key Vault em soft-delete**: sobra de um lab anterior com o mesmo sufixo, apagado sem purga | **Key vaults** → **Manage deleted vaults** → escolha a assinatura → marque o cofre → **Purge**. Ou `pwsh ./scripts/limpar.ps1 -Sufixo <sufixo>`, que purga mesmo sem o Resource Group. Se a purga for recusada, use outro sufixo |
 | A criação do APIM fica vários minutos em andamento, ou a sonda do Passo 10.8 não responde logo depois | **APIM demorando**: o Consumption leva alguns minutos para criar e ativar | Espere (por isso a dica de fazer o Passo 10.1 já na Etapa 3). Se o nome `apim-saldaro-<sufixo>` estiver preso por um APIM apagado há menos de 48 h, a purga não existe no Portal: `az apim deletedservice purge --service-name apim-saldaro-<sufixo> --location brazilsouth` ou `limpar.ps1 -Sufixo <sufixo>` |

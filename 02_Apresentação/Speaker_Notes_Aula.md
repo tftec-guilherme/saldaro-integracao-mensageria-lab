@@ -1,212 +1,456 @@
 # Speaker Notes — Aula hands-on: Integração e Mensageria no Azure
 ## Pós-Graduação em Arquitetura Cloud Azure | Prof. Guilherme Campos | 1 encontro ao vivo de ~4h
 
-> **Version-anchor:** Q4-2026 · **Fonte de verdade dos slides:** `Conteudo_Slides_Aula.md` (22 slides de aula e 10 slides de bolso, FAQ-1 a FAQ-10). **Layout canônico:** `Disciplina 04 - Integração e Mensageria.pptx` (Blob da pós).
-> **Modalidade:** 100% ao vivo. Cada seção traz **tempo previsto**, **o que mostrar** (Portal, VS Code, terminal) e **perguntas para a turma**, além de "O que falar", "Insights do mundo real", "Referências" e "Transição", no padrão da pós.
-> **Status:** v1.4 (2026-10-14). Os 22 slides têm roteiro completo, e o apêndice "Perguntas que a turma vai fazer" tem as notes dos 10 slides de bolso, que ficam fora da soma das 4h; os ganchos "Se perguntarem: ... → FAQ-N" estão nas notes dos slides principais. Na v1.4, o conserto ao vivo de cada incidente passou para o Portal, e o `deploy.ps1` virou plano B (ADR 0008 e o parágrafo "Portal primeiro" dos guias dos incidentes): mudaram as notes dos slides 2, 4, 5, 9, 12, 13, 14, 15, 18 e 19. Nomes de Functions, settings, filas, comandos e botões de caos seguem o código, o Bicep e os scripts do kit; a sequência e o tempo de cada parte dos incidentes seguem o roteiro dos guias de `01_Aulas/` (conferidos na integração, ticket #13); os tempos medidos, as contagens e os rótulos do Portal seguem o primeiro deploy real do kit no Azure, em 2026-10-14 (roteiro em `docs/research/2026-10-14-checklist-primeiro-deploy.md`). Onde as notes dizem "no primeiro deploy", o número é dessa medição, e o da turma pode variar um pouco. Soma dos tempos: 223 min de slides + 10 de pausa + 5 de limpeza = 238 min; os slides de bolso do apêndice ficam fora dela. Na v1.3, a revisão de código alinhou as notes ao glossário do `CONTEXT.md` (toggle de cenário, confirmação repetida, reprocessamento), à ADR 0007 (simplificação de laboratório nos slides 6 e 12) e às cinco checagens da prova do Incidente 1.
+> **Version-anchor:** Q4-2026 · **Fonte de verdade dos slides:** o deck v19, em `deck/project/`, e o índice `Conteudo_Slides_Aula.md` (29 slides). **Layout canônico:** `Disciplina 04 - Integração e Mensageria.pptx` (Blob da pós).
+> **Modalidade:** 100% ao vivo. Cada slide traz **tempo previsto**, **o que mostrar** (Portal, VS Code, terminal) e **perguntas para a turma**, além de "O que falar", "Insights do mundo real", "Referências" e "Transição", no padrão da pós. Entre os slides 12 e 13, um bloco sem slide guia a montagem ao vivo no Portal.
+> **Status:** v1.5 (2026-10-15). As notes seguem o deck v19, refeito em 2026-10-14 e já publicado: os 29 slides na ordem do `order` do `deck.json`, com o `<aside>` de cada slide como base da fala. A lógica da v19: primeiro o porquê de cada tecnologia, na ordem da montagem (slides 4 a 10); depois a conta, a ordem e a montagem ao vivo no Portal (11, 12 e o bloco sem slide); a Saldaro funcionando (13); e, no fim, os três incidentes (14 a 26). Os slides 2 a 13 são novos; os incidentes, o post-mortem, o desafio e o encerramento são as notes da v1.4, que já estavam corretas, renumeradas de 7 a 22 para 14 a 29. Saíram o apêndice de FAQ e os slides Regras do dia, A Saldaro Pagamentos, O que a Disciplina 04 já nos deu e o separador do Lab 0: o essencial das regras do dia foi para a capa e para o slide 14, a história da Saldaro 1.0 para o slide 2, e cada gancho "→ FAQ-N" virou uma resposta curta, com a pergunta da pesquisa `docs/research/2026-10-14-duvidas-das-tecnologias.md`. Onde as notes dizem "no primeiro deploy", o número é do primeiro deploy real do kit (2026-10-14, roteiro em `docs/research/2026-10-14-checklist-primeiro-deploy.md`); "no ensaio" é o ensaio dos incidentes pelo Portal; o da turma pode variar um pouco.
+> **Tempo:** 165 min de slides + 60 de montagem ao vivo + 10 de pausa + 5 de limpeza = **240 min**, sem folga. Para caber, os incidentes ficaram com 0,6 do tempo do roteiro dos guias (30, 45 e 30 min, contra 50, 75 e 50): o professor conduz em ritmo de demonstração, quem chegou com o ambiente montado repete junto, e cada guia, completo, fica para a turma refazer em casa. Os `<aside>` do deck ainda trazem os tempos dos guias.
+> **Cuidados de telão, o dia todo:** em Environment variables, **Show value** só na linha, nunca o **Show values** da barra nem o **Advanced edit**; o Logs do Application Insights numa aba própria, em **KQL mode**, com o toggle **Agent** desligado; o **Warning** do Portal ao salvar a policy do APIM é só aviso: **Save**.
+>
+> Empresa, pessoas, números e incidentes são fictícios; qualquer semelhança é coincidência.
 
 ---
 
 ## Slide 1 — Capa
 
-**Tempo previsto:** 2 min · **Mostrar:** o slide; câmera aberta.
+**Tempo previsto:** 2 min · **Mostrar:** o slide, com a câmera aberta.
 
 ### O que falar
-Bem-vindos. Hoje não é uma aula sobre serviços: é um plantão. Nas próximas quatro horas vocês vão trabalhar numa empresa fictícia chamada Saldaro Pagamentos, um hub de cobrança B2B que acabou de migrar para o Azure e que carrega um legado cheio de decisões ruins. Três incidentes vão estourar na nossa mão, um de cada vez, e a nossa missão é diagnosticar, consertar e provar que consertamos.
+Bem-vindos. Hoje não é uma aula sobre serviços: é um plantão. Nas próximas quatro horas vocês vão trabalhar numa empresa fictícia chamada Saldaro Pagamentos, um hub de cobrança B2B que acabou de migrar para o Azure e carrega um legado cheio de decisões ruins. Três incidentes vão estourar na nossa mão, um de cada vez, e a missão é diagnosticar, consertar e provar que consertamos.
 
-A diferença para a Disciplina 04 é de postura. Lá vocês aprenderam o que cada serviço faz e configuraram cada um deles no Portal. Aqui vocês já sabem o que é uma fila, um tópico, uma DLQ; o que falta é a cicatriz: ver o sistema quebrar de um jeito que acontece em produção e saber exatamente qual botão apertar.
+A diferença para a Disciplina 04 é de postura. Lá vocês aprenderam o que cada serviço faz e configuraram cada um no Portal. Aqui vocês já sabem o que é fila, tópico e DLQ; o que falta é a cicatriz: ver o sistema quebrar do jeito que quebra em produção e saber exatamente qual botão apertar.
+
+Como vai ser o dia. Antes de quebrar, a gente monta: primeiro o porquê de cada peça, uma por slide, na ordem em que ela entra na montagem, com as alternativas, a configuração e o custo; depois eu monto a Saldaro ao vivo no Portal, e vocês, que montaram em casa, conferem no ambiente de vocês. Com a casa de pé, os três incidentes, sempre no mesmo ritual: sintomas, hipóteses, conserto e prova, e um post-mortem de cinco linhas, sem culpados. O conserto é no Portal; quem travar tem um plano B pronto, e ninguém fica para trás. E no fim todo mundo apaga o `rg-saldaro-lab`, junto comigo.
 
 Tudo o que vocês vão ver é ficção inspirada em experiência de campo em projetos de consultoria da TFTEC. Empresa, pessoas, números e incidentes são inventados; qualquer semelhança é coincidência. O que não é inventado são os padrões: 202 assíncrono, idempotência, sessões, dead-letter com motivo. Esses aparecem toda semana em sistemas reais.
 
 ### Insights do mundo real
 - A maioria dos incidentes de integração em produção não é bug de código: é timeout mal pensado, retry sem idempotência ou fila sem tratamento de mensagem envenenada.
 - Quem sabe diagnosticar um sistema distribuído às 3h da manhã vale mais no mercado do que quem sabe criar o recurso no Portal.
+- O ritual sintoma → hipótese → conserto → prova é o mesmo de um incidente real; treinar o ritual vale tanto quanto treinar a técnica.
 
 ### Referências
 - [Cloud Design Patterns](https://learn.microsoft.com/azure/architecture/patterns/)
 - [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/)
+- `docs/adr/0004-confidencialidade-e-varredura-de-termos.md`: o aviso de ficção
 
 ### Transição
-Antes de começar, as regras do dia. São poucas, mas importam.
+Primeiro, o que a Saldaro precisa resolver.
 
 ---
 
-## Slide 2 — Regras do dia
+## Slide 2 — O que a Saldaro precisa resolver
 
-**Tempo previsto:** 4 min · **Mostrar:** a linha do tempo no slide; o terminal com `deploy.ps1 -?`.
-
-### O que falar
-Primeiro: vocês já fizeram o Lab 0 em casa, montando a Saldaro no Portal, peça por peça, ou pelo atalho do script. Quem não fez, não entra em pânico: o kit tem `./scripts/deploy.ps1 -Cenario 0 -Sufixo <seu sufixo>`, que cria tudo sozinho em uns 8 a 10 minutos, quase todos esperando o Azure, enquanto eu falo.
-
-Segundo: o conserto de cada incidente, ao vivo, é no Portal, clique a clique: o app setting, a fila, o consumidor. É de propósito: a aula é para vocês saberem onde cada peça mora. O script fica como plano B, e a regra "ninguém fica para trás" vale o dia inteiro: cada incidente tem um estado pronto (`./scripts/deploy.ps1 -Cenario 2`, `3` ou `4` com `-Pronto`), que sobe em uns 4 a 7 minutos num ambiente que já existe; se alguém travar num passo, pula para o próximo com o estado pronto e volta depois com calma. Cada clique no Portal deixa o Azure diferente do Bicep, e a gente vai levar cada conserto para o arquivo de parâmetros. Guardem a palavra: drift.
-
-E uma regra que o primeiro deploy real do kit ensinou: aqueçam antes de cada rajada, e sempre depois de um `deploy.ps1`. O APIM Consumption e o hub acordam devagar: no primeiro deploy, a primeira chamada levou uns 2 segundos, e as seguintes, uns 130 ms. Uma sonda que responde 404, como a do Passo 5.1 do Incidente 1 (`GET {SALDARO_APIM_URL}/faturas/aquecimento/status`), ou o próprio smoke test resolve. Sem isso, a primeira rajada de 10 faturas logo depois do deploy levou 107 segundos em vez de uns 5, com 6 chamadas estourando o timeout do cliente sem nem chegar ao APIM.
-
-Terceiro: todo incidente segue o mesmo ritual. Sintomas, o que a gente observa quebrado; hipóteses, onde a gente olha para confirmar; conserto, a mudança; prova, o critério objetivo de que funcionou. Vocês vão escrever um post-mortem de cinco linhas por incidente, e o post-mortem não tem culpado.
-
-Quarto: custo. Tudo o que vamos criar cabe no Free Trial e custa uns dois ou três reais, da véspera ao fim da aula: quase tudo é o Service Bus Standard, uns sete centavos por hora. O único jeito de gastar mais é esquecer o Resource Group ligado. Por isso às 3h55 todo mundo apaga o `rg-saldaro-lab` junto comigo, ao vivo.
-
-**Pergunta para a turma:** quem já viu uma fila "esquecida" gerar conta no fim do mês? Deixa alguém contar em 30 segundos.
-
-**Se perguntarem:** "Por que Bicep e não Terraform? E por que consertar no Portal, se o kit tem Bicep?" → FAQ-8.
-
-**Se perguntarem:** "Por que Service Bus Standard? Um hub de pagamentos não usaria Premium?" → FAQ-3.
-
-### Insights do mundo real
-- Portal para aprender, IaC para recriar: o clique mostra onde a peça mora, e o arquivo de parâmetros garante que o próximo deploy confirme o conserto em vez de desfazê-lo.
-- Estados prontos em IaC são a diferença entre uma aula ao vivo que flui e uma em que metade da turma fica depurando digitação.
-- O ritual sintoma → hipótese → conserto → prova é o mesmo de um incidente real; treinar o ritual vale tanto quanto treinar a técnica.
-- Depois de um deploy, a primeira chamada paga o cold start do gateway e do backend. Aquecer antes de medir é método, não maquiagem: o critério de prova vale para o sistema aquecido.
-
-### Referências
-- [Azure free account](https://azure.microsoft.com/free/)
-- `docs/adr/0008-portal-primeiro-com-bicep-como-plano-b.md`: o Portal como caminho ao vivo e o `deploy.ps1` como plano B
-
-### Transição
-Agora, a empresa onde vocês trabalham hoje.
-
----
-
-## Slide 3 — A Saldaro Pagamentos
-
-**Tempo previsto:** 5 min · **Mostrar:** o diagrama do fio condutor; apontar os três pontos que vão quebrar.
+**Tempo previsto:** 3 min · **Mostrar:** o slide; quem montou o Lab 0 em casa abre o próprio `rg-saldaro-lab` e confere que cada peça do slide existe de verdade (o do professor ainda não existe: nasce na montagem, depois do slide 12).
 
 ### O que falar
-A Saldaro é um hub de cobrança B2B. Trezentas empresas clientes, de distribuidoras a SaaS, usam a Saldaro para cobrar seus próprios clientes pessoa jurídica. O ERP da empresa cliente manda a fatura; a Saldaro registra uma cobrança no banco parceiro, Pix ou boleto; quando o pagador paga, o banco avisa por webhook; a Saldaro faz a baixa, concilia no fim do dia e notifica o ERP. São uns 400 mil por mês, com pico nos dias 5 a 10 e nos últimos dias úteis, quando algum ERP manda lote e chega a 30 faturas por segundo.
+A Saldaro é um hub de cobrança B2B, e a empresa é fictícia. Trezentas empresas clientes usam a Saldaro para cobrar os próprios clientes pessoa jurídica, uns 400 mil por mês, com pico nos dias 5 a 10 e no fim do mês. Leiam a faixa da esquerda para a direita: o ERP da empresa cliente manda a fatura, o hub registra a cobrança no banco parceiro, o banco manda o webhook de confirmação, o hub dá baixa na fatura e avisa o ERP. Cada seta é uma integração que pode falhar, e a aula de hoje é sobre essas falhas.
 
-A "Saldaro 1.0" é o legado: um monólito que usava o banco relacional como fila e um único worker que fazia polling a cada poucos segundos. Funcionou enquanto o volume era pequeno. A "Saldaro 2.0" é o que vocês provisionaram no Lab 0: APIM na frente, Functions, Service Bus, Table Storage, Event Grid, Key Vault, App Insights. Só que a 2.0 nasceu herdando os hábitos da 1.0, e é isso que vai quebrar hoje.
+Embaixo estão os seis requisitos e a peça que atende cada um. Rajada: o Service Bus absorve o pico e o Functions Flex Consumption escala as instâncias; no lab, até 10 no hub, por causa da cota do Free Trial. Não perder fatura: a fila guarda a mensagem até alguém processar, com retry e Dead-letter queue. Não cobrar duas vezes: o reenvio do ERP traz a mesma Idempotency-Key, e o insert condicional na tabela `idempotencia` devolve a fatura que já existe; a inbox faz o mesmo com as confirmações repetidas do banco. Confiar no webhook: a assinatura HMAC com timestamp; o webhook chega pela API `saldaro-webhooks` do APIM, que nunca exige subscription, porque quem autentica o banco é a assinatura, conferida pelo hub. Enxergar: o Application Insights junta a jornada de uma fatura pelo `faturaId`, que vai em todos os eventos do hub; o `operation_Id` só costura a parte síncrona, como vocês vão ver no slide 13. Custo: tudo serverless ou no tier de entrada, uns R$ 2 a 3 da véspera ao fim da aula; o único medidor por hora é o do Service Bus Standard.
 
-Olhem o diagrama. Três pontos marcados: o `POST /faturas` síncrono, o webhook do banco e o worker da baixa. Cada incidente ataca um deles.
+Importante: no baseline que vocês montaram, várias dessas peças ainda não estão ligadas, de propósito. É a herança da "Saldaro 1.0", um monólito que usava o banco relacional como fila e um único worker de polling; a 2.0 nasceu no Azure carregando os hábitos da 1.0. Os incidentes mostram o que falta.
 
-**Se perguntarem:** "Por que APIM e não WAF?" → FAQ-1.
-
-**Se perguntarem:** "Por que Service Bus, e não Storage Queue, Event Hubs ou Event Grid?" → FAQ-2.
-
-**Se perguntarem:** "Por que Functions? Integração não é coisa de Logic Apps?" → FAQ-7.
+**Pergunta para a turma:** qual desses seis requisitos vocês apostam que quebra primeiro? É o pré-mortem do Lab 0.
 
 ### Insights do mundo real
 - "Banco como fila" é muito mais comum do que parece, e quase sempre vem com um worker único e um polling que vira gargalo no primeiro pico.
 - Hubs de cobrança vivem de idempotência: a mesma confirmação bancária chega duas vezes com mais frequência do que se imagina.
+- Requisito não funcional sem a peça que o atende é desejo, não arquitetura: escrevam o requisito e a peça lado a lado, como no slide.
 
 ### Referências
 - `docs/research/2026-10-13-briefing-da-aula.md`, seções 1 e 2
+- `docs/adr/0007-http-triggers-anonymous-e-apim-sem-subscription.md`: por que a API do webhook não pede subscription no lab
 
 ### Transição
-Vamos lembrar o que a Disciplina 04 já nos deu, em cinco minutos, para alinhar o vocabulário.
+Agora, como essas peças se encaixam no hub: o que vamos montar.
 
 ---
 
-## Slide 4 — O que a Disciplina 04 já nos deu
+## Slide 3 — O que vamos montar
 
-**Tempo previsto:** 4 min · **Mostrar:** só o slide.
+**Tempo previsto:** 3 min · **Mostrar:** o diagrama deste slide e, ao lado, o Portal aberto na assinatura do professor, ainda sem o `rg-saldaro-lab`.
 
 ### O que falar
-Vocês já dominam o vocabulário: fila, tópico, subscription com filtro SQL, dead-letter queue, `maxDeliveryCount`, peek-lock. Viram Durable Functions entregar 202 com `statusQueryGetUri` sem esforço. Viram Event Grid empurrar eventos e Event Hubs ingerir telemetria.
-
-O que a Disciplina 04 não fez, por desenho, foi praticar o lado sombrio: um 202 escrito à mão para entender o padrão, idempotência de verdade com tabela inbox, sessões para garantir ordem, dead-letter com motivo explícito, Managed Identity no lugar de connection string e infraestrutura em Bicep. A lista do lado direito do slide é literalmente o roteiro de hoje.
-
-Muda também a ferramenta. Na Disciplina 04 o código era Node.js e quase tudo nascia no clique, sem um arquivo que dissesse como recriar; hoje o código é C# em .NET 10 isolated, já pronto, e o ambiente que vocês montaram, no Portal ou pelo script, é exatamente o que o Bicep do kit declara. Ninguém vai escrever C# do zero nem publicar código hoje: vocês vão ler o código e ligar os toggles de cenário certos, que são app settings. E o Portal fica aberto o dia todo, para as duas coisas: é nele que vocês consertam, clique a clique (o toggle, a fila, o consumidor), e é nele que observam (Service Bus Explorer, Application Insights, as propriedades das filas). O `deploy.ps1` fica como plano B, para quem travar.
-
-**Pergunta para a turma:** alguém lembra o que acontece com uma mensagem depois do décimo `Abandon`? É isso que vamos ver no incidente 3.
-
-**Se perguntarem:** "Se o Durable dá o 202 de graça, por que fazer à mão?" → FAQ-9.
+Antes de clicar em qualquer coisa, a planta da casa. Tudo vai morar num Resource Group só, o `rg-saldaro-lab`, montado à mão, no Portal, e é o mesmo ambiente que o Bicep do cenário 0 cria: os mesmos nomes, os mesmos SKUs e as mesmas configurações. A Saldaro 2.0 tem cinco papéis. A porta única é o APIM: o ERP da empresa cliente e o banco parceiro só falam com ele. O processamento são dois Function Apps no Flex Consumption: o hub, que é a Saldaro, e o banco simulado, que faz o papel do parceiro. A mensageria é o Service Bus, com três filas, e o Event Grid, que avisa o parceiro quando a fatura é baixada. O estado mora no Storage, em tabelas, e os segredos no Key Vault. E os olhos são o Application Insights, gravando num workspace do Log Analytics. Sigam a faixa de cima: é a jornada de uma cobrança atravessando as seis caixas, do `POST /faturas` do ERP ao aviso de volta. Cada peça que a gente criar hoje responde a uma pergunta: o que quebra se ela não existir?
 
 ### Insights do mundo real
-- Saber o vocabulário não evita incidente; evita é ter praticado a falha antes de ela acontecer em produção.
-- Montar e consertar no Portal ensina onde cada peça mora; o Bicep ensina a recriar tudo igual. Um arquiteto precisa das duas coisas, e da disciplina de levar o clique para o código.
+- Quem já montou isso em projeto sabe: o desenho cabe num slide, mas a ordem de criação e as permissões entre as peças é que derrubam a primeira tentativa. É por isso que a montagem tem ordem.
+- O Portal decide algumas coisas sozinho (o nome do plano Flex, o endereço do app, o GUID das role assignments, o TTL das filas): o ambiente fica funcionalmente igual ao do Bicep, mas não idêntico, e é por isso que o `deploy.ps1` não roda por cima dele.
 
 ### Referências
-- Disciplina 04, `Bloco4_ServiceBus.md` (repositório `azure-retail`)
+- Guia `01_Aulas/Lab0_Montagem_no_Portal_Guia.md`: o diagrama, a Tabela de Recursos e "O que fica diferente do Bicep"
+- `docs/research/2026-10-14-duvidas-das-tecnologias.md` (a FAQ das tecnologias), perguntas 1, 4 e 10
 
 ### Transição
-Chega de slide. Lab 0: vamos ver a Saldaro 2.0 funcionando no dia de sol.
+Antes de montar, o porquê de cada peça, na ordem em que ela entra. Primeiro, os olhos.
 
 ---
 
-## Slide 5 — Separador: Lab 0
+## Slide 4 — Por que Application Insights e Log Analytics
 
-**Tempo previsto:** 1 min · **Mostrar:** terminal pronto.
-
-### O que falar
-Lab 0, Saldaro 2.0 em 10 minutos. Quem montou em casa, no Portal ou pelo script, abre o terminal na pasta do kit: os dois caminhos deixam o mesmo ambiente. Quem não fez roda `./scripts/deploy.ps1 -Cenario 0 -Sufixo <seu sufixo>` agora: são uns 8 a 10 minutos, e ele termina rodando o smoke test sozinho. Enquanto isso, acompanhe na minha tela.
-
-### Transição
-Smoke test.
-
----
-
-## Slide 5a — O que vamos montar
-
-**Tempo previsto:** 3 min · **Mostrar:** o diagrama deste slide e, ao lado, o Portal aberto na assinatura, ainda sem o `rg-saldaro-lab`.
+**Tempo previsto:** 2 min · **Mostrar:** o slide; no Portal, o `appi-saldaro-<sufixo>` na Overview, em Essentials, com o Logs workspace apontando para o `log-saldaro-<sufixo>`; depois o Search com o `faturaId` do smoke test e o End-to-end transaction details do POST. Quem montou em casa abre o seu agora; o professor mostra as mesmas telas na Etapa 3 da montagem e no slide 13. **Cuidado de telão:** ao abrir o Logs, **KQL mode** e o toggle **Agent** desligado.
 
 ### O que falar
-Antes de clicar em qualquer coisa, a planta da casa. A Saldaro 2.0 tem cinco papéis. A porta única é o APIM: o ERP da empresa cliente e o banco parceiro só falam com ele. O processamento são dois Function Apps no Flex Consumption: o hub, que é a Saldaro, e o banco simulado, que faz o papel do parceiro. A mensageria é o Service Bus, com três filas, e o Event Grid, que avisa o parceiro quando a fatura é baixada. O estado mora no Storage, em tabelas, e os segredos no Key Vault. E os olhos são o Application Insights, gravando num workspace do Log Analytics. Cada peça que a gente criar hoje responde a uma pergunta: o que quebra se ela não existir?
+Três nomes que a turma confunde. O Azure Monitor é a plataforma. O Log Analytics é onde o dado mora e é consultado com KQL. O Application Insights é o APM, a camada que entende transação distribuída, e hoje é sempre workspace-based: o modo clássico, sem workspace, foi aposentado, e ingestão e retenção são cobradas no workspace.
+
+Na Saldaro, a fatura entra pelo APIM, passa pelo hub nas Functions, pelas filas do Service Bus e pelo Event Grid. Com o log de cada serviço no seu lugar, dá para olhar um recurso, mas a jornada se perde nas fronteiras, e a prova pede a junção pelo `faturaId`. Um Application Insights por app vence quando times e ciclos de vida são diferentes; aqui a jornada é uma só, então hub, banco simulado e APIM mandam para o mesmo.
+
+Configuração: workspace Pay-as-you-go com retenção de 30 dias, em Brazil South, e sampling desligado, porque a prova conta eventos por `faturaId`, e um evento amostrado sumiria. Em produção é o contrário: sampling ligado e calibrado, tirando requisições e exceções da amostragem. Custo: os primeiros 5 GB por mês por conta de cobrança são grátis e o lab gera megabytes, então sai R$ 0; acima disso, uns US$ 4,60 por GB em Brazil South.
+
+Se alguém perguntar de Prometheus: o Azure Monitor workspace é outro produto, para métricas com PromQL, e vence quando a equipe já usa Prometheus.
+
+**Pergunta para a turma:** quem já perdeu uma investigação porque o log estava espalhado em três lugares?
 
 ### Insights do mundo real
-Quem já montou isso em projeto sabe: o desenho cabe num slide, mas a ordem de criação e as permissões entre as peças é que derrubam a primeira tentativa. É por isso que a montagem tem ordem.
+- O `operation_Id` costura a parte síncrona; nas fronteiras assíncronas (fila, webhook, Event Grid) ele se perde. Uma chave de negócio em todos os eventos, como o `faturaId`, é o que prova a jornada.
+- Em observabilidade, o que encarece é volume: telemetria sem sampling, log em nível Information de tudo e retenção longa. Daily cap só como rede de segurança: quando ele bate, a coleta para e o time fica cego.
+- O kit fixa o SDK clássico 2.x do Application Insights; em produção, planejem a migração para OpenTelemetry antes da aposentadoria do 2.x, em 31/03/2027.
 
 ### Referências
-- Guia `01_Aulas/Lab0_Montagem_no_Portal_Guia.md`: diagrama e Tabela de Recursos.
-- FAQ das tecnologias, perguntas 1, 4 e 10.
+- [Create and configure Application Insights resources](https://learn.microsoft.com/azure/azure-monitor/app/create-workspace-resource)
+- [Design a Log Analytics workspace architecture](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-design)
+- [Azure Monitor Logs cost calculations and options](https://learn.microsoft.com/azure/azure-monitor/logs/cost-logs)
+- [Configure monitoring for Azure Functions](https://learn.microsoft.com/azure/azure-functions/configure-monitoring)
+- Guia de montagem, Etapa 3 (quadros "Por que este recurso"); pesquisa de dúvidas, pergunta 16
 
 ### Transição
-Em que ordem a gente monta, e por quê.
+Agora enxergamos a fatura; mas onde ela guarda o estado? No Table Storage.
 
 ---
 
-## Slide 5b — A ordem da montagem e o porquê de cada peça
+## Slide 5 — Por que Table Storage
 
-**Tempo previsto:** 3 a 5 min · **Mostrar:** o guia de montagem aberto na Etapa 2 e um dos quadros "Por que este recurso" aberto, para a turma ver o formato (objetivo, descrição, papel, por que este e não alternativas, configuração, custos, produção e fontes). Nos app settings da Etapa 8, com a tela projetada: **Show value** só na linha que interessa; nunca o **Show values** da barra nem o **Advanced edit**, que mostram de uma vez todas as chaves e connection strings.
+**Tempo previsto:** 2 min · **Mostrar:** o slide; no Portal, o `stsaldaro<sufixo>` em Data storage → Tables, com as cinco tabelas: `faturas`, `inbox`, `idempotencia`, `conciliacao` e `cobrancas` (quem montou em casa abre o seu; o professor mostra na Etapa 4 da montagem).
+
+### O que falar
+O hub precisa de pouco. Guarda poucas entidades, sempre lidas pela chave, com a PartitionKey igual ao `faturaId`, e precisa de duas operações que sustentam os consertos.
+
+A primeira é o insert condicional: o insert falha com 409, `EntityAlreadyExists`, se a chave já existe. É a Idempotency-Key do Incidente 1: o primeiro POST grava; o reenvio do ERP recebe 409, lê o `faturaId` gravado e devolve o mesmo, sem criar outra fatura nem outra cobrança. É atômico, diferente de consultar e depois gravar. A segunda é a concorrência otimista: o update com `If-Match` só grava se o ETag ainda for o lido; senão falha com 412, e quem perde a disputa relê e reavalia. É o que segura a baixa duplicada do Incidente 2.
+
+O Table Storage faz isso por centavos, no mesmo storage account que o Functions já exige. O Cosmos DB for Table usa a mesma API e o mesmo SDK e vence quando é preciso latência com SLA, índices secundários e distribuição global. O Azure SQL vence quando uma transação precisa cobrir fatura, inbox e outbox juntas, com joins e restrições: o caso de um razão contábil de verdade. O limite que a turma leva para casa: no Table Storage, a transação atômica só vale na mesma tabela e na mesma PartitionKey, até 100 entidades. Como inbox e fatura ficam em tabelas diferentes, quem impede a baixa dupla é a máquina de estados com ETag.
+
+Configuração: StorageV2, Standard LRS, a redundância mais barata, porque o dado do lab se reconstrói fácil; as cinco tabelas nascem só com o nome, sem esquema nem índice. O desenho está na PartitionKey e na RowKey, e mudar depois é difícil e caro. Custo: uns R$ 1 por mês a conta inteira; no lab, centavos.
+
+**Pergunta para a turma:** no sistema de vocês, o que impede o mesmo pedido de virar duas cobranças?
+
+### Insights do mundo real
+- Consultar e depois gravar não é idempotência: entre a leitura e a escrita cabe outra requisição. Insert condicional e ETag põem a decisão no armazenamento, numa operação só.
+- O desenho de PartitionKey e RowKey precisa sair certo de primeira: no Table Storage não existe "acrescentar um índice", como num banco relacional.
+- Em produção: acesso só por identidade (`Storage Table Data Contributor`), as tabelas numa conta separada da do host do Functions e, se a regra de negócio exigir transação entre entidades, o estado num banco relacional.
+
+### Referências
+- [What is Azure Table storage?](https://learn.microsoft.com/azure/storage/tables/table-storage-overview)
+- [Design Azure Table storage for queries](https://learn.microsoft.com/azure/storage/tables/table-storage-design-for-query)
+- [Performing entity group transactions](https://learn.microsoft.com/rest/api/storageservices/performing-entity-group-transactions)
+- [Azure Cosmos DB for Table overview](https://learn.microsoft.com/azure/cosmos-db/table/overview)
+- [Storage considerations for Azure Functions](https://learn.microsoft.com/azure/azure-functions/storage-considerations)
+- Guia de montagem, Etapa 4; pesquisa de dúvidas, perguntas 8 e 13
+
+### Transição
+O estado está guardado; agora, como a fatura anda entre as peças? Com o Service Bus.
+
+---
+
+## Slide 6 — Por que Service Bus
+
+**Tempo previsto:** 2 min · **Mostrar:** o slide; no Portal, o namespace `sb-saldaro-<sufixo>` na Overview, com o Pricing tier Standard, e em Entities → Queues, as três filas (quem montou em casa abre o seu; o professor mostra na Etapa 5 da montagem).
+
+### O que falar
+A pergunta que sempre aparece é por que Service Bus, se a Storage Queue é mais barata. O critério é o que passa pela fila. Fatura a emitir e confirmação de pagamento são comandos financeiros: não podem se perder nem ser aplicados duas vezes. O Learn posiciona o Service Bus como enterprise transactional messaging, para financial transactions, e ele é o único dos quatro com transações e duplicate detection, além de FIFO com sessions e DLQ com motivo.
+
+A Storage Queue não garante ordem e não tem dead-lettering automático; ela está no kit de propósito, no banco simulado (a fila `banco-pagamentos`), e vocês vão comparar a fila `-poison` dela com a DLQ do Service Bus. Event Hubs é stream de telemetria com releitura. Event Grid é aviso reativo, e é para isso que ele entra na Saldaro, daqui a pouco.
+
+Standard contra Premium: o Premium compra messaging units dedicadas, mensagens de até 100 MB e rede privada, a preço fixo, uns 677 dólares por mês por messaging unit, o que não cabe no Free Trial. O Standard tem tudo o que os incidentes usam, e o Learn o indica para desenvolvimento, QA e produção de baixo throughput. Trocar de tier é decisão por gatilho, não por nome: a ADR-0003 fixa cinco, entre eles a exigência de Private Endpoint e o erro 50009 de throttling recorrente. A Leitura 3.8 é esse exercício.
+
+Configuração: um namespace Standard e três filas com lock de 1 minuto e `maxDeliveryCount` 10, sem sessions e sem duplicate detection, porque o baseline é ingênuo de propósito. Custo: uns 55 reais por mês, cobrados por hora, com ou sem tráfego. É o único medidor do kit que corre por hora: esquecer o Resource Group ligado é, na prática, pagar Service Bus.
+
+**Pergunta para a turma:** no projeto de vocês, o que passa pela fila é comando ou é aviso?
+
+### Insights do mundo real
+- Escolha o broker pela semântica de entrega, não pelo preço por milhão de operações: comando processado duas vezes vira cobrança em dobro.
+- O Basic não tem sessions nem duplicate detection, que são o conserto do Incidente 2: o tier mais barato pode ser o que não resolve.
+- A troca para Premium existe no lugar, mas sem volta: as role assignments não migram e as mensagens não são copiadas. Planeje antes de precisar.
+- Em produção: só Microsoft Entra ID (`disableLocalAuth`, o que a Leitura 3.5 liga) e alertas de `ThrottledRequests` e de `DeadletteredMessages` desde o primeiro dia.
+
+### Referências
+- [Choose between Azure messaging services](https://learn.microsoft.com/azure/service-bus-messaging/compare-messaging-services)
+- [Compare Storage queues and Service Bus queues](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-azure-and-service-bus-queues-compared-contrasted)
+- [Service Bus Premium messaging](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-premium-messaging)
+- [Azure Service Bus throttling](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-throttling)
+- `docs/adr/0003-service-bus-standard-com-identidade-gerenciada.md`; guia de montagem, Etapa 5; pesquisa de dúvidas, perguntas 4 e 6
+
+### Transição
+O hub entra nesse namespace com uma chave, a `RootManageSharedAccessKey`. Chave pede cofre, e a próxima peça é o Key Vault, que no baseline nasce vazio.
+
+---
+
+## Slide 7 — Por que Key Vault e identidade gerenciada
+
+**Tempo previsto:** 2 min · **Mostrar:** o slide; no Portal, o `kv-saldaro-<sufixo>` na Overview (Soft-delete = Enabled, Purge protection = Disabled) e na aba Properties (Permission model = Azure role-based access control); depois o `func-saldaro-hub-<sufixo>` → Settings → Environment variables, com `WebhookSecret` e `BancoApiKey` em texto (o professor mostra nas Etapas 6 e 8 da montagem). **Cuidado de telão:** em Environment variables, **Show value** só na linha; nunca o **Show values** da barra, que mostra todos os segredos no telão.
+
+### O que falar
+Dois segredos sustentam a conversa entre o hub e o banco. O `BancoApiKey` vai no header `x-api-key` quando o hub registra a cobrança; o `WebhookSecret` é a chave do HMAC com que o banco assina cada webhook. No baseline, os dois estão em texto nos app settings, e o hub fala com Service Bus e Storage por connection string. É ingênuo de propósito: é a herança que a Leitura 3.5 conserta.
+
+**Pergunta para a turma**, antes de seguir: o app setting já não é criptografado? É, em repouso. Mas o Learn diz que, se você precisa gerir segredo, ele vai para um key vault: dono, versão, auditoria e rotação. E o App Configuration não concorre com o cofre: centraliza configuração e feature flags e complementa o Key Vault, sem substituí-lo.
+
+A outra metade é a identidade gerenciada. Com ela, não há connection string para vazar, girar ou expirar, e o acesso vira role com escopo mínimo e auditável. O incidente da 3.5 é justamente um segredo que expirou às 3h. Usamos a system-assigned porque é a mais simples e boa para auditoria; a user-assigned vence quando a role precisa existir antes do app.
+
+O cofre nasce agora, vazio e com RBAC, porque duas escolhas não têm volta: o prazo do soft-delete, que fica em 7 dias, e a purge protection, desligada no lab para o `limpar.ps1` conseguir purgar. Em produção, ligada. Reparem: ser Owner da assinatura não deixa ninguém ler segredo; para isso existe a role Key Vault Secrets Officer. Na 3.5, o hub ganha Key Vault Secrets User e os app settings viram Key Vault references: o código continua lendo o mesmo app setting, e a plataforma busca o valor no cofre com a identidade do app.
+
+Custo: o cofre cobra por operação, US$ 0,03 por 10 mil operações de segredo, e a plataforma guarda as references em cache, então as leituras são poucas. A identidade gerenciada não tem custo extra.
+
+### Insights do mundo real
+- Segredo com data de validade precisa de dono e de calendário: o incidente da 3.5 é um segredo que expirou às 3h da manhã, sem ninguém de plantão para girar.
+- Em produção: um cofre por aplicação, ambiente e região, para o raio de um vazamento ser pequeno; purge protection ligada; acesso público desligado, com Private Endpoint; rotação automática; e as roles de administração do cofre por PIM.
+- Apagar um cofre apaga também as role assignments e as event subscriptions ligadas a ele, e recuperar o cofre não as traz de volta.
+
+### Referências
+- [Provide access to Key Vault keys, certificates, and secrets with Azure RBAC](https://learn.microsoft.com/azure/key-vault/general/rbac-guide)
+- [Use Key Vault references as app settings](https://learn.microsoft.com/azure/app-service/app-service-key-vault-references)
+- [Azure Key Vault soft-delete](https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview)
+- [What is Azure App Configuration?](https://learn.microsoft.com/azure/azure-app-configuration/overview)
+- Guia de montagem, Etapa 6 e Passo 8.5; `01_Aulas/Leitura_3.5_ManagedIdentity_Guia.md`; pesquisa de dúvidas, perguntas 14 e 15
+
+### Transição
+Guardem a frase "segredo que expira às 3h": ela volta na Leitura 3.5, quando o cofre deixa de estar vazio. Próxima peça: como avisar o parceiro quando a fatura é baixada.
+
+---
+
+## Slide 8 — Por que Event Grid + fila
+
+**Tempo previsto:** 2 min · **Mostrar:** o slide; no Portal, o tópico `evgt-saldaro-faturas-<sufixo>` e a event subscription `evgs-notificar-parceiro`, com Endpoint Type Service Bus Queue e a identidade System Assigned; depois, na fila `sbq-notificacoes-parceiro`, Access control (IAM), com a role Azure Service Bus Data Sender dada ao tópico (o professor mostra na Etapa 7 da montagem).
+
+### O que falar
+Quando a fatura é baixada, o ERP do parceiro precisa saber. O jeito ingênuo é o hub chamar o parceiro direto. Aí o hub passa a conhecer cada consumidor, e no dia em que entrar um BI ou uma conciliação externa é preciso mexer no hub. Com o Event Grid, o hub publica o `FaturaBaixada` uma vez, como um fato, sem saber quem consome; um novo interessado é só mais uma event subscription.
+
+Só que o Event Grid sozinho não basta: ele entrega at least once, sem garantia de ordem e sem deduplicar, e, no push, se o assinante falha repetidamente, os eventos acabam descartados. Por isso a event subscription entrega numa fila do Service Bus, a `sbq-notificacoes-parceiro`, e a função `NotificarParceiro` consome dela com o mesmo peek-lock, reentrega e DLQ dos incidentes. O Architecture Center chama esse desenho de crossover: se o evento exige um workflow, o Event Grid o manda para uma fila do Service Bus.
+
+E por que não o Event Grid trigger direto na Function, que é o que o Learn recomenda para Functions? Porque esse destino aponta para a função, que só existe depois da publicação do código, e o Event Grid a chamaria com uma chave de acesso. Essa decisão está na ADR-0005.
+
+Configuração: tópico em CloudEvents 1.0, a especificação aberta que o Architecture Center manda preferir, com identidade system-assigned. Essa identidade tem Azure Service Bus Data Sender só nessa fila, e a event subscription entrega com ela, sem chave nenhuma na entrega; por isso nada quebra quando a Leitura 3.5 ligar o `disableLocalAuth`. Nova tentativa no padrão: até 30 tentativas ou 24 horas. O dead-letter do Event Grid fica desligado no lab; em produção, liguem. Custo: zero no lab. A cobrança é por operação, com 100 mil operações grátis por mês, e não há medidor por hora.
+
+**Pergunta para a turma:** se o parceiro ficar fora do ar, onde está o aviso nesse meio tempo? Deixe responderem antes de mostrar: na fila, sendo reentregue, e no limite na DLQ.
+
+### Insights do mundo real
+- Evento de integração é fato publicado uma vez: o publicador não conhece os consumidores, e um novo interessado é configuração, não mudança de código.
+- At least once vale para o Event Grid também: o consumidor da fila precisa ser idempotente. A ADR-0005 já diz o que fazer se aparecer notificação repetida: ligar a duplicate detection na fila, o que exige recriá-la.
+- No baseline, a publicação do hub no tópico ainda usa a `EventGridTopicKey`; a entrega, do tópico para a fila, já é por identidade. A Leitura 3.5 troca a publicação para a identidade do hub.
+
+### Referências
+- [Event Grid delivery and retry](https://learn.microsoft.com/azure/event-grid/delivery-and-retry)
+- [Event delivery with a managed identity](https://learn.microsoft.com/azure/event-grid/managed-service-identity)
+- [Asynchronous messaging options](https://learn.microsoft.com/azure/architecture/guide/technology-choices/messaging)
+- [Create a custom topic](https://learn.microsoft.com/azure/event-grid/create-custom-topic)
+- `docs/adr/0005-event-grid-entrega-em-fila-do-service-bus.md`; guia de montagem, Etapa 7; pesquisa de dúvidas, perguntas 4, 5 e 22
+
+### Transição
+Quem consome as filas e publica no tópico é código. A próxima peça é onde ele roda: o Azure Functions, com o hub e o banco simulado.
+
+---
+
+## Slide 9 — Por que Functions no Flex Consumption
+
+**Tempo previsto:** 2 min · **Mostrar:** o slide; no Portal, o `func-saldaro-hub-<sufixo>` → Settings → Scale and concurrency (Instance memory = 512 MB, On demand maximum instance count = 10); no `func-saldaro-banco-<sufixo>`, a mesma tela com teto 5; se der tempo, Diagnose and solve problems, buscando Flex Consumption Quota (o professor mostra no Passo 8.3 da montagem). **Cuidado de telão:** em Environment variables, **Show value** só na linha; o **Show values** mostra todos os segredos no telão.
+
+### O que falar
+O hub é código orientado a eventos com regra de negócio: idempotência, máquina de estados, HMAC. Tem triggers nativos de HTTP, Service Bus e Timer e passa boa parte do tempo parado. É o perfil do Azure Functions. O Logic Apps brilha quando a integração se monta com conectores e com gente no meio, em baixo volume; o Container Apps, quando o time quer controlar a imagem; o App Service, para API web síncrona e contínua num plano dedicado; o AKS, quando o time já opera Kubernetes.
+
+Dentro do Functions, o plano. O Learn chama o Flex Consumption de plano serverless recomendado e marca o Consumption como legado: em Linux, ele não recebe versões novas, o .NET 10 nem roda nele, e se aposenta em 30/09/2028. O Premium elimina o cold start com instâncias sempre aquecidas, mas cobra pelo menos uma instância o tempo todo; o Dedicated cobra a máquina ligada.
+
+O Flex escala por grupo de funções, as HTTP juntas e cada trigger de fila sozinho, até 1.000 instâncias, e volta a zero. É isso que o Incidente 1 exercita com a rajada de 1.000 faturas.
+
+A configuração tem um porquê de Free Trial: lá, a cota do Flex é de 15 núcleos por região. Com 512 MB, cada instância vale 0,25 núcleo; com teto de 10 no hub e 5 no banco, por grupo, o pior caso fica em uns 13 núcleos. Com os 2.048 MB do padrão, a mesma escala pediria uns 51. E .NET 10 isolated porque, no Functions, o .NET 8 sai de suporte em 10/11/2026, e o isolated é o único modelo de C# que o Flex aceita. Restrições para lembrar: um app por plano, sem deployment slots e sem edição de C# no Portal; por isso os consertos da aula vêm prontos atrás de toggles.
+
+Custo: o Flex cobra por GB-s e por execução. A franquia é de 100 mil GB-s e 250 mil execuções por mês, por assinatura, e o lab fica em ~R$ 0. A ressalva: a página de preços diz que ela vale em assinaturas pagas e não cita o Free Trial; se não valer, o pouco que os apps executam sai do crédito de US$ 200.
+
+**Pergunta para a turma:** quem tem Function em produção no plano Consumption, ou em .NET 8? Qual é o plano de migração, e para quando?
+
+### Insights do mundo real
+- Data de fim de suporte é requisito: o .NET 8 e o modelo in-process saem de suporte no Functions em 10/11/2026, e o Consumption em Linux se aposenta em 30/09/2028. Quem descobre isso no dia do incidente perde a semana.
+- Em produção: 2.048 MB como ponto de partida, tetos pela cota da assinatura paga (250 núcleos por padrão, ampliável por chamado) e always ready no grupo HTTP para cortar o cold start.
+- Teto de escala também é proteção: sem ele, a rajada pede instâncias além da cota, e a plataforma atrasa ou recusa execuções; o sintoma parece bug do hub.
+
+### Referências
+- [Azure Functions Flex Consumption plan hosting](https://learn.microsoft.com/azure/azure-functions/flex-consumption-plan)
+- [Azure Functions scale and hosting](https://learn.microsoft.com/azure/azure-functions/functions-scale)
+- [Event-driven scaling: limit scale-out](https://learn.microsoft.com/azure/azure-functions/event-driven-scaling#limit-scale-out)
+- [Guide for running C# Azure Functions in the isolated worker model](https://learn.microsoft.com/azure/azure-functions/dotnet-isolated-process-guide)
+- `docs/adr/0001-stack-dotnet-10-isolated-bicep-e-powershell-7.md`; guia de montagem, Etapa 8; pesquisa de dúvidas, perguntas 10, 11 e 12
+
+### Transição
+Guardem o teto de 10 instâncias: ele volta no Incidente 1, quando a rajada chegar. Última peça: a porta de entrada.
+
+---
+
+## Slide 10 — Por que API Management
+
+**Tempo previsto:** 4 min · **Mostrar:** o slide; no Portal, o `apim-saldaro-<sufixo>` → APIs, as duas APIs (`saldaro` e `saldaro-webhooks`), e a policy do Passo 10.8, com o `forward-request` de 30 s (o professor mostra na Etapa 10 da montagem). **Cuidado de telão:** ao salvar a policy, o Portal mostra um **Warning** por causa das chaves do JSON no `set-body`: é só aviso; **Save** no aviso grava normalmente.
+
+### O que falar
+O ERP e o banco parceiro não falam com a Function, falam com um endereço estável, o `azure-api.net` do `apim-saldaro` com o seu sufixo. Autenticação, limite, timeout, transformação e log por operação são preocupações transversais, e o padrão Gateway Offloading tira isso do código e põe num lugar só. Chave de função não basta: o guia de segurança do Functions diz que o único jeito de proteger de verdade o endpoint é autenticar o cliente. O preço do padrão: um salto de rede a mais, um componente que precisa estar sempre de pé, nada de regra de negócio no gateway, e ele só protege se o backend aceitar tráfego apenas dele. No lab, o backend está aberto de propósito: o `erp-simulado.ps1 -Direto` é o gateway bypass (ADR-0007).
+
+APIM contra WAF: não é um ou outro. O WAF, no Application Gateway ou no Front Door, compara a requisição com o Core Rule Set da OWASP, barra bots e filtra por geografia, mas não sabe quem é a empresa cliente nem quanto ela pode chamar. O APIM governa a API: quem chama, quanto, por quanto tempo, com que contrato e com que telemetria. Em produção, o WAF fica na frente e o APIM atrás. No lab só tem o APIM, porque os incidentes são de integração, não de ataque web, e o WAF tem parcela fixa por hora, fora do Free Trial.
+
+Consumption contra v2: é o mesmo produto, cobrado por chamada, com o primeiro milhão incluído e SLA de 99,95%. Perde o `rate-limit-by-key`, a rede privada e o cache interno, e tem teto de 30 s por requisição. No 3.1, contornamos com uma subscription por empresa cliente e o `rate-limit`, que conta por subscription. O Standard v2 vence quando o backend está em VNet, quando é preciso limitar por chave ou passar de 30 s, mas cobra por hora. O corte de 30 s do Incidente 1 coincide com o teto do tier.
+
+**Pergunta para a turma:** no projeto de vocês, quem fica na frente da API hoje: o WAF, o APIM ou os dois?
+
+### Insights do mundo real
+- WAF na frente do APIM, nunca no lugar dele: Front Door quando o tráfego é global ou multirregião; Application Gateway quando é regional e os backends estão numa VNet.
+- Com o Front Door na frente, o APIM pode aceitar só o tráfego dele, até no Consumption: `ip-filter` nas faixas `AzureFrontDoor.Backend` e `check-header` no `X-Azure-FDID`. Atrás de um Application Gateway, cuidado: o certificado de cliente (mTLS) não chega ao APIM.
+- Em produção, a identidade da empresa cliente sai da credencial (subscription ou, melhor, OAuth com `validate-jwt`), nunca de um header como o `x-cliente-id`, e o backend só aceita quem vier do APIM.
+- No Learn, "WAF" também é a sigla do Well-Architected Framework: confirmem de qual dos dois a pessoa está falando.
+
+### Referências
+- [API Gateway overview](https://learn.microsoft.com/azure/api-management/api-management-gateways-overview)
+- [Feature-based comparison of API Management tiers](https://learn.microsoft.com/azure/api-management/api-management-features)
+- [Introduction to Azure Web Application Firewall](https://learn.microsoft.com/azure/web-application-firewall/overview)
+- [Protect APIs by using Application Gateway and API Management](https://learn.microsoft.com/azure/architecture/web-apps/api-management/architectures/protect-apis)
+- [Gateway Offloading pattern](https://learn.microsoft.com/azure/architecture/patterns/gateway-offloading)
+- [Securing Azure Functions](https://learn.microsoft.com/azure/azure-functions/security-concepts)
+- `docs/adr/0007-http-triggers-anonymous-e-apim-sem-subscription.md`; guia de montagem, Etapa 10; pesquisa de dúvidas, perguntas 1, 2, 3 e 21
+
+### Transição
+Sete peças escolhidas, cada uma com o seu porquê. Antes de montar, a conta.
+
+---
+
+## Slide 11 — Quanto custa
+
+**Tempo previsto:** 3 min · **Mostrar:** a tabela do slide; no Portal, quem montou em casa abre o próprio `rg-saldaro-lab` → Overview, com a lista de recursos e o botão Delete resource group, que é por onde a aula termina (o do professor nasce na montagem e é apagado ao vivo no slide 28).
+
+### O que falar
+Antes de montar, a conta. Só um medidor corre por hora neste kit: o Service Bus Standard, uns R$ 0,07 por hora, com ou sem tráfego. É ele que responde por uns R$ 55 dos ~R$ 60 por mês que o ambiente custa se alguém esquecer o Resource Group ligado. Todo o resto cobra por uso, e o volume do lab cabe na franquia gratuita: o APIM Consumption até 1 milhão de chamadas por mês, o Event Grid até 100 mil operações, o Log Analytics até 5 GB, e o Application Insights entra junto com o Log Analytics. O Key Vault não tem franquia, mas no lab custa centavos; o Storage fica perto de R$ 1 por mês se ficar ligado.
+
+Uma ressalva no Flex Consumption: a franquia é de 100 mil GB-s e 250 mil execuções por mês, por assinatura, e a página de preços diz que ela vale em assinaturas pagas, sem citar o Free Trial. Se não valer no seu, o pouco que os dois apps executam sai do crédito de US$ 200, em valores pequenos. No Free Trial, cuidado com a cota do Flex: 15 núcleos por região. Por isso o kit usa 512 MB por instância e no máximo 10 instâncias no hub e 5 no banco simulado.
+
+Na prática: montar e apagar no mesmo dia sai uns R$ 0,20 a 1; montar na véspera e apagar no fim da aula, uns R$ 2 a 3. Montar à mão leva umas 3 horas contra uns 10 minutos do script, e a diferença na conta são uns R$ 0,20 de Service Bus. Os valores usam ~R$ 5,50 por dólar e preços de lista de Brazil South em outubro de 2026; confiram na calculadora na data da aula.
+
+A regra de ouro: o `rg-saldaro-lab` só vive até o fim da aula. Rodem `pwsh ./scripts/limpar.ps1` com o seu sufixo ou, pelo Portal, apaguem o Resource Group e purguem o Key Vault e o APIM, que senão ficam presos no soft-delete com o nome reservado. E evitem APIM Developer, Service Bus Premium, Functions Premium e Defender for Storage: o kit não precisa de nenhum deles.
+
+**Pergunta para a turma:** quem já viu uma fila "esquecida" gerar conta no fim do mês? Deixe alguém contar em 30 segundos.
+
+### Insights do mundo real
+- Num ambiente serverless, quem define a regra de ouro é o único recurso com medidor por hora: é ele que cobra quando todo mundo esqueceu.
+- Budget com alerta avisa, mas não desliga nada: o único jeito de não pagar por um lab esquecido é apagar.
+- Soft-delete reserva o nome: sem purgar o Key Vault e o APIM, o mesmo sufixo não volta, e a próxima montagem para no primeiro nome.
+
+### Referências
+- [Calculadora de preços do Azure](https://azure.microsoft.com/pricing/calculator/)
+- [Azure free account](https://azure.microsoft.com/free/)
+- [Create and manage budgets](https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets)
+- Guia de montagem: a caixa "CUSTO E FREE TRIAL", a Tabela de Recursos e a Limpeza de Recursos
+
+### Transição
+Com a conta na cabeça, a ordem da montagem. Treze etapas, e cada peça resolve um problema.
+
+---
+
+## Slide 12 — A ordem da montagem
+
+**Tempo previsto:** 3 min (o deck dá 3 a 5; o que passar de 3 sai da montagem) · **Mostrar:** o guia de montagem aberto na Etapa 2 e um dos quadros "Por que este recurso" aberto, para a turma ver o formato (objetivo, descrição, papel, por que este e não alternativas, configuração, custos, produção e fontes).
 
 ### O que falar
 Treze etapas, e a ordem não é estética: cada peça depende da anterior. Primeiro o Resource Group, porque tudo o que nasce junto morre junto, e a limpeza no fim é um clique. Depois os olhos, Log Analytics e Application Insights, porque a gente quer enxergar o sistema antes de quebrá-lo. Depois o estado, no Storage; a mensageria, no Service Bus; o segredo, no Key Vault; e o aviso ao parceiro, no Event Grid. Só então os dois Function Apps, que já nascem apontando para tudo isso. Por último, o APIM, a porta única. Uma dica de quem já montou: comece a criar o APIM cedo, porque ele leva alguns minutos para ativar; na validação do kit, ele ativou em uns 2 minutos. Em cada etapa, o guia tem um quadro "Por que este recurso", com o objetivo, o papel na Saldaro, as alternativas, cada opção do formulário e o custo. Eu vou montando aqui, e explicando o porquê de cada peça.
 
+Tempos de cada etapa no guia, para quem monta pela primeira vez: 1, máquina, Portal e sufixo, ~15 min (~5 se já fez as Etapas 1 a 4 do Lab 0); 2, Resource Group, ~3; 3, Log Analytics e App Insights, ~8; 4, Storage, ~12; 5, Service Bus, ~15; 6, Key Vault, ~5; 7, Event Grid, ~12; 8, Function Apps no Flex, ~35; 9, publicar o código, ~15; 10, API Management, ~30 com a espera da ativação; 11, roles do seu usuário, ~8; 12, `.env.local` e a prova, ~15; 13, post-mortem e pré-mortem, ~5. Ao vivo, eu chego com a Etapa 1 pronta e deixo a 13 para casa.
+
+**Se perguntarem** por que APIM e não WAF, por que Service Bus e não Storage Queue, ou por que Functions e não Logic Apps: são os slides 10, 6 e 9; voltem a eles numa frase e sigam.
+
 ### Insights do mundo real
-Na validação do kit, a montagem inteira pelo Portal levou cerca de 75 minutos sem pausa; um aluno, com leitura e cuidado, leva umas 3 horas. Em produção, isso nasce de código (o Bicep do kit faz o mesmo em uns 10 minutos), e o Portal fica para explorar.
+- Na validação do kit, a montagem inteira pelo Portal levou cerca de 75 minutos sem pausa; um aluno, com leitura e cuidado, leva umas 3 horas. Em produção, isso nasce de código (o Bicep do kit faz o mesmo em uns 10 minutos), e o Portal fica para explorar.
+- Ordem de criação é dependência: o hub precisa do endereço do banco, do tópico e da fila antes de ganhar os app settings. Quem monta fora de ordem volta três telas para buscar um valor.
 
 ### Referências
-- Guia `01_Aulas/Lab0_Montagem_no_Portal_Guia.md`, Etapas 2 a 13.
-- Se perguntarem por que APIM e não WAF → FAQ-1. Por que Service Bus e não Storage Queue → FAQ-2. Por que Functions e não Logic Apps → FAQ-7.
+- Guia `01_Aulas/Lab0_Montagem_no_Portal_Guia.md`, Etapas 1 a 13
+- `docs/adr/0008-portal-primeiro-com-bicep-como-plano-b.md`: o Portal como caminho ao vivo
 
 ### Transição
 Vamos montar. E, no fim, o smoke test prova que a casa está de pé.
 
 ---
 
-## Slide 6 — Smoke test: o dia de sol
+## Montagem ao vivo — entre os slides 12 e 13 (sem slide)
 
-**Tempo previsto:** 12 min · **Mostrar:** terminal com `./scripts/smoke-test.ps1` (ele imprime o `faturaId` e o `operation_Id` do POST); `GET {SALDARO_APIM_URL}/faturas/{id}`; `appi-saldaro-<sufixo>` → Investigate → Search (antigo Transaction search) pelo `faturaId` entre aspas, e o End-to-end transaction details do POST (`PostFatura` chamando o `PostCobranca` do banco); a tabela de recursos no Portal.
+**Tempo previsto:** 60 min (0:30–1:30) · **Mostrar:** o Portal em tela cheia, na assinatura do professor, e o guia `01_Aulas/Lab0_Montagem_no_Portal_Guia.md` numa segunda tela, das Etapas 2 a 12 (até o Passo 12.5); o slide 12 volta à tela quando a turma perguntar em que etapa estamos.
+
+### Roteiro
+
+| Etapas do guia | No guia (primeira vez) | Meta no relógio da aula |
+|---|---|---|
+| 1. Máquina, kit, Portal na assinatura certa, sufixo e o Flex conferido em Brazil South | ~15 min | pronta antes de 0:00 |
+| 2 e 3. Resource Group, Log Analytics e Application Insights; logo depois, o Passo 10.1 (só o serviço do APIM), como o guia sugere | ~11 min | até 0:38 |
+| 4 a 7. Storage, Service Bus, Key Vault e Event Grid | ~44 min | até 0:58 |
+| 8 e 9. Os dois Function Apps (escala, deploy, identidade, segredos e app settings) e a publicação do código | ~50 min | até 1:15 |
+| 10 e 11. APIs, operações, subscription, policy e as roles do seu usuário | ~38 min, com a ativação | até 1:25 |
+| 12. `.env.local`, smoke test, a fatura e o Search (Passos 12.1 a 12.5) | ~15 min | até 1:30 |
+| 13. Post-mortem e pré-mortem da montagem | ~5 min | para casa: o pré-mortem foi a pergunta do slide 2 |
+
+Os 60 min supõem a Etapa 1 pronta antes da aula, o Passo 12.7 contado no slide 13 e a Etapa 13 para casa; na validação do kit, a montagem inteira, sem pausa, levou ~75 min.
 
 ### O que falar
-Uma fatura, ponta a ponta. Rodem o smoke test e acompanhem: o `POST /faturas` chama o banco simulado e só responde quando o banco devolve a cobrança; alguns segundos depois o banco "paga" e manda o webhook; a confirmação entra na fila, o worker faz a baixa, e o Event Grid dispara a notificação ao parceiro, pela fila `sbq-notificacoes-parceiro`. Em menos de dois minutos, `GET /faturas/{id}` tem que responder `baixada` ou `notificada`, e o script termina verde.
+Monte narrando a decisão de cada formulário, não o clique: o porquê já foi dito nos slides 4 a 10, e aqui ele vira campo preenchido. Abra o quadro "Por que este recurso" só quando a turma perguntar, e pare nas caixas que os incidentes vão mexer: o Pricing tier Standard do Service Bus, que no assistente aparece em All Available Pricing, porque o Recommended é o Premium (Passo 5.1); as caixas Enable sessions e Enable duplicate detection desmarcadas na `sbq-confirmacoes-banco` (Passo 5.3), que o Incidente 2 vai querer marcadas; os toggles `Cenario__*` em `false` no hub (Passo 8.8), que são os consertos dos três incidentes; o teto de instâncias (Passo 8.3), que segura a rajada do Incidente 1; e a policy de 30 s do APIM (Passo 10.8), que é o relógio do Incidente 1. Quem montou em casa acompanha no próprio ambiente e confere os mesmos campos; quem chegou sem ambiente sobe o Lab 0 pelo script agora, `./scripts/deploy.ps1 -Cenario 0 -Sufixo <seu sufixo>`, uns 8 a 10 minutos, e acompanha pela tela.
+
+Se o relógio apertar, corte nesta ordem: a Etapa 13 já é de casa; o Passo 12.6 (comparar com o Bicep) é opcional no guia; a publicação da Etapa 9 vai pelo bloco Equivalente `az` dela, o caminho validado do guia; e o que é repetição numa etapa (a segunda tabela em diante, as filas que não são a de confirmações) vai pelo bloco Equivalente `az` da mesma etapa. Não corte o Passo 8.3 nem o 10.8: são eles que fazem o Incidente 1 acontecer como no slide. Travou de vez? O plano B do guia apaga e sobe pelo script, uns 15 minutos: `pwsh ./scripts/limpar.ps1 -Sufixo <sufixo>` e depois `pwsh ./scripts/deploy.ps1 -Cenario 0 -Sufixo <sufixo>`.
+
+Antes de fechar a montagem, um aviso que vale para o resto do dia: o `deploy.ps1` não roda por cima de um ambiente montado à mão. O Portal batiza sozinho o plano Flex de cada app e cria as role assignments com outro nome, e o Bicep para nos dois (guia de montagem, "Antes do primeiro `deploy.ps1`"). Para quem montou à mão, o plano B dos incidentes é o `limpar.ps1` e depois o `deploy.ps1 -Cenario N -Pronto`.
+
+### Cuidados de telão
+- Environment variables (Passos 8.7 e 8.8): **Show value** só na linha; nunca o **Show values** da barra nem o atalho **Advanced edit**, que mostram de uma vez todas as chaves e connection strings do app.
+- Os dois segredos do Passo 8.6 ficam só na memória da sessão do PowerShell e vão para o Portal pelo clipboard: nada na tela, no histórico ou em arquivo. No fim da Etapa 8, feche a janela e copie qualquer outra coisa.
+- Nas telas de chave (Access keys do storage, Passo 4.5; `RootManageSharedAccessKey`, Passo 5.5; Access keys do tópico, Passo 7.4), mostre onde a chave mora, sem revelar o valor.
+- Policy do APIM (Passo 10.8): o **Warning** sobre o formato das expressões aparece por causa das chaves do JSON no `set-body`; é só aviso: **Save** no aviso grava a policy.
+- Se abrir o Logs do Application Insights, que seja numa aba própria, em **KQL mode**, com o toggle **Agent** desligado.
+
+### Insights do mundo real
+- Montar à mão uma vez ensina onde cada peça mora; montar à mão duas vezes é desperdício. O que fica no ar nasce de código, e o Portal fica para explorar e para consertar no incidente.
+- Algumas decisões só existem na criação (sessions e duplicate detection na fila, o prazo do soft-delete no Key Vault, o nome do APIM): um minuto a mais de atenção no formulário vale mais que uma hora de migração.
+
+### Referências
+- Guia `01_Aulas/Lab0_Montagem_no_Portal_Guia.md`: Etapas 2 a 12, "O que fica diferente do Bicep", "Antes do primeiro `deploy.ps1`" e o Troubleshooting
+- `docs/adr/0008-portal-primeiro-com-bicep-como-plano-b.md`
+
+### Transição
+Casa de pé: o smoke test passou. Agora a mesma jornada, à mão, no Portal, comigo no papel do ERP.
+
+---
+
+## Slide 13 — Ver a Saldaro funcionando
+
+**Tempo previsto:** 10 min · **Mostrar:** `apim-saldaro-<sufixo>` → APIs → `saldaro` → `POST /faturas` → Test (header `x-cliente-id` = `cliente-a`; Request body em Raw com a fatura `DEMO-001`); o `GET /faturas/{id}` na mesma aba Test; `sb-saldaro-<sufixo>` → Overview e Entities → Queues (Message Counts, com **Refresh**); `stsaldaro<sufixo>` → Storage browser → Tables (`faturas` e `cobrancas`); `appi-saldaro-<sufixo>` → Investigate → Search (o `faturaId` entre aspas), o End-to-end transaction details do POST e o Application map. **Cuidados de telão:** ao abrir o Logs, **KQL mode** e o toggle **Agent** desligado; em Environment variables, **Show value** só na linha, para não expor os outros valores na tela.
+
+### O que falar
+O smoke test prova a jornada por script. Agora a gente faz a mesma jornada à mão, sem script nenhum, e eu faço o papel do ERP. Na aba Test da operação `POST /faturas`, adiciono o header `x-cliente-id` com o valor `cliente-a`; sem ele, o hub responde 400. No Request body, em Raw, vai uma fatura com valor, vencimento e `referenciaErp` `DEMO-001`. Send: volta 201 Created com o `faturaId`, o status `cobranca-emitida` e o `idCobranca`. Reparem: no baseline, o POST é síncrono. O hub chamou o banco simulado dentro da requisição e só respondeu quando o banco devolveu a cobrança. É essa herança que o Incidente 1 conserta.
+
+Agora o `GET /faturas/{id}`, repetido a cada poucos segundos. `cobranca-emitida`: o hub gravou a fatura e o banco registrou a cobrança. `registrada`: o banco mandou o webhook `cobranca.registrada`, assinado, pela API `saldaro-webhooks`, e o hub enfileirou na `sbq-confirmacoes-banco`. `baixada`: veio o `cobranca.paga`, o worker fez a baixa e publicou o `FaturaBaixada` no Event Grid. `notificada`: o Event Grid entregou na `sbq-notificacoes-parceiro` e o hub avisou o ERP. Tudo em menos de um minuto.
 
 **Se perguntarem** "notificação a qual parceiro?": aqui, "parceiro" é o termo guarda-chuva para banco parceiro e ERP, e a notificação ao parceiro vai sempre ao ERP da empresa cliente, pelo `callbackUrl` da fatura, nunca ao banco.
 
-Abram o Application Insights, Search, o antigo Transaction search, e procurem pelo `faturaId` que o script imprimiu, entre aspas: aparecem os eventos da jornada inteira, de `fatura.recebida` a `fatura.baixada`. Cliquem no `fatura.recebida`: o End-to-end transaction details mostra o `PostFatura` chamando o banco simulado, porque a chamada HTTP síncrona leva o contexto de trace. Daí em diante a correlação técnica pode se perder: a fila de storage do banco, o webhook, o Service Bus e o Event Grid são fronteiras assíncronas, e o webhook, a baixa e a notificação podem chegar com outros `operation_Id`. Não é erro. É por isso que o `faturaId` vai em todos os eventos do hub: ele é a correlação de negócio, e é ele, não o `operation_Id`, que prova a jornada. Esse é o "dia de sol", e eu quero que vocês guardem esse print, porque é com ele que vamos comparar quando tudo quebrar.
+No Service Bus, as duas confirmações entraram e saíram da `sbq-confirmacoes-banco`: o Active volta a 0, mas cliquem em Refresh, porque a página não se atualiza sozinha. A `sbq-faturas-recebidas` está parada; quem passa a usar essa fila é o conserto do Incidente 1. No Storage browser, a tabela `faturas` tem a linha com status, `idCobranca` e `quantidadeBaixas`, e a `cobrancas` tem uma cobrança só. A prova do Incidente 1 é exatamente essa contagem.
 
-Reparem no que é ingênuo de propósito no baseline: o endpoint é síncrono, a connection string é a `RootManageSharedAccessKey`, a fila de confirmações não tem sessions nem dup detection, não existe alerta nenhum. Nenhum desses itens é um bug; é o jeito que muita gente sobe o primeiro ambiente. Hoje a gente paga a conta de cada um.
+No Application Insights, esperem de 2 a 5 minutos de ingestão. Em Search, o `faturaId` entre aspas traz a jornada inteira, de `fatura.recebida` a `fatura.baixada`. Abram o POST: o End-to-end transaction details mostra só a parte síncrona, APIM, hub e banco simulado, porque o webhook sai de uma fila de Storage e o Event Grid inicia operações novas, com outro `operation_Id`. Não é erro: o `faturaId` é a correlação de negócio, e é ele que prova a jornada. Por fim, o Application map: é a arquitetura do slide "O que vamos montar", viva, com chamadas e latência em cada seta. Esse é o "dia de sol"; guardem o print, porque é com ele que vamos comparar quando tudo quebrar.
 
-Uma coisa fica fora dessa conta e vale para o dia todo: os HTTP triggers do kit são anônimos e o APIM não pede subscription, uma simplificação de laboratório registrada na ADR 0007; em produção, cada empresa cliente chamaria com a sua credencial no APIM, e o hub só aceitaria tráfego vindo dele.
+Reparem no que é ingênuo de propósito: o endpoint é síncrono, a connection string é a `RootManageSharedAccessKey`, a fila de confirmações não tem sessions nem duplicate detection, e não existe alerta nenhum. E uma simplificação que vale o dia todo: os HTTP triggers do kit são anônimos e o APIM não pede subscription, registrada na ADR 0007; em produção, cada empresa cliente chamaria com a sua credencial, e o hub só aceitaria tráfego vindo do APIM.
 
-**Pergunta para a turma:** olhando a tabela de recursos, qual deles vocês acham que vai nos trair primeiro?
-
-**Se perguntarem:** "Por que APIM e não WAF?" → FAQ-1.
+**Pergunta para a turma:** olhando essa jornada, qual peça vocês acham que vai nos trair primeiro?
 
 ### Insights do mundo real
 - Um smoke test ponta a ponta com correlação técnica (`operation_Id`) e de negócio (`faturaId`) é a primeira coisa que um time deveria ter antes de qualquer alerta sofisticado.
+- O Application map é o diagrama de arquitetura que não envelhece: se uma seta que deveria existir sumiu, alguém mudou o sistema sem avisar.
 
 ### Referências
 - [Application Insights: Search (antigo Transaction search) e End-to-end transaction details](https://learn.microsoft.com/azure/azure-monitor/app/failures-performance-transactions)
-- `docs/adr/0007-http-triggers-anonymous-e-apim-sem-subscription.md`, seção "O que mudaria em produção"
+- [Application Map](https://learn.microsoft.com/azure/azure-monitor/app/app-map)
+- Guia de montagem, Passo 12.7; `docs/adr/0007-http-triggers-anonymous-e-apim-sem-subscription.md`, seção "O que mudaria em produção"
 
 ### Transição
 Sexta-feira, 18h. O banco entrou em manutenção.
 
 ---
 
-## Slide 7 — Separador: Incidente 1
+## Slide 14 — Separador: Incidente 1
 
-**Tempo previsto:** 5 min (a história e o terminal pronto: Parte 1 do guia) · **Mostrar:** o separador; o terminal da turma com os Passos 1.1 e 1.2 do guia (`.env.local` carregado e `AsyncRequestReply` = `False` no `/saude`).
+**Tempo previsto:** 3 min (a história e o terminal pronto: Parte 1 do guia, que tem 5 no roteiro dele) · **Mostrar:** o separador; o terminal da turma com os Passos 1.1 e 1.2 do guia (`.env.local` carregado e `AsyncRequestReply` = `False` no `/saude`).
 
 **Comandos:**
 
@@ -222,14 +466,16 @@ Sexta-feira, 18h02. O banco parceiro avisou, numa caixa de e-mail que ninguém m
 
 Enquanto eu conto, preparem o terminal, na raiz do repositório: carreguem o `scripts/.env.local` numa variável `$cfg` e perguntem ao hub, no endpoint `/saude`, em que estado ele está. O toggle `AsyncRequestReply` tem que aparecer `False`: é o baseline do Lab 0. Se aparecer `True`, alguém já consertou; o guia diz como voltar.
 
+Duas regras para os três incidentes. Uma: aqueçam antes de cada rajada, e sempre depois de um `deploy.ps1`. O APIM Consumption e o hub acordam devagar: no primeiro deploy, a primeira chamada levou uns 2 segundos, e as seguintes, uns 130 ms. Uma sonda que responde 404, como a do Passo 5.1 (`GET {SALDARO_APIM_URL}/faturas/aquecimento/status`), ou o próprio smoke test resolve. Duas: o plano B de cada incidente é o `deploy.ps1` com o estado pronto, mas quem montou à mão, como eu acabei de fazer, só o usa depois do `limpar.ps1`: o script não roda por cima de um ambiente montado no Portal.
+
 ### Transição
 Sintomas.
 
 ---
 
-## Slide 8 — Sintomas (Incidente 1)
+## Slide 15 — Sintomas (Incidente 1)
 
-**Tempo previsto:** 15 min (sintomas e hipóteses: Partes 2 e 3 do guia) · **Mostrar:** terminal com `./scripts/erp-simulado.ps1 -Faturas 1 -MaxTentativas 2 -Caos "latencia=45"` e o relatório (1 fatura, 2 tentativas, `504|504` e nenhum `faturaId` devolvido); `stsaldaro<sufixo>` → Storage browser → Tables → `faturas` (duas linhas com a mesma `referenciaErp` e `faturaId` diferentes); `appi-saldaro-<sufixo>` → Logs, numa aba própria do navegador (toggle **Agent** desligado → **Discard**; **KQL mode**), com `kql/faturas-por-referencia-erp.kql` e a consulta de `requests` e `dependencies` (APIM com 504 aos ~30 s, `PostFatura` com ~45 s e `resultCode` 499, um `PostCobranca` por tentativa); `apim-saldaro-<sufixo>` → APIs → `saldaro` → Design → Backend (`<forward-request timeout="30" />` e o `on-error` que devolve o 504).
+**Tempo previsto:** 9 min (sintomas e hipóteses: Partes 2 e 3 do guia, 15 no roteiro dele; para caber, o professor faz o Passo 3.1 sozinho na tela, como o guia manda se o tempo apertar) · **Mostrar:** terminal com `./scripts/erp-simulado.ps1 -Faturas 1 -MaxTentativas 2 -Caos "latencia=45"` e o relatório (1 fatura, 2 tentativas, `504|504` e nenhum `faturaId` devolvido); `stsaldaro<sufixo>` → Storage browser → Tables → `faturas` (duas linhas com a mesma `referenciaErp` e `faturaId` diferentes); `appi-saldaro-<sufixo>` → Logs, numa aba própria do navegador (toggle **Agent** desligado → **Discard**; **KQL mode**), com `kql/faturas-por-referencia-erp.kql` e a consulta de `requests` e `dependencies` (APIM com 504 aos ~30 s, `PostFatura` com ~45 s e `resultCode` 499, um `PostCobranca` por tentativa); `apim-saldaro-<sufixo>` → APIs → `saldaro` → Design → Backend (`<forward-request timeout="30" />` e o `on-error` que devolve o 504).
 
 **Comandos:**
 
@@ -256,7 +502,7 @@ Agora o estrago. O reenvio não carrega nada que diga "esta fatura já foi envia
 
 Na Saldaro 1.0, a mesma sexta teve um segundo sintoma: o worker único de polling lia a tabela de cobranças a cada poucos segundos e não dava conta da fila que se formou no banco relacional. Guardem os dois sintomas, porque o conserto ataca os dois de uma vez.
 
-E se a gente só aumentasse o timeout? Mostro a política no Portal: `apim-saldaro-<sufixo>`, APIs, Saldaro Hub - faturas (a API `saldaro`), Design, Backend. Subir os 30 segundos não conserta nada: o ERP desiste aos 35 de qualquer jeito, e o reenvio continua criando fatura e cobrança novas. E os 230 segundos? É o teto da plataforma: nenhuma resposta HTTP de Function passa disso, qualquer que seja o `functionTimeout`, por causa do idle timeout do balanceador do Azure. Vale saber, mas não foi o que derrubou a Saldaro. Na vida real quase sempre existe alguém na frente que corta antes: um gateway, um proxy, o próprio cliente. Ficar abaixo de 230 segundos não salva ninguém se o APIM corta aos 30.
+E se a gente só aumentasse o timeout? Mostro a política no Portal: `apim-saldaro-<sufixo>`, APIs, Saldaro Hub - faturas (a API `saldaro`), Design, Backend. Subir os 30 segundos não conserta nada: o ERP desiste aos 35 de qualquer jeito, e o reenvio continua criando fatura e cobrança novas; e no Consumption nem dá para subir, porque o tier tem teto de 30 s por requisição, como vimos no slide 10. E os 230 segundos? É o teto da plataforma: nenhuma resposta HTTP de Function passa disso, qualquer que seja o `functionTimeout`, por causa do idle timeout do balanceador do Azure. Vale saber, mas não foi o que derrubou a Saldaro. Na vida real quase sempre existe alguém na frente que corta antes: um gateway, um proxy, o próprio cliente. Ficar abaixo de 230 segundos não salva ninguém se o APIM corta aos 30.
 
 **Pergunta para a turma:** o que o ERP deveria fazer quando não recebe resposta? E como ele saberia se o primeiro POST foi processado ou não?
 
@@ -276,9 +522,9 @@ Hipóteses confirmadas: o cliente não sabe se deu certo, e o banco não perdoa 
 
 ---
 
-## Slide 9 — O padrão: request-reply assíncrono
+## Slide 16 — O padrão: request-reply assíncrono
 
-**Tempo previsto:** 10 min (o conserto: Parte 4 do guia) · **Mostrar:** VS Code em `03_Aplicações/Saldaro.Hub` (`Functions/PostFatura.cs` e `Aplicacao/ServicoDeFaturas.cs` com os dois caminhos de `Cenario:AsyncRequestReply`, `GetFaturaStatus`, `EmitirCobranca`; procure `CONCEITO:`); Portal → `func-saldaro-hub-<sufixo>` → Settings → Environment variables → App settings → `Cenario__AsyncRequestReply` = `true` → Apply → Apply → Confirm (aviso **Save changes**; para ver um valor, **Show value** só na linha, nunca o **Show values** da barra); terminal com o laço do Passo 4.3 perguntando ao `/saude` até `AsyncRequestReply` = `True`; `infra/parameters/cenario-2-pronto.bicepparam` como a versão declarada do mesmo conserto.
+**Tempo previsto:** 6 min (o conserto: Parte 4 do guia, 10 no roteiro dele; o código se lê enquanto o app reinicia) · **Mostrar:** VS Code em `03_Aplicações/Saldaro.Hub` (`Functions/PostFatura.cs` e `Aplicacao/ServicoDeFaturas.cs` com os dois caminhos de `Cenario:AsyncRequestReply`, `GetFaturaStatus`, `EmitirCobranca`; procure `CONCEITO:`); Portal → `func-saldaro-hub-<sufixo>` → Settings → Environment variables → App settings → `Cenario__AsyncRequestReply` = `true` → Apply → Apply → Confirm (aviso **Save changes**; para ver um valor, **Show value** só na linha, nunca o **Show values** da barra); terminal com o laço do Passo 4.3 perguntando ao `/saude` até `AsyncRequestReply` = `True`; `infra/parameters/cenario-2-pronto.bicepparam` como a versão declarada do mesmo conserto.
 
 ### O que falar
 A saída é parar de prometer uma resposta que depende do banco. O `POST /faturas` passa a fazer só o que ele controla: valida, grava a fatura como `recebida`, coloca uma mensagem na `sbq-faturas-recebidas` e responde 202 Accepted em milissegundos. Junto com o 202 vão dois headers: `Location`, apontando para `/faturas/{id}/status` pela URL pública do APIM, e `Retry-After: 5`, que diz ao cliente quando vale a pena perguntar de novo.
@@ -289,13 +535,13 @@ Terceira peça: `Idempotency-Key`. O ERP gera uma chave por fatura e reusa a mes
 
 Por último, a fila. A `sbq-faturas-recebidas` absorve a rajada do dia 10, e o `EmitirCobranca` chama o banco no ritmo que ele aguenta: é o queue-based load leveling. Se o banco devolver 503, a Function lança exceção e o Service Bus reentrega; ninguém fica segurando conexão HTTP aberta. É também a resposta ao worker de polling do legado: quem drena agora é um trigger que escala com a fila.
 
-Vamos ao código. No VS Code, o `PostFatura` tem os dois caminhos lado a lado, escolhidos por `Cenario:AsyncRequestReply`, e não há nada para escrever nem para publicar: o conserto é ligar o toggle de cenário. Confiram que o ERP simulado da reprodução terminou, abram o `func-saldaro-hub-<sufixo>` no Portal, Settings, Environment variables, e troquem `Cenario__AsyncRequestReply` para `true`: o Value vem mascarado, apaguem e digitem. Para conferir um valor, usem o Show value da linha, nunca o Show values da barra: ele mostra todos os segredos do app de uma vez, e na minha tela isso seria segredo projetado. Dois Apply e um Confirm, no aviso Save changes: mudar uma app setting reinicia o app, e o toggle passa a valer de 5 a 35 segundos depois do Confirm (no ensaio pelo Portal, 19; no primeiro deploy, 34). Enquanto ele volta, a gente lê o `GetFaturaStatus` e o `EmitirCobranca` juntos, e o laço do guia pergunta ao `/saude` até o toggle aparecer `True`. Reparem que isso é drift: o Portal agora diverge do Bicep do Lab 0. A versão declarada do mesmo conserto é o `cenario-2-pronto.bicepparam`, e quem travar sobe direto esse estado com `./scripts/deploy.ps1 -Cenario 2 -Pronto`, o plano B: uns 6 a 7 minutos, porque ele também republica os apps, contra uns 2 pelo Portal.
+Vamos ao código. No VS Code, o `PostFatura` tem os dois caminhos lado a lado, escolhidos por `Cenario:AsyncRequestReply`, e não há nada para escrever nem para publicar: o conserto é ligar o toggle de cenário. Confiram que o ERP simulado da reprodução terminou, abram o `func-saldaro-hub-<sufixo>` no Portal, Settings, Environment variables, e troquem `Cenario__AsyncRequestReply` para `true`: o Value vem mascarado, apaguem e digitem. Para conferir um valor, usem o Show value da linha, nunca o Show values da barra: ele mostra todos os segredos do app de uma vez, e na minha tela isso seria segredo projetado. Dois Apply e um Confirm, no aviso Save changes: mudar uma app setting reinicia o app, e o toggle passa a valer de 5 a 35 segundos depois do Confirm (no ensaio pelo Portal, 19; no primeiro deploy, 34). Enquanto ele volta, a gente lê o `GetFaturaStatus` e o `EmitirCobranca` juntos, e o laço do guia pergunta ao `/saude` até o toggle aparecer `True`. Reparem que isso é drift: o Portal agora diverge do Bicep do Lab 0. A versão declarada do mesmo conserto é o `cenario-2-pronto.bicepparam`, e quem travar sobe direto esse estado com `./scripts/deploy.ps1 -Cenario 2 -Pronto`, o plano B (quem montou à mão, depois do `limpar.ps1`): uns 6 a 7 minutos, porque ele também republica os apps, contra uns 2 pelo Portal.
 
 **Pergunta para a turma:** se o ERP fizer polling a cada segundo em vez de respeitar o `Retry-After`, o que acontece com o APIM no dia 10? Que mecanismo vocês usariam para se defender?
 
-**Se perguntarem:** "Se a fila tem duplicate detection, para que a `Idempotency-Key`?" → FAQ-5.
+**Se perguntarem:** "Se a fila tem duplicate detection, para que a `Idempotency-Key`?" A duplicate detection só descarta o mesmo `MessageId` dentro da janela e não devolve nada; o ERP precisa receber de volta o mesmo `faturaId`, e quem devolve é a tabela `idempotencia` (pesquisa de dúvidas, pergunta 8).
 
-**Se perguntarem:** "Por que mudar no Portal, se o kit tem Bicep?" → FAQ-8.
+**Se perguntarem:** "Por que mudar no Portal, se o kit tem Bicep?" O Portal ensina onde cada peça mora; o Bicep recria tudo igual. Cada clique é drift até o `.bicepparam` dizer o mesmo, e o `deploy.ps1` fica como plano B (ADR 0008; pesquisa de dúvidas, pergunta 17).
 
 ### Insights do mundo real
 - 202 sem `Idempotency-Key` só muda o lugar da duplicata: o reenvio do ERP vira duas mensagens na fila em vez de duas chamadas ao banco.
@@ -315,9 +561,9 @@ Toggle ligado. Agora a prova: o mesmo banco lento, e o ERP sem perceber.
 
 ---
 
-## Slide 10 — Prova (Incidente 1)
+## Slide 17 — Prova (Incidente 1)
 
-**Tempo previsto:** 20 min (a prova, o post-mortem de 3 min e as lições de 2 min: Partes 5 a 7 do guia) · **Mostrar:** terminal com o POST do Passo 5.1 do guia (banco a 60 s, cronômetro no cliente) e o polling do status com `curl.exe` (Passo 5.2); `./scripts/erp-simulado.ps1 -Faturas 1000 -Paralelismo 20 -IdempotencyKey` e o relatório; Portal com o Overview da `sbq-faturas-recebidas` enchendo e esvaziando (**Message Counts**; clique em **Refresh**, porque o Overview não se atualiza sozinho); `appi-saldaro-<sufixo>` → Logs (a aba do slide 8, em **KQL mode**) com `kql/faturas-por-referencia-erp.kql` depois que a fila drenar; o reenvio com a mesma `Idempotency-Key` (Passo 5.5).
+**Tempo previsto:** 12 min (a prova e o post-mortem de 3 min: Partes 5 e 6 do guia, que com as lições dão 20 no roteiro dele; para caber, o Passo 5.6 vira leitura para casa e as lições cabem numa frase; não pule os Passos 5.3 e 5.4) · **Mostrar:** terminal com o POST do Passo 5.1 do guia (banco a 60 s, cronômetro no cliente) e o polling do status com `curl.exe` (Passo 5.2); `./scripts/erp-simulado.ps1 -Faturas 1000 -Paralelismo 20 -IdempotencyKey` e o relatório; Portal com o Overview da `sbq-faturas-recebidas` enchendo e esvaziando (**Message Counts**; clique em **Refresh**, porque o Overview não se atualiza sozinho); `appi-saldaro-<sufixo>` → Logs (a aba do slide 15, em **KQL mode**) com `kql/faturas-por-referencia-erp.kql` depois que a fila drenar; o reenvio com a mesma `Idempotency-Key` (Passo 5.5).
 
 **Comandos:**
 
@@ -350,7 +596,7 @@ Três minutos de post-mortem, cinco linhas: o que aconteceu, impacto, causa raiz
 
 **Pergunta para a turma:** qual das cinco checagens vocês colocariam num alerta de produção, e com que limite?
 
-**Se perguntarem:** "Se o Durable dá o 202 de graça, por que fazer à mão?" → FAQ-9.
+**Se perguntarem:** "Se o Durable dá o 202 de graça, por que fazer à mão?" É o mesmo padrão; à mão, cada peça aparece, e com uma etapa só a fila e o status bastam, com uma URL de status só de leitura. O Durable vence com várias etapas, timers, aprovação humana e compensação (pesquisa de dúvidas, pergunta 18).
 
 ### Insights do mundo real
 - Critério de prova bom é numérico e reproduzível: "202 em menos de 500 ms com o banco a 60 s" vale mais que "ficou mais rápido".
@@ -367,21 +613,21 @@ Pausa de 10 minutos. Na volta, dia 10, 9h30.
 
 ---
 
-## Slide 11 — Separador: Incidente 2
+## Slide 18 — Separador: Incidente 2
 
-**Tempo previsto:** 1 min.
+**Tempo previsto:** 1 min · **Mostrar:** o separador. Na volta da pausa, confiram que a turma está no ponto de partida, o estado pronto do Incidente 1; quem chegou agora roda `./scripts/deploy.ps1 -Cenario 3 -Sufixo <seu sufixo>`.
 
 ### O que falar
-Incidente 2: "O webhook que chegou duas vezes, e antes da hora". É o mais longo do dia e o mais importante.
+Incidente 2: "O webhook que chegou duas vezes, e antes da hora". É o mais longo do dia e o mais importante: 45 minutos, do slide 18 ao 22.
 
 ### Transição
 Sintomas.
 
 ---
 
-## Slide 12 — Sintomas (Incidente 2)
+## Slide 19 — Sintomas (Incidente 2)
 
-**Tempo previsto:** 18 min (a história, os sintomas e as hipóteses: Partes 1 a 3 do guia) · **Mostrar:** terminal com `./scripts/erp-simulado.ps1 -Faturas 20 -Caos "duplicar=3;embaralhar=true"`; `appi-saldaro-<sufixo>` → Logs (aba própria, toggle **Agent** desligado, **KQL mode**) com `kql/baixa-duplicada.kql` filtrado pelo início da execução (e a fatura de estudo tirada dali); `GET {SALDARO_APIM_URL}/faturas/{id}` (status e `quantidadeBaixas`); `stsaldaro<sufixo>` → Storage browser → Tables → `faturas` filtrada por `status` = `registrada` (as desbaixadas: 2 das 20 no primeiro deploy); o POST forjado sem assinatura em `{SALDARO_APIM_URL}/webhooks/banco` respondendo 202; as consultas de hipóteses do guia (cópias por `idEvento`, linha do tempo da fatura, intervalo entre as baixas) e o `host.json` do hub.
+**Tempo previsto:** 11 min (a história, os sintomas e as hipóteses: Partes 1 a 3 do guia, 18 no roteiro dele; o professor reproduz e mostra, e quem tem o ambiente repete junto) · **Mostrar:** terminal com `./scripts/erp-simulado.ps1 -Faturas 20 -Caos "duplicar=3;embaralhar=true"`; `appi-saldaro-<sufixo>` → Logs (aba própria, toggle **Agent** desligado, **KQL mode**) com `kql/baixa-duplicada.kql` filtrado pelo início da execução (e a fatura de estudo tirada dali); `GET {SALDARO_APIM_URL}/faturas/{id}` (status e `quantidadeBaixas`); `stsaldaro<sufixo>` → Storage browser → Tables → `faturas` filtrada por `status` = `registrada` (as desbaixadas: 2 das 20 no primeiro deploy); o POST forjado sem assinatura em `{SALDARO_APIM_URL}/webhooks/banco` respondendo 202; as consultas de hipóteses do guia (cópias por `idEvento`, linha do tempo da fatura, intervalo entre as baixas) e o `host.json` do hub.
 
 **Comandos:**
 
@@ -409,7 +655,7 @@ Antes de consertar, as hipóteses, com as consultas do guia: o ERP não duplicou
 
 **Pergunta para a turma:** desses três sintomas (duplicata, desordem e forjada), qual vocês resolveriam primeiro? E qual dá para resolver só com configuração, sem código?
 
-**Se perguntarem:** "Se a fila é FIFO, por que a fatura desbaixou?" → FAQ-4.
+**Se perguntarem:** "Se a fila é FIFO, por que a fatura desbaixou?" FIFO é ordem de chegada, não de negócio: o banco mandou o "paga" antes do "registrada", e é nessa ordem que eles saem. A sessão garante um consumidor por fatura; a ordem de negócio é a máquina de estados, no slide 21 (pesquisa de dúvidas, pergunta 7).
 
 ### Insights do mundo real
 - Webhook de parceiro é at-least-once por definição: quando não recebe a resposta a tempo, o parceiro repete a confirmação, e ele nunca sabe se você processou.
@@ -427,9 +673,9 @@ Primeira camada: a assinatura.
 
 ---
 
-## Slide 13 — Assinatura que vale: HMAC do corpo
+## Slide 20 — Assinatura que vale: HMAC do corpo
 
-**Tempo previsto:** 12 min (a camada da assinatura: Parte 4 do guia) · **Mostrar:** VS Code com a validação de assinatura do `Saldaro.Hub` (`Dominio/AssinaturaWebhook.cs`, lógica pura, chamada pelo `Functions/WebhookBanco.cs` antes de qualquer `JsonDocument`); Portal → `func-saldaro-hub-<sufixo>` → Settings → Environment variables → `Cenario__WebhookHmac = true` (**Show value** só na linha, nunca o **Show values** da barra); terminal repetindo o POST forjado (agora 401) e `./scripts/smoke-test.ps1` (o webhook assinado do banco continua passando).
+**Tempo previsto:** 7 min (a camada da assinatura: Parte 4 do guia, 12 no roteiro dele) · **Mostrar:** VS Code com a validação de assinatura do `Saldaro.Hub` (`Dominio/AssinaturaWebhook.cs`, lógica pura, chamada pelo `Functions/WebhookBanco.cs` antes de qualquer `JsonDocument`); Portal → `func-saldaro-hub-<sufixo>` → Settings → Environment variables → `Cenario__WebhookHmac = true` (**Show value** só na linha, nunca o **Show values** da barra); terminal repetindo o POST forjado (agora 401) e `./scripts/smoke-test.ps1` (o webhook assinado do banco continua passando).
 
 ### O que falar
 Segredo fixo num header não é assinatura. Ele prova só que quem mandou conhecia o segredo em algum momento: o segredo aparece em log, em proxy, em print de suporte, e não protege o corpo. Quem tem o header copia, troca o valor ou o `faturaId` e manda de novo quantas vezes quiser.
@@ -446,7 +692,7 @@ E quem pode chamar o webhook? No kit, qualquer um: a Function é `Anonymous` e a
 
 **Pergunta para a turma:** por que o timestamp entra no conteúdo assinado, e não só num header separado?
 
-**Se perguntarem:** "Por que HMAC no webhook, e não mTLS, OAuth ou lista de IPs?" → FAQ-10.
+**Se perguntarem:** "Por que HMAC no webhook, e não mTLS, OAuth ou lista de IPs?" Cada um responde uma pergunta: o HMAC prova que o corpo veio de quem tem o segredo; o mTLS, quem abriu a conexão; a lista de IPs, quem consegue chegar; o OAuth, quem chama, com um token que expira. Em produção, HMAC mais IPs ou mTLS, conforme o contrato com o banco (ADR 0007; pesquisa de dúvidas, pergunta 19).
 
 ### Insights do mundo real
 - Rotação de segredo de webhook sem janela dupla derruba o parceiro: durante a troca, aceite o segredo atual e o anterior, e aposente o antigo com data marcada.
@@ -465,9 +711,9 @@ Segunda e terceira camadas: o broker e o consumidor.
 
 ---
 
-## Slide 14 — Uma vez só e na ordem certa
+## Slide 21 — Uma vez só e na ordem certa
 
-**Tempo previsto:** 30 min (as camadas do broker e do consumidor: Partes 5 e 6 do guia) · **Mostrar:** Portal → `sb-saldaro-<sufixo>` → Entities → Queues → `sbq-confirmacoes-banco` → Overview → bloco Essentials (Sessions e Duplicate detection em "Disabled", sem como ligar; o Settings → Properties virou uma página genérica de metadados do ARM) e o erro do `az servicebus queue update --enable-session true` (`SubCode=40000`); os contadores da fila em zero (Overview → **Message Counts**) e o Delete no Overview da fila (**Delete queue** → **Yes**); Queues → **+ Queue**, o painel de criação com o nome `sbq-confirmacoes-banco`, **Max delivery count** `10`, **Message time to live** no máximo (`10675199` dias, `2` h, `48` min, `5` s; o painel vem com 14 dias), **Lock duration** 1 minuto, **Enable dead lettering on message expiration** marcado, **Enable partitioning** desmarcado e as duas caixas do dia, **Enable duplicate detection** (janela de 10 min) e **Enable sessions**, marcadas (Passo 5.5 do guia); o Overview da fila nova, com Sessions e Duplicate detection fora de "Disabled"; VS Code com `infra/parameters/cenario-2-pronto.bicepparam` (as três linhas do Passo 5.4) ao lado do `cenario-3-pronto.bicepparam`, `infra/modules/service-bus.bicep` (`requiresSession`, `requiresDuplicateDetection`), os triggers `ProcessarConfirmacaoSemSessao` e `ProcessarConfirmacaoComSessao` (`IsSessionsEnabled = true`) e o `host.json`; terminal com o `az servicebus queue show` do Passo 5.6 do guia (`True`, `True`, `PT10M`, `10` e `PT1M`); o erro `non-sessionful` no Logs, depois de mandar uma fatura (com a fila vazia, a consulta volta vazia) e com a fila em **Active** 2; Portal → `func-saldaro-hub-<sufixo>` → Environment variables para trocar o consumidor (os dois app settings `AzureWebJobs.ProcessarConfirmacao*.Disabled`; a grade corta os nomes, confira o **Name** no painel) e ligar `Cenario__Inbox` (**Show value** só na linha, nunca o **Show values** da barra). Plano B, só para quem travar: `./scripts/deploy.ps1 -Cenario 3 -Sufixo <sufixo> -SemPublicar` (o Bicep recria a fila com o `.bicepparam` do Passo 5.4) ou `-Cenario 3 -Pronto`.
+**Tempo previsto:** 18 min (as camadas do broker e do consumidor: Partes 5 e 6 do guia, 30 no roteiro dele; em ritmo de demonstração, e quem ficar para trás vai para o plano B) · **Mostrar:** Portal → `sb-saldaro-<sufixo>` → Entities → Queues → `sbq-confirmacoes-banco` → Overview → bloco Essentials (Sessions e Duplicate detection em "Disabled", sem como ligar; o Settings → Properties virou uma página genérica de metadados do ARM) e o erro do `az servicebus queue update --enable-session true` (`SubCode=40000`); os contadores da fila em zero (Overview → **Message Counts**) e o Delete no Overview da fila (**Delete queue** → **Yes**); Queues → **+ Queue**, o painel de criação com o nome `sbq-confirmacoes-banco`, **Max delivery count** `10`, **Message time to live** no máximo (`10675199` dias, `2` h, `48` min, `5` s; o painel vem com 14 dias), **Lock duration** 1 minuto, **Enable dead lettering on message expiration** marcado, **Enable partitioning** desmarcado e as duas caixas do dia, **Enable duplicate detection** (janela de 10 min) e **Enable sessions**, marcadas (Passo 5.5 do guia); o Overview da fila nova, com Sessions e Duplicate detection fora de "Disabled"; VS Code com `infra/parameters/cenario-2-pronto.bicepparam` (as três linhas do Passo 5.4) ao lado do `cenario-3-pronto.bicepparam`, `infra/modules/service-bus.bicep` (`requiresSession`, `requiresDuplicateDetection`), os triggers `ProcessarConfirmacaoSemSessao` e `ProcessarConfirmacaoComSessao` (`IsSessionsEnabled = true`) e o `host.json`; terminal com o `az servicebus queue show` do Passo 5.6 do guia (`True`, `True`, `PT10M`, `10` e `PT1M`); o erro `non-sessionful` no Logs, depois de mandar uma fatura (com a fila vazia, a consulta volta vazia) e com a fila em **Active** 2; Portal → `func-saldaro-hub-<sufixo>` → Environment variables para trocar o consumidor (os dois app settings `AzureWebJobs.ProcessarConfirmacao*.Disabled`; a grade corta os nomes, confira o **Name** no painel) e ligar `Cenario__Inbox` (**Show value** só na linha, nunca o **Show values** da barra). Plano B, só para quem travar: `./scripts/deploy.ps1 -Cenario 3 -Sufixo <sufixo> -SemPublicar` (o Bicep recria a fila com o `.bicepparam` do Passo 5.4) ou `-Cenario 3 -Pronto`.
 
 **Comandos:**
 
@@ -504,9 +750,9 @@ Fila nova, consumidor velho: o `ProcessarConfirmacaoSemSessao` continua ligado, 
 
 **Pergunta para a turma:** se o duplicate detection já descarta a confirmação repetida, para que a inbox? Deem um cenário em que só ela salva.
 
-**Se perguntarem:** "Se a fila é FIFO, por que precisa de sessão? E partição não resolve a ordem?" → FAQ-4.
+**Se perguntarem:** "Se a fila é FIFO, por que precisa de sessão? E partição não resolve a ordem?" Sem sessão, com quatro chamadas em paralelo, a mensagem 1 pode terminar depois da 3; a sessão dá a um consumidor o lock exclusivo do `faturaId`. Partição é throughput e disponibilidade: sem chave, ela espalha as mensagens, e a ordem se perde (pesquisa de dúvidas, pergunta 7).
 
-**Se perguntarem:** "Se a fila tem duplicate detection, para que inbox e ETag?" → FAQ-5.
+**Se perguntarem:** "Se a fila tem duplicate detection, para que inbox e ETag?" A detecção só olha o `MessageId`, só dentro da janela e só no envio: a reentrega da mesma mensagem e a confirmação repetida depois da janela passam. Quem impede a baixa dupla é a gravação condicional com ETag; a inbox é atalho e auditoria (pesquisa de dúvidas, pergunta 8).
 
 ### Insights do mundo real
 - Propriedade imutável é decisão de desenho, não de operação: escolha sessions e duplicate detection ao criar a fila, e trate a mudança como uma versão nova do canal.
@@ -529,9 +775,9 @@ Prova.
 
 ---
 
-## Slide 15 — Prova (Incidente 2)
+## Slide 22 — Prova (Incidente 2)
 
-**Tempo previsto:** 14 min (a prova e o post-mortem de 3 min: Partes 7 e 8 do guia) · **Mostrar:** terminal com `./scripts/erp-simulado.ps1 -Faturas 20 -Caos "duplicar=3;embaralhar=true"`, o POST forjado no meio da tempestade (401) e o laço do guia até a fila zerar; `appi-saldaro-<sufixo>` → Logs (**KQL mode**) com `kql/baixa-duplicada.kql` vazio, os `traces` da `ProcessarConfirmacaoComSessao` (em `customDimensions`, `prop__SessionId`, `prop__SequenceNumber` e `prop__DeliveryCount`) e a contagem de `requests` (`WebhookBanco` × `ProcessarConfirmacaoComSessao`); `az storage entity query` nas tabelas `faturas` e `inbox` (ou o Storage browser do `stsaldaro<sufixo>`); a fila recriada no Portal.
+**Tempo previsto:** 8 min (a prova e o post-mortem de 3 min: Partes 7 e 8 do guia, 14 no roteiro dele) · **Mostrar:** terminal com `./scripts/erp-simulado.ps1 -Faturas 20 -Caos "duplicar=3;embaralhar=true"`, o POST forjado no meio da tempestade (401) e o laço do guia até a fila zerar; `appi-saldaro-<sufixo>` → Logs (**KQL mode**) com `kql/baixa-duplicada.kql` vazio, os `traces` da `ProcessarConfirmacaoComSessao` (em `customDimensions`, `prop__SessionId`, `prop__SequenceNumber` e `prop__DeliveryCount`) e a contagem de `requests` (`WebhookBanco` × `ProcessarConfirmacaoComSessao`); `az storage entity query` nas tabelas `faturas` e `inbox` (ou o Storage browser do `stsaldaro<sufixo>`); a fila recriada no Portal.
 
 ### O que falar
 Seis critérios, os P1 a P6 do guia, na ordem das camadas.
@@ -564,9 +810,9 @@ Quarta-feira, 14h. O banco parceiro publicou uma atualização da API e mudou o 
 
 ---
 
-## Slide 16 — Separador: Incidente 3
+## Slide 23 — Separador: Incidente 3
 
-**Tempo previsto:** 1 min.
+**Tempo previsto:** 1 min · **Mostrar:** o separador. Confiram que a turma está no ponto de partida, o estado pronto do Incidente 2; quem chegou agora roda `./scripts/deploy.ps1 -Cenario 4 -Sufixo <seu sufixo>`. Para ganhar tempo, a triagem de aquecimento da Parte 1 já pode ser disparada aqui.
 
 ### O que falar
 Incidente 3: "A mensagem que ninguém conseguia processar".
@@ -576,9 +822,9 @@ Sintomas.
 
 ---
 
-## Slide 17 — Sintomas (Incidente 3)
+## Slide 24 — Sintomas (Incidente 3)
 
-**Tempo previsto:** 19 min (o incidente, a preparação, os sintomas e as hipóteses: Partes 1 a 3 do guia) · **Mostrar:** terminal com o `Contar-Fila` e o `./scripts/triagem-dlq.ps1` de aquecimento (Parte 1; uns 2 minutos e meio); as duas rajadas (`-Faturas 10 -Caos "valorComVirgula=true"` e `-Faturas 20 -Caos "falhaTransiente=50"`) e a DLQ chegando a ~32; Portal → `sb-saldaro-<sufixo>` → Queues → `sbq-confirmacoes-banco` → Service Bus Explorer → aba Dead-letter → Peek Mode → Peek from start (o peek da DLQ funciona com a fila exigindo sessão; colunas Delivery Count, Session ID, Dead Letter Reason e Dead Letter Error Description; uma mensagem com `"valor": "1.250,00"` e uma `cobranca.paga` boa com `simulaTransiente = true`, as duas com `MaxDeliveryCountExceeded`); `appi-saldaro-<sufixo>` → Logs (aba própria, toggle **Agent** desligado, **KQL mode**) com as exceções do consumidor e o ritmo das reentregas (Passos 3.1 e 3.2); a triagem só leitura com um grupo só.
+**Tempo previsto:** 11 min (o incidente, a preparação, os sintomas e as hipóteses: Partes 1 a 3 do guia, 19 no roteiro dele; cada triagem leva uns 2 minutos e meio, então dispare e siga a história) · **Mostrar:** terminal com o `Contar-Fila` e o `./scripts/triagem-dlq.ps1` de aquecimento (Parte 1; uns 2 minutos e meio); as duas rajadas (`-Faturas 10 -Caos "valorComVirgula=true"` e `-Faturas 20 -Caos "falhaTransiente=50"`) e a DLQ chegando a ~32; Portal → `sb-saldaro-<sufixo>` → Queues → `sbq-confirmacoes-banco` → Service Bus Explorer → aba Dead-letter → Peek Mode → Peek from start (o peek da DLQ funciona com a fila exigindo sessão; colunas Delivery Count, Session ID, Dead Letter Reason e Dead Letter Error Description; uma mensagem com `"valor": "1.250,00"` e uma `cobranca.paga` boa com `simulaTransiente = true`, as duas com `MaxDeliveryCountExceeded`); `appi-saldaro-<sufixo>` → Logs (aba própria, toggle **Agent** desligado, **KQL mode**) com as exceções do consumidor e o ritmo das reentregas (Passos 3.1 e 3.2); a triagem só leitura com um grupo só.
 
 **Comandos:**
 
@@ -605,7 +851,7 @@ E agora? Reprocessar tudo como está devolve o veneno para a DLQ, e uma cópia r
 
 **Pergunta para a turma:** olhando só para estas duas mensagens, como vocês decidiriam qual reprocessar? O que faltou o worker registrar?
 
-**Se perguntarem:** "Por que não deixar o Service Bus reentregar até a DLQ? O Functions não tem retry policy?" → FAQ-6.
+**Se perguntarem:** "Por que não deixar o Service Bus reentregar até a DLQ? O Functions não tem retry policy?" Não para o trigger de Service Bus: quem reentrega é o broker, na hora, gastando o `maxDeliveryCount`, e o tratamento de mensagem envenenada não se configura no Functions. A espera tem de vir da aplicação, e é o conserto do slide 25 (pesquisa de dúvidas, pergunta 9).
 
 ### Insights do mundo real
 - Mudança de contrato do parceiro é a causa mais comum de mensagem envenenada em integração B2B, e quase nunca vem com aviso. Validação de schema na entrada e versionamento do contrato são a primeira linha.
@@ -623,9 +869,9 @@ Classificar antes de agir.
 
 ---
 
-## Slide 18 — Classificar, agendar, triar
+## Slide 25 — Classificar, agendar, triar
 
-**Tempo previsto:** 12 min (o conserto: Parte 4 do guia) · **Mostrar:** VS Code com a lógica de baixa compartilhada pelos dois triggers (`Aplicacao/ProcessadorDeBaixa.cs`, `Dominio/ClassificadorDeConfirmacao.cs` e `Dominio/PoliticaDeRetry.cs`; procure `CONCEITO:`: classificação do erro, `DeadLetterMessageAsync` com motivo e descrição, cópia agendada com `ScheduledEnqueueTime`); Portal → `func-saldaro-hub-<sufixo>` → Settings → Environment variables → `Cenario__DlqComMotivo` e `Cenario__RetryAgendado` = `true` (Passo 4.2 do guia; **Show value** só na linha, nunca o **Show values** da barra); Portal → `sb-saldaro-<sufixo>` → Entities → Queues → `sbq-confirmacoes-banco` → Overview → seção **Settings**, abaixo de **Essentials** → **(change)** sob **Max delivery count** (de `10` para `3`) → **OK** → **Refresh** (Passo 4.3); a comparação entre `cenario-3-pronto.bicepparam` e `cenario-4-pronto.bicepparam` e a `var filas` de `infra/modules/service-bus.bicep` (a versão declarada do mesmo conserto); o Passo 4.4 do guia: `az servicebus queue show` com `maxDeliveryCount = 3` e lock `PT1M`, e o `Contar-Fila` com a DLQ ainda com as ~32 do incidente. Plano B, só para quem travar: `./scripts/deploy.ps1 -Cenario 4 -Pronto -SemPublicar` com a fila parada (no what-if, a fila aparece como **Deploy**, `!`, sem valores; nada é recriado).
+**Tempo previsto:** 7 min (o conserto: Parte 4 do guia, 12 no roteiro dele) · **Mostrar:** VS Code com a lógica de baixa compartilhada pelos dois triggers (`Aplicacao/ProcessadorDeBaixa.cs`, `Dominio/ClassificadorDeConfirmacao.cs` e `Dominio/PoliticaDeRetry.cs`; procure `CONCEITO:`: classificação do erro, `DeadLetterMessageAsync` com motivo e descrição, cópia agendada com `ScheduledEnqueueTime`); Portal → `func-saldaro-hub-<sufixo>` → Settings → Environment variables → `Cenario__DlqComMotivo` e `Cenario__RetryAgendado` = `true` (Passo 4.2 do guia; **Show value** só na linha, nunca o **Show values** da barra); Portal → `sb-saldaro-<sufixo>` → Entities → Queues → `sbq-confirmacoes-banco` → Overview → seção **Settings**, abaixo de **Essentials** → **(change)** sob **Max delivery count** (de `10` para `3`) → **OK** → **Refresh** (Passo 4.3); a comparação entre `cenario-3-pronto.bicepparam` e `cenario-4-pronto.bicepparam` e a `var filas` de `infra/modules/service-bus.bicep` (a versão declarada do mesmo conserto); o Passo 4.4 do guia: `az servicebus queue show` com `maxDeliveryCount = 3` e lock `PT1M`, e o `Contar-Fila` com a DLQ ainda com as ~32 do incidente. Plano B, só para quem travar: `./scripts/deploy.ps1 -Cenario 4 -Pronto -SemPublicar` com a fila parada (no what-if, a fila aparece como **Deploy**, `!`, sem valores; nada é recriado).
 
 **Comandos:**
 
@@ -656,7 +902,7 @@ E o que ficou de antes? A triagem, que vocês executam na prova. O `./scripts/tr
 
 **Pergunta para a turma:** que outros erros do hub vocês classificariam como permanentes? E um 429 do banco parceiro: permanente ou transiente?
 
-**Se perguntarem:** "Por que retry agendado à mão? O Functions não tem retry policy?" → FAQ-6.
+**Se perguntarem:** "Por que retry agendado à mão? O Functions não tem retry policy?" As retry policies do Functions valem para Timer, Event Hubs, Kafka e Cosmos DB, não para o Service Bus, e o `clientRetryOptions` do `host.json` só refaz as chamadas ao Service Bus, não a execução. A reentrega do broker é imediata; a espera é uma cópia agendada, com `MessageId` próprio (pesquisa de dúvidas, pergunta 9).
 
 ### Insights do mundo real
 - Classificar o erro é a decisão mais barata e mais rentável de um consumidor: transforma a DLQ de depósito em fila de trabalho com instruções.
@@ -678,14 +924,14 @@ Prova.
 
 ---
 
-## Slide 19 — Prova (Incidente 3)
+## Slide 26 — Prova (Incidente 3)
 
-**Tempo previsto:** 18 min (a prova, o post-mortem de 3 min e as lições de 2 min: Partes 5 e 6 do guia) · **Mostrar:** terminal com a sonda de aquecimento, as mesmas duas rajadas e o `Contar-Fila` (DLQ de ~32 para ~52); `./scripts/triagem-dlq.ps1` com o grupo novo `SchemaInvalida` (20) e o Service Bus Explorer com uma dessas mensagens (`DeliveryCount` 1); `appi-saldaro-<sufixo>` → Logs (**KQL mode**) com `mensagem.deadletter`, `mensagem.retry.agendado` (tentativas 1 e 2, com 10 e 20 s; a tentativa 3, de 40 s, só se a falha durar mais) e `kql/dlq-por-motivo.kql`; `./scripts/triagem-dlq.ps1 -Reprocessar` (52 reprocessadas no primeiro deploy) e a DLQ em zero (também na métrica `DeadletteredMessages` no Portal); a tabela `faturas` e a consulta final do guia (60 faturas, 60 baixadas, nenhuma baixa dupla); `GET {SALDARO_APIM_URL}/faturas/{id}` da fatura de estudo; `maxDeliveryCount` no Bicep e no Portal.
+**Tempo previsto:** 11 min (a prova e o post-mortem de 3 min: Partes 5 e 6 do guia, que com as lições dão 18 no roteiro dele; as três triagens rodam enquanto a conversa segue) · **Mostrar:** terminal com a sonda de aquecimento, as mesmas duas rajadas e o `Contar-Fila` (DLQ de ~32 para ~52); `./scripts/triagem-dlq.ps1` com o grupo novo `SchemaInvalida` (20) e o Service Bus Explorer com uma dessas mensagens (`DeliveryCount` 1); `appi-saldaro-<sufixo>` → Logs (**KQL mode**) com `mensagem.deadletter`, `mensagem.retry.agendado` (tentativas 1 e 2, com 10 e 20 s; a tentativa 3, de 40 s, só se a falha durar mais) e `kql/dlq-por-motivo.kql`; `./scripts/triagem-dlq.ps1 -Reprocessar` (52 reprocessadas no primeiro deploy) e a DLQ em zero (também na métrica `DeadletteredMessages` no Portal); a tabela `faturas` e a consulta final do guia (60 faturas, 60 baixadas, nenhuma baixa dupla); `GET {SALDARO_APIM_URL}/faturas/{id}` da fatura de estudo; `maxDeliveryCount` no Bicep e no Portal.
 
 **Comandos:**
 
 ```powershell
-# Aquecimento depois do restart do slide 18, obrigatório se o conserto veio pelo deploy.ps1 do plano B (404 é o esperado: a fatura não existe)
+# Aquecimento depois do restart do slide 25, obrigatório se o conserto veio pelo deploy.ps1 do plano B (404 é o esperado: a fatura não existe)
 1..3 | ForEach-Object { (Invoke-WebRequest "$($cfg.SALDARO_APIM_URL)/faturas/aquecimento/status" -SkipHttpErrorCheck).StatusCode }
 ./scripts/erp-simulado.ps1 -Faturas 10 -Caos "valorComVirgula=true"
 ./scripts/erp-simulado.ps1 -Faturas 20 -Caos "falhaTransiente=50"
@@ -725,9 +971,9 @@ Três incidentes, três post-mortems. Vamos olhar para eles juntos.
 
 ---
 
-## Slide 20 — Post-mortem coletivo
+## Slide 27 — Post-mortem coletivo
 
-**Tempo previsto:** 10 min · **Mostrar:** o template de cinco linhas; pedir que duas ou três pessoas leiam o seu.
+**Tempo previsto:** 10 min · **Mostrar:** o template de cinco linhas (`templates/post-mortem.md`); pedir que duas ou três pessoas leiam o seu.
 
 ### O que falar
 Cinco linhas, sem culpados: o que aconteceu, impacto, causa raiz, o que consertamos, o que impede de repetir. Vocês escreveram um por incidente; agora vamos ler alguns em voz alta. Não estou procurando o "certo"; estou procurando a causa raiz escrita como decisão de arquitetura, não como erro de pessoa. "O ERP reenviou" não é causa raiz; "a API era síncrona e não tinha chave de idempotência" é. Quem ler o seu ganha perguntas da turma, não correções.
@@ -750,38 +996,48 @@ O plantão continua em casa.
 
 ---
 
-## Slide 21 — Desafio para casa e guias de leitura
+## Slide 28 — Desafio para casa e guias de leitura
 
 **Tempo previsto:** 7 min (a limpeza de 5 min vem logo depois, ainda neste slide) · **Mostrar:** o guia do cenário 3.6 no repositório; a lista dos outros guias; o Portal com o botão "Delete resource group".
+
+**Comandos (alternativa ao Portal):**
+
+```powershell
+./scripts/limpar.ps1
+./scripts/limpar.ps1 -Sufixo <seu sufixo>   # se o RG já foi apagado pelo Portal: só purga o Key Vault e o APIM, que ficam em soft-delete
+```
 
 ### O que falar
 O desafio para casa é o incidente que não coube hoje e que, na minha experiência, é o mais traiçoeiro: "O agendador que morreu em silêncio". Um timer para, nenhum erro aparece, e ninguém percebe por meses. A solução é um heartbeat emitido ao concluir o trabalho, não ao começar, e um alerta por ausência de sinal; o workbook é opcional. O guia está no repositório com o mesmo ritual: sintomas, hipóteses, conserto, prova. A entrega é um print do alerta disparando e o post-mortem de cinco linhas. Contem com a espera: o alerta dispara entre 15 e 25 minutos depois do último heartbeat. E um aviso que o primeiro deploy real do kit ensinou: durante o deploy do estado pronto, chega um e-mail do Azure pedindo para verificar o endereço do Action Group, com um código que vale 30 minutos. Sem essa verificação, o alerta dispara no Portal, mas nenhum e-mail chega.
 
 Os outros quatro cenários ficam como guias de leitura: rate limit com 429, no limite de 60 chamadas/min por chave de cada cliente, e retry com teto; Managed Identity e Key Vault no lugar de connection string; Bicep, `what-if` e drift; e a decisão Premium ou Standard com um ADR. Façam no ritmo de vocês; cada um cabe numa noite.
 
-**Se perguntarem:** "Por que Service Bus Standard? Um hub de pagamentos não usaria Premium?" → FAQ-3.
+**Se perguntarem:** "Por que Service Bus Standard? Um hub de pagamentos não usaria Premium?" Voltem ao slide 6: o Standard tem tudo o que os incidentes usaram, e a ADR 0003 fixa os cinco gatilhos que pedem o Premium. A Leitura 3.8 transforma essa conversa num ADR (pesquisa de dúvidas, pergunta 6).
 
-E agora o passo mais importante do dia: apaguem o `rg-saldaro-lab`. Todos juntos, agora, ao vivo. Service Bus Standard cobra por hora e não dorme.
+E agora o passo mais importante do dia: apaguem o `rg-saldaro-lab`. Todos juntos, agora, ao vivo. Service Bus Standard cobra por hora e não dorme: R$ 0,07 por hora. Quem montou à mão confere também se apareceu um `DefaultResourceGroup-CQ`, que o assistente do Function App pode criar fora do lab, e só o apaga se estiver vazio.
 
 ### Insights do mundo real
 - Alerta por ausência de sinal (dead man's switch) é o alerta mais barato e mais negligenciado de qualquer sistema com agendamento.
 
 ### Referências
 - [Log search alerts](https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types#log-alerts)
+- Guia de montagem, Limpeza de Recursos
 
 ### Transição
 Encerramento.
 
 ---
 
-## Slide 22 — Encerramento e referências
+## Slide 29 — Encerramento e referências
 
-**Tempo previsto:** 3 min.
+**Tempo previsto:** 3 min · **Mostrar:** os links do slide no repositório da aula; o Portal com o `rg-saldaro-lab` sendo apagado.
+
+**Comando (alternativa ao Portal):** `./scripts/limpar.ps1`
 
 ### O que falar
 Obrigado pelo plantão. Os links do slide estão no repositório da aula, junto com os guias, o kit e os templates de post-mortem e de ADR. Dúvidas no canal da turma; eu respondo durante a semana.
 
-Antes de fechar o notebook, confiram no Portal que o `rg-saldaro-lab` está sendo apagado. Quem preferir o terminal tem o `./scripts/limpar.ps1`, que apaga o Resource Group e ainda purga o Key Vault e o APIM, que ficam em soft-delete com o nome reservado, para o sufixo ficar livre na próxima vez. O kit continua no repositório: qualquer cenário sobe de novo com `deploy.ps1 -Cenario N` em poucos minutos, então refazer um incidente com calma, durante a semana, custa centavos. É o melhor exercício para fixar o dia: escolher um dos três, recriar o estado inicial e quebrar de novo, sem olhar o guia.
+Antes de fechar o notebook, confiram no Portal que o `rg-saldaro-lab` está sendo apagado. Quem preferir o terminal tem o `./scripts/limpar.ps1`, que apaga o Resource Group e ainda purga o Key Vault e o APIM, que ficam em soft-delete com o nome reservado, para o sufixo ficar livre na próxima vez. O kit continua no repositório: qualquer cenário sobe de novo com `deploy.ps1 -Cenario N` em poucos minutos (no primeiro deploy real, o Lab 0 levou de 8 a 10 minutos), então refazer um incidente com calma, durante a semana, custa centavos. É o melhor exercício para fixar o dia: escolher um dos três, recriar o estado inicial e quebrar de novo, sem olhar o guia; e, com tempo, o roteiro completo de cada guia, que hoje rodou em ritmo de demonstração.
 
 Duas coisas para levar: primeiro, o ritual, porque é o mesmo de um incidente real; segundo, os nomes dos padrões, porque são o vocabulário que faz vocês serem ouvidos como arquitetos. Até a próxima.
 
@@ -790,290 +1046,5 @@ Duas coisas para levar: primeiro, o ritual, porque é o mesmo de um incidente re
 - [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/)
 - [Azure Service Bus documentation](https://learn.microsoft.com/azure/service-bus-messaging/)
 - [Azure Functions .NET isolated worker](https://learn.microsoft.com/azure/azure-functions/dotnet-isolated-process-guide)
+- [Key Vault references em App Service e Functions](https://learn.microsoft.com/azure/app-service/app-service-key-vault-references)
 - [Bicep documentation](https://learn.microsoft.com/azure/azure-resource-manager/bicep/)
-
----
-
-## Apêndice — Perguntas que a turma vai fazer
-
-> **Slides de bolso, fora da soma das 4h.** Estes dez slides só abrem quando a pergunta surge: a nota do slide principal traz a linha "**Se perguntarem:** ... → FAQ-N", o professor salta para o FAQ, responde em 60 a 90 segundos e volta pela "Transição" ao slide de onde a pergunta veio. O tempo deles não entra nos 238 minutos do encontro. Se o relógio do bloco estiver apertado, responda com o slide (a resposta curta, uns 20 segundos) e deixe a resposta completa para a pausa, para o fim do bloco ou para o canal da turma.
->
-> **Fonte:** `docs/research/2026-10-14-duvidas-das-tecnologias.md`, as dez perguntas marcadas [Slide]. "O que falar" vem da "Resposta completa" e do "No kit da Saldaro"; "Insights do mundo real", do "Quando a alternativa vence"; "Referências", das fontes do Microsoft Learn que a pesquisa cita para a pergunta (sem o segmento `en-us`, como no resto destas notes).
-
----
-
-## FAQ-1 — APIM × WAF
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 3 e 6 · **Mostrar:** o diagrama em camadas do slide; se ajudar, `apim-saldaro-<sufixo>` → APIs → Saldaro Hub - faturas (`saldaro`) → Design, com o `forward-request timeout="30"` e o `on-error`: é o APIM governando a chamada, coisa que nenhum WAF faz.
-
-### O que falar
-Um não faz o papel do outro. O WAF, o Azure Web Application Firewall, protege a aplicação web contra ataques conhecidos: regras OWASP, SQL injection, cross-site scripting, bots, geofiltro. Ele roda no Application Gateway, no Application Gateway for Containers e no Front Door. O APIM governa a API: valida subscription key, JWT e certificado, aplica cota e rate limit, corta o backend no tempo combinado, transforma requisição e resposta e registra telemetria por operação. A página do Learn sobre o OWASP API Top 10 no APIM é explícita: mesmo com os controles do APIM, a proteção contra ameaças web tradicionais e bots vem do Front Door, do Application Gateway e do WAF, de preferência na frente dele. A arquitetura de referência do Architecture Center é exatamente essa: Application Gateway com WAF na borda e o APIM atrás. No lab ficou só o APIM, e ele trabalha o dia todo: corta aos 30 segundos no Incidente 1, registra o `x-cliente-id` no Application Insights e, no guia 3.1, limita cada empresa cliente. O WAF ficou de fora porque os incidentes de hoje são de integração, não de ataque web, e porque ele tem custo fixo, que não cabe num Free Trial de um dia. Uma dica: no Learn, "WAF" também é o Well-Architected Framework; confirme de qual dos dois a pessoa está falando.
-
-### Insights do mundo real
-- API pública exposta a ataque web e a bots: WAF na frente do APIM, nunca no lugar dele. Front Door quando o tráfego é global ou multirregião; Application Gateway quando é regional e os backends estão numa VNet.
-- Sem API para governar (um site, um front-end): WAF sem APIM. Se o requisito é só TLS, roteamento ou balanceamento, Front Door ou Application Gateway resolvem; o Learn lembra que o APIM não é um balanceador de carga genérico.
-- Em produção, a Saldaro poria o WAF na borda e faria o APIM aceitar só o tráfego dele. Com o Front Door, o Learn tem um passo a passo que vale para todos os tiers, inclusive o Consumption: `ip-filter` com as faixas `AzureFrontDoor.Backend` e `check-header` no `X-Azure-FDID`.
-- APIM privado atrás do WAF exige rede: injeção em VNet (Developer ou Premium) ou as opções de rede do Standard v2 e do Premium v2. O Consumption do lab não tem VNet.
-- mTLS atrás do Application Gateway tem pegadinha: o certificado do cliente não chega ao APIM, porque o gateway abre outra conexão TLS; o contorno documentado são as server variables de autenticação mútua.
-
-### Referências
-- [Introduction to Azure Web Application Firewall](https://learn.microsoft.com/azure/web-application-firewall/overview)
-- [Mitigate OWASP API security top 10 in Azure API Management](https://learn.microsoft.com/azure/api-management/mitigate-owasp-api-threats)
-- [Protect APIs by using Azure Application Gateway and Azure API Management](https://learn.microsoft.com/azure/architecture/web-apps/api-management/architectures/protect-apis)
-- [Configure Azure Front Door in front of Azure API Management](https://learn.microsoft.com/azure/api-management/front-door-api-management)
-- [API Gateway Overview](https://learn.microsoft.com/azure/api-management/api-management-gateways-overview)
-- [Secure APIs using client certificate authentication in API Management](https://learn.microsoft.com/azure/api-management/api-management-howto-mutual-certificates-for-clients)
-- [Load Balancing Options](https://learn.microsoft.com/azure/architecture/guide/technology-choices/load-balancing-overview)
-- Pesquisa, pergunta 1; `docs/adr/0007-http-triggers-anonymous-e-apim-sem-subscription.md`, seção "O que mudaria em produção"
-
-### Transição
-De volta ao slide de onde a pergunta veio, em geral o 6 ou o 3: o APIM fica na frente o dia todo, e o primeiro incidente começa justamente com ele cortando aos 30 segundos.
-
----
-
-## FAQ-2 — Service Bus × outras filas e eventos
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slide 3 · **Mostrar:** a comparação do slide; se ajudar, `stsaldaro<sufixo>` → Storage browser → Queues, com a `banco-pagamentos` do banco simulado, ao lado das filas `sbq-*` do hub em `sb-saldaro-<sufixo>` → Entities → Queues.
-
-### O que falar
-Porque cada serviço tem um papel, e o nosso é mensagem de alto valor. A página de comparação do Learn resume em três frases: Event Grid é roteamento reativo de eventos, Event Hubs é streaming e ingestão de big data, e Service Bus é mensageria transacional corporativa, com processamento de pedidos e transações financeiras como exemplos. Cobrança e baixa são comandos: alguém precisa tratar, e uma vez só; o guia de mensageria do Architecture Center lembra que comando processado duas vezes vira cobrança em dobro. Na tabela do Learn, só o Service Bus tem transações e detecção de duplicatas, e a ordem dele vem com as sessões; no Event Hubs, a ordem é por partição, e no Event Grid, não há garantia. A Storage Queue é mais barata e aguenta backlog muito maior, mas não garante ordem nem tem dead-letter automático: a mensagem envenenada aparece pelo `DequeueCount`. Event Hubs é telemetria aos milhões, com releitura do stream; Event Grid é avisar que algo aconteceu, em push, para vários assinantes. No kit, as três filas do hub são do Service Bus Standard, o `FaturaBaixada` sai pelo Event Grid e cai numa fila, e o banco simulado usa, de propósito, uma Storage Queue: o trigger tenta cinco vezes e joga a mensagem na fila `-poison`. Guardem esse contraste para a DLQ com motivo do Incidente 3.
-
-### Insights do mundo real
-- Storage Queue vence em trabalho simples e idempotente, backlog muito grande (acima de 80 GB), menor custo e nenhuma necessidade de ordem, sessão ou detecção de duplicatas.
-- Event Hubs vence em telemetria e eventos em stream: milhões por segundo, releitura do stream, clientes Kafka.
-- Event Grid vence quando é preciso reagir a eventos de recursos do Azure ou espalhar uma notificação para vários assinantes, com filtro e em push. Quando o evento pede workflow, o Architecture Center descreve o desenho do kit: o Event Grid entrega numa fila do Service Bus (ADR 0005).
-- Em cobrança, escolha o broker pela semântica de entrega, não pelo preço por milhão de operações: comando processado duas vezes custa uma cobrança em dobro.
-
-### Referências
-- [Compare messaging services](https://learn.microsoft.com/azure/service-bus-messaging/compare-messaging-services)
-- [Compare Azure Storage queues and Service Bus queues](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-azure-and-service-bus-queues-compared-contrasted)
-- [Asynchronous messaging options](https://learn.microsoft.com/azure/architecture/guide/technology-choices/messaging)
-- [Azure Queue storage trigger for Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-bindings-storage-queue-trigger)
-- Pesquisa, pergunta 4
-
-### Transição
-De volta ao slide 3: os três consertos de hoje passam por uma fila do Service Bus, e é por isso que ela está no meio do diagrama.
-
----
-
-## FAQ-3 — Service Bus Standard × Premium
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 2 e 21 · **Mostrar:** a árvore de decisão do slide; se ajudar, `docs/adr/0003-service-bus-standard-com-identidade-gerenciada.md` no VS Code, com os cinco gatilhos.
-
-### O que falar
-Porque o Standard tem tudo o que os incidentes usam: sessões, detecção de duplicatas, DLQ, transações e mensagens agendadas. O Premium compra outra coisa: isolamento de recursos, com messaging units dedicadas, latência previsível, mensagens de até 100 MB e os recursos de rede, como Private Endpoint, service endpoints e trusted services, a preço fixo por hora. O Standard é multitenant e cobra por operação, com throttling por crédito: mil créditos por segundo por namespace; quando eles acabam, a operação volta com o erro 50009, e os SDKs refazem com backoff, sem perder dados. O próprio Learn indica o Standard para desenvolvimento, QA e produção de baixo throughput. Então a pergunta certa não é "pagamento pede Premium?", e sim "que requisito pede Premium?". O ADR 0003 do kit fixa cinco gatilhos objetivos: exigência de isolamento de rede, throttling recorrente, mensagens acima de 256 KB que não possam virar claim check, latência previsível ou isolamento por empresa cliente, e chave gerenciada pelo cliente ou Geo-Replication. Apareceu um, a decisão reabre. E a migração existe, in-place e com a mesma connection string, mas sem volta: as role assignments não migram, e as mensagens não são copiadas, é preciso drenar o namespace antigo. A leitura 3.8 é exatamente esse exercício de decisão.
-
-### Insights do mundo real
-- Premium vence quando um gatilho do ADR 0003 aparece: política de rede que exige Private Endpoint, service endpoint ou trusted services; throttling recorrente (`ThrottledRequests` acima de zero, erro 50009) depois de ajustar os clientes; mensagens grandes sem claim check; SLA de latência ou isolamento por cliente; CMK, Geo-Replication ou JMS 2.0.
-- Antes de migrar, planeje o que não vem junto: role assignments, mensagens e o que aponta para o ID de recurso, como a event subscription do Event Grid.
-- Novidade na conversa de rede: o Network Security Perimeter está GA, suporta o Service Bus, e o Architecture Center o recomenda para namespace Standard sem private endpoint. Não é Private Endpoint (o tráfego continua no endpoint público), e o Learn não documenta a entrega do Event Grid num namespace com perímetro: teste antes de recomendar.
-- Comparação de custo entre Standard e Premium só com a calculadora de preços, na data: as páginas de preço não mostram os valores fora dela.
-
-### Referências
-- [Service Bus Premium messaging](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-premium-messaging)
-- [Azure Service Bus throttling](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-throttling)
-- [Service Bus quotas and limits](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-quotas)
-- [Network security for Azure Service Bus](https://learn.microsoft.com/azure/service-bus-messaging/network-security)
-- [Configure IP firewall rules for Azure Service Bus](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-ip-filtering)
-- [Migrate Service Bus namespaces from Standard to Premium](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-migrate-standard-premium)
-- [What is a network security perimeter?](https://learn.microsoft.com/azure/private-link/network-security-perimeter-concepts)
-- [Network Security Perimeter - Azure Service Bus](https://learn.microsoft.com/azure/service-bus-messaging/network-security-perimeter)
-- [Use a message broker and events to integrate enterprise systems](https://learn.microsoft.com/azure/architecture/example-scenario/integration/queues-events)
-- Pesquisa, perguntas 6 e 23; `docs/adr/0003-service-bus-standard-com-identidade-gerenciada.md`
-
-### Transição
-De volta ao slide de onde a pergunta veio: no 2, o custo do dia é quase todo esse Standard; no 21, a leitura 3.8 transforma esta conversa num ADR.
-
----
-
-## FAQ-4 — FIFO, sessões e partições
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 12 e 14 · **Mostrar:** a linha do tempo do slide; se ajudar, depois do conserto, os `traces` da `ProcessarConfirmacaoComSessao` com `prop__SessionId` e `prop__SequenceNumber` (a consulta do Passo 7.4 do guia do Incidente 2).
-
-### O que falar
-O Service Bus entrega em ordem, mas a ordem é a de chegada à fila, não a do negócio. Sem sessões, o `SequenceNumber` garante a ordem de enfileiramento e de retirada, não a de processamento: com dois consumidores, ou com quatro chamadas em paralelo numa instância, como no nosso `host.json`, a mensagem 1 pode terminar depois da 3. Com sessões, quem aceita a sessão segura um lock exclusivo sobre todas as mensagens daquele `SessionId`: um consumidor por fatura, na ordem de chegada. Só que o banco mandou o "paga" antes do "registrada", e é nessa ordem que eles saem. Por isso a fatura desbaixou, e por isso o conserto do Incidente 2 tem máquina de estados: regra de negócio mora no consumidor. E partição? É outra coisa: serve para throughput e disponibilidade, espalhando a fila por vários brokers. Sem chave de partição, o envio é distribuído entre as partições e a ordem se perde; com sessão, o `SessionId` vira a chave. E o Learn desaconselha partição em baixo volume. Detalhe que pega: a mensagem que vai para a DLQ, a reprocessada e a agendada saem da vez na sessão. E, quando alguém disser "exactly once", desconfie: ponta a ponta, o que existe é at-least-once com consumidor idempotente.
-
-### Insights do mundo real
-- Ordem não importa e o processamento é idempotente: fila sem sessão, mais simples e com mais paralelismo.
-- Ordem por chave em stream de altíssimo volume: partições do Event Hubs.
-- Ordem de negócio que não depende da chegada, porque o parceiro pode mandar fora de ordem: máquina de estados com versão ou sequência no próprio dado, com ou sem sessão.
-- Sessão e partição só se escolhem na criação da fila, e sessão não existe no Basic: decida no desenho. Em produção, escolha o `SessionId` pelo que precisa de ordem (por fatura, não por empresa cliente) e vigie a sessão "quente".
-- As páginas do Learn divergem sobre "exactly once" (a comparação de serviços fala em "exactly once with sessions"; a comparação de filas diz que o termo "isn't exactly adequate"): não ponha a expressão em slide sem a ressalva.
-
-### Referências
-- [Message sessions](https://learn.microsoft.com/azure/service-bus-messaging/message-sessions)
-- [Message sequencing and timestamps](https://learn.microsoft.com/azure/service-bus-messaging/message-sequencing)
-- [Enable message sessions](https://learn.microsoft.com/azure/service-bus-messaging/enable-message-sessions)
-- [Partitioned queues and topics](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-partitioning)
-- [Compare messaging services](https://learn.microsoft.com/azure/service-bus-messaging/compare-messaging-services)
-- [Compare Storage queues and Service Bus queues](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-azure-and-service-bus-queues-compared-contrasted)
-- [Idempotent Consumer pattern](https://learn.microsoft.com/azure/architecture/patterns/idempotent-consumer)
-- Pesquisa, pergunta 7
-
-### Transição
-Se a pergunta veio no slide 12, guardem: o 14 mostra a sessão funcionando e a desordem sobrevivendo a ela. Se veio no 14, sigam para a troca do consumidor.
-
----
-
-## FAQ-5 — Duplicate detection × idempotência
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 9 e 14 · **Mostrar:** os três funis do slide; se ajudar, `stsaldaro<sufixo>` → Storage browser → Tables → `inbox` (uma linha por `idEvento`) e `idempotencia` (uma linha por `Idempotency-Key`).
-
-### O que falar
-Não é redundante, porque cada camada pega uma repetição diferente. A duplicate detection do Service Bus só descarta a cópia que o produtor enviar de novo com o mesmo `MessageId`, dentro da janela: 10 minutos por padrão, de 20 segundos a 7 dias. Nenhuma outra parte da mensagem é comparada, ela só se liga na criação da fila e pesa no throughput. E ela não impede o consumidor de processar duas vezes a mesma mensagem depois de uma reentrega. O padrão Idempotent Consumer do Architecture Center é direto: não troque a lógica idempotente do consumidor pela deduplicação do broker. No kit são três camadas, uma para cada repetição. A `Idempotency-Key` no POST, com insert condicional na tabela `idempotencia`, para o reenvio do ERP; o broker não serviria ali, porque o ERP precisa receber de volta o mesmo `faturaId`. O `MessageId = idEvento`, com janela de 10 minutos, para a confirmação repetida pelo banco. E a inbox, com a máquina de estados e o ETag, para a reentrega do Service Bus e para o que escapa da janela. Quem impede a baixa dupla, no fim, é a gravação condicional com ETag; a inbox é atalho e auditoria.
-
-### Insights do mundo real
-- Só duplicate detection: quando o efeito já é naturalmente idempotente (um upsert de estado absoluto) e o risco é só o produtor enviar de novo.
-- Só idempotência no consumidor: quando a fila não pode ser recriada (a detecção é imutável) ou o throughput não comporta a janela.
-- Nenhuma das duas: quando o efeito repetido é inofensivo e o custo do registro não se paga, como o próprio padrão admite.
-- Em produção, grave a marca de deduplicação na mesma transação do efeito e guarde o registro pelo menos enquanto o broker puder reentregar, contando os reprocessamentos da DLQ. No kit, inbox e fatura ficam em tabelas diferentes, e a janela entre gravar a baixa e publicar o `FaturaBaixada` está comentada no código como caso para o padrão Outbox.
-- Toda cópia legítima precisa de `MessageId` próprio: o retry agendado do Incidente 3 usa `{idEvento}-t{n}`, porque mensagem agendada também passa pela detecção.
-
-### Referências
-- [Duplicate detection](https://learn.microsoft.com/azure/service-bus-messaging/duplicate-detection)
-- [Enable duplicate message detection](https://learn.microsoft.com/azure/service-bus-messaging/enable-duplicate-detection)
-- [Idempotent Consumer pattern](https://learn.microsoft.com/azure/architecture/patterns/idempotent-consumer)
-- [Asynchronous Request-Reply pattern](https://learn.microsoft.com/azure/architecture/patterns/asynchronous-request-reply)
-- [Designing Azure Functions for identical input](https://learn.microsoft.com/azure/azure-functions/functions-idempotent)
-- [Message transfers, locks, and settlement](https://learn.microsoft.com/azure/service-bus-messaging/message-transfers-locks-settlement)
-- Pesquisa, pergunta 8
-
-### Transição
-De volta ao slide de onde a pergunta veio: no 9, a `Idempotency-Key` é a primeira dessas camadas; no 14, é a pergunta para a turma ganhando a resposta.
-
----
-
-## FAQ-6 — DLQ, maxDeliveryCount e retry
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 17 e 18 · **Mostrar:** a comparação do slide; se ajudar, o Service Bus Explorer da `sbq-confirmacoes-banco`, aba Dead-letter, com `MaxDeliveryCountExceeded` e Delivery Count 10.
-
-### O que falar
-Porque o Functions não oferece retry policy para o trigger de Service Bus. As retry policies existem para Timer, Event Hubs, Kafka e Cosmos DB; no Service Bus, o tratamento de mensagem envenenada não é configurável no Functions: quem decide é o broker. E o `clientRetryOptions` do `host.json` só refaz as chamadas ao Service Bus, não a execução da função. Já a reentrega do broker é imediata: abandonar a mensagem, ou deixar o lock expirar, devolve a mensagem para a frente da fila e soma uma entrega; passou do `maxDeliveryCount`, ela vai para a DLQ com `MaxDeliveryCountExceeded`, e isso não se desliga. Foi o que vimos no Incidente 3: dez tentativas em segundos contra uma falha de 45, e mensagem boa na DLQ junto com a envenenada. Então a espera é responsabilidade da aplicação: mandar uma cópia agendada, com `ScheduledEnqueueTime` e `MessageId` próprio, e completar a original. Para o erro permanente, o contrário: DLQ na primeira entrega, com motivo e descrição; o Learn recomenda registrar o tipo da exceção no motivo. O `maxDeliveryCount` baixo fica como rede de segurança para o erro que ninguém previu.
-
-### Insights do mundo real
-- Falha transiente curtíssima, de segundos, com efeito idempotente: deixe a reentrega imediata do Service Bus resolver, com um `maxDeliveryCount` adequado.
-- Poucas mensagens para reprocessar, sem correção em lote: o Service Bus Explorer do Portal, que espia, edita e manda de volta para a fila.
-- Fluxo de várias etapas, com espera longa e compensação: orquestração (Durable Functions ou Logic Apps), e não agendamento à mão.
-- Em produção, some jitter ao atraso agendado (o kit usa atrasos fixos para a prova ser previsível) e trate a DLQ como fila de trabalho com dono: alerta em `DeadletteredMessages`, runbook e prazo.
-- Contraste útil: o trigger de Storage Queue tem `visibilityTimeout`, que atrasa a nova tentativa, e manda a mensagem para a fila `-poison` depois de 5 tentativas.
-
-### Referências
-- [Service Bus dead-letter queues](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues)
-- [Message transfers, locks, and settlement](https://learn.microsoft.com/azure/service-bus-messaging/message-transfers-locks-settlement)
-- [Message sequencing and timestamps](https://learn.microsoft.com/azure/service-bus-messaging/message-sequencing)
-- [Azure Functions error handling and retry guidance](https://learn.microsoft.com/azure/azure-functions/functions-bindings-error-pages)
-- [Azure Service Bus trigger for Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-bindings-service-bus-trigger)
-- [Azure Service Bus bindings for Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-bindings-service-bus)
-- [Duplicate detection](https://learn.microsoft.com/azure/service-bus-messaging/duplicate-detection)
-- [Azure Queue storage trigger for Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-bindings-storage-queue-trigger)
-- Pesquisa, pergunta 9
-
-### Transição
-De volta ao slide 17 ou ao 18: no 17, é a hipótese que a gente prova a seguir; no 18, é o conserto que vocês ligam no Portal agora.
-
----
-
-## FAQ-7 — Functions × Logic Apps × contêineres
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slide 3 · **Mostrar:** a árvore de decisão do slide; se ajudar, `func-saldaro-hub-<sufixo>` → Overview, com a lista de Functions (triggers de HTTP, Service Bus e Timer).
-
-### O que falar
-Porque o hub é código orientado a eventos, de alto volume e com regra de negócio: idempotência, máquina de estados, validação de assinatura. É o perfil do Functions, que o Learn chama de serviço de computação serverless: code-first, com triggers nativos de HTTP, Service Bus, Storage Queue e Timer, todos usados no kit. O Logic Apps é a plataforma serverless de integração por workflow: designer-first, com mais de 1.400 conectores, Enterprise Integration Pack para B2B e histórico de execução no Portal. Ele brilha quando o fluxo é desenhado com conectores ou tem gente no meio, como uma aprovação. E os dois se combinam: um workflow chama uma Function e vice-versa, e a arquitetura de referência de integração do Architecture Center usa APIM, Logic Apps, Service Bus e Event Grid juntos. Na árvore de decisão de computação, App Service é PaaS para web e APIs contínuas; Container Apps é serverless sobre Kubernetes, sem acesso à API do cluster; e AKS dá a API e o control plane, com a maior carga operacional. No kit, hub e banco simulado são Function Apps em .NET 10 isolated no Flex Consumption, e o Logic Apps aparece na leitura 3.8, como decisão de custo.
-
-### Insights do mundo real
-- Logic Apps: integração montada a partir de conectores SaaS ou B2B, aprovação humana, baixo volume, time que prefere designer.
-- Container Apps: microsserviços em contêiner com imagem própria, dependências nativas ou GPU; e o próprio Functions roda no Container Apps quando o time quer o modelo de Functions com controle da imagem.
-- App Service: API web síncrona e contínua, num plano dedicado. AKS: o time já opera Kubernetes e precisa da API do cluster.
-- Em produção, não precisa ser um ou outro: Functions no processamento de alto volume e Logic Apps nos fluxos com conector e aprovação, os dois atrás do mesmo APIM.
-- O desenvolvimento em C# no Logic Apps Standard ainda está em preview: fica fora das recomendações.
-
-### Referências
-- [Integration and automation platform options in Azure](https://learn.microsoft.com/azure/azure-functions/functions-compare-logic-apps-ms-flow-webjobs)
-- [Choose an Azure compute service](https://learn.microsoft.com/azure/architecture/guide/technology-choices/compute-decision-tree)
-- [Use a message broker and events to integrate enterprise systems](https://learn.microsoft.com/azure/architecture/example-scenario/integration/queues-events)
-- [Azure Functions scale and hosting](https://learn.microsoft.com/azure/azure-functions/functions-scale)
-- Pesquisa, pergunta 10
-
-### Transição
-De volta ao slide 3: o hub é código, e é por isso que hoje vocês leem C# e ligam toggles de cenário, em vez de desenhar workflow.
-
----
-
-## FAQ-8 — Bicep × Terraform × Portal
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 2 e 9 · **Mostrar:** a comparação do slide; se ajudar, `rg-saldaro-lab` → Settings → Deployments (o que o Bicep aplicou) ao lado do `cenario-2-pronto.bicepparam` no VS Code.
-
-### O que falar
-Bicep porque o kit é só Azure. O Bicep é uma linguagem declarativa que vira template ARM no deploy, sem perder nada: todo tipo de recurso e versão de API do Azure está disponível desde o dia em que sai. O deploy é idempotente, tem módulos e what-if, e não há arquivo de estado para proteger: o estado mora no próprio Azure. A comparação oficial com o Terraform resume a diferença: o Terraform guarda o estado num `terraform.tfstate`, que precisa ser protegido e copiado, atende multicloud e on-premises por providers e processa o plano no cliente; o Bicep processa no Azure e lida melhor com mudança feita fora da ferramenta. Para o kit, o Terraform seria mais uma ferramenta e um arquivo de estado na máquina de cada aluno. E por que consertar no Portal, se o kit tem Bicep? Porque o Portal é ótimo para aprender onde cada peça mora e péssimo para recriar. Hoje vocês consertam clicando, e cada clique é drift: o próximo `deploy.ps1` volta ao que o `.bicepparam` declara. Por isso, depois de cada conserto, o arquivo passa a dizer o mesmo que o Azure, e o `deploy.ps1` fica como plano B. A leitura 3.7 fecha essa conta com o `check-drift.ps1`.
-
-### Insights do mundo real
-- Terraform vence em multicloud ou híbrido, em organização que já tem módulos, estado e processo em Terraform, e quando é preciso destruir uma configuração inteira como unidade.
-- ARM JSON, só quando a ferramenta aceita apenas JSON: o Bicep gera o mesmo JSON.
-- Portal vence para aprender, explorar e exportar um template como ponto de partida do IaC.
-- Ambiente compartilhado em que mudança manual precisa ser bloqueada, e não só detectada: deployment stacks, com deny settings no plano de controle.
-- Em produção, conserto de incidente feito no Portal volta ao código no mesmo dia; senão, o próximo deploy desfaz o conserto em silêncio.
-
-### Referências
-- [What is Bicep?](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview)
-- [Comparing Terraform and Bicep](https://learn.microsoft.com/azure/developer/terraform/comparing-terraform-and-bicep)
-- [Create and deploy Azure deployment stacks in Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/deployment-stacks)
-- Pesquisa, pergunta 17; `docs/adr/0001-stack-dotnet-10-isolated-bicep-e-powershell-7.md` e `docs/adr/0008-portal-primeiro-com-bicep-como-plano-b.md`
-
-### Transição
-De volta ao slide de onde a pergunta veio: no 2, é a regra "Portal ao vivo, script como plano B"; no 9, é o drift que vocês acabaram de criar ao ligar o toggle.
-
----
-
-## FAQ-9 — Durable × request-reply feito à mão
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slides 4 e 10 · **Mostrar:** a comparação do slide; se ajudar, a tabela do Passo 5.6 do guia do Incidente 1 (o Durable da D04 ao lado da Saldaro).
-
-### O que falar
-Porque o Durable entrega o mesmo padrão pronto, e aqui o objetivo é ver cada peça. O padrão Asynchronous Request-Reply do Architecture Center tem quatro: o 202 com `Location` e `Retry-After`; a fila; o status barato, que responde 200 enquanto processa e 303 para o recurso no fim; e a `Idempotency-Key`, que torna o reenvio inofensivo. No Durable, o `CreateCheckStatusResponse` devolve o 202 com o `statusQueryGetUri` no `Location`, e o status responde 202 enquanto a orquestração roda e 200 no fim. Funciona, mas tem dois detalhes: as URLs de gerenciamento da resposta carregam uma chave de acesso no parâmetro `code` e incluem terminate, raise event e purge; e o estado vive num Task Hub, com histórico e replay. Com uma etapa só, fila e status são mais simples e expõem menos superfície: a URL de status da Saldaro é só leitura. E o teto que empurra para esse padrão vale para os dois: 230 segundos para uma Function responder HTTP, em qualquer plano. O Durable vence quando o fluxo tem várias etapas com estado, como fan-out e fan-in, timers, aprovação humana e saga com compensação, ou quando dura horas ou dias e precisa de cancelamento e eventos externos prontos.
-
-### Insights do mundo real
-- Várias etapas com estado (fan-out/fan-in, timers, aprovação humana, saga com compensação): Durable.
-- Fluxo longo, de horas ou dias, que precisa de status, cancelamento e eventos externos prontos: Durable.
-- Consumidor que espera 202 enquanto processa, como a ação HTTP do Logic Apps ou o `CallHttpAsync` do Durable (no isolated, só com `asynchronousPatternEnabled` ligado): o status pendente precisa ser 202, e não o nosso 200.
-- Em produção, escolha um dialeto do padrão e documente no contrato da API; com Durable, não entregue ao cliente externo as URLs de gerenciamento com a chave.
-
-### Referências
-- [Asynchronous Request-Reply pattern](https://learn.microsoft.com/azure/architecture/patterns/asynchronous-request-reply)
-- [HTTP features in Durable Functions](https://learn.microsoft.com/azure/durable-task/durable-functions/durable-functions-http-features)
-- [Azure Functions scale and hosting: limite de 230 s](https://learn.microsoft.com/azure/azure-functions/functions-scale#function-app-timeout-duration)
-- [Azure Functions Flex Consumption plan hosting](https://learn.microsoft.com/azure/azure-functions/flex-consumption-plan)
-- [Durable Task Scheduler](https://learn.microsoft.com/azure/durable-task/scheduler/durable-task-scheduler) (provedor de estado do Durable no Flex; a pesquisa não confirmou o GA por SKU, então não recomende sem conferir no Portal)
-- Pesquisa, pergunta 18
-
-### Transição
-De volta ao slide de onde a pergunta veio: no 4, guardem a comparação para o fim do Incidente 1; no 10, ela fecha a prova.
-
----
-
-## FAQ-10 — HMAC × mTLS × IP × OAuth
-
-**Tempo previsto:** 1 a 2 min, fora da soma das 4h (slide de bolso) · **Ganchos:** slide 13 · **Mostrar:** a comparação do slide; se ajudar, `apim-saldaro-<sufixo>` → APIs → Saldaro Hub - webhooks (`saldaro-webhooks`, sem subscription), para mostrar onde um `ip-filter` ou um `validate-client-certificate` entrariam em produção.
-
-### O que falar
-Porque cada mecanismo responde uma pergunta diferente. HMAC prova que o corpo veio de quem tem o segredo e não foi alterado; mTLS prova quem abriu a conexão; lista de IPs reduz quem consegue chegar; OAuth prova quem chama, com um token que expira. A Microsoft usa HMAC em webhooks dela: os outgoing webhooks do Teams mandam um HMAC-SHA256 do corpo, e o receptor recalcula com o segredo e compara. O kit usa HMAC com o timestamp dentro do conteúdo assinado: só depende de um segredo compartilhado e cobre integridade e, com a janela de 300 segundos, repetição. As outras três defesas existem no APIM em todos os tiers, inclusive no Consumption: `ip-filter`, `validate-client-certificate` para mTLS e `validate-jwt` ou `validate-azure-ad-token` para OAuth. Mas cada uma cobra o seu preço. Lista de IPs sozinha é fraca: depende de o parceiro publicar IPs de saída estáveis. mTLS no Consumption exige ligar Request client certificate em Custom domains, não aceita certificados de CA para validar a cadeia e, atrás de um Application Gateway, o certificado nem chega ao APIM. OAuth exige que o banco consiga obter token. Por isso o ADR 0007 manda, em produção, somar à assinatura a lista de IPs ou o mTLS, conforme o contrato com o banco.
-
-### Insights do mundo real
-- mTLS: quando o parceiro ou a regulação exige; prefira um tier que aceite certificados de CA para validar a cadeia (o Consumption não aceita).
-- Lista de IPs: quando o parceiro publica IPs de saída fixos; sempre como camada extra, nunca como única defesa, e como lista de permissão, não de bloqueio.
-- OAuth (`validate-jwt`, `validate-azure-ad-token`): quando o parceiro consegue obter token, por exemplo com client credentials.
-- Webhook enviado pelo Event Grid: endpoint protegido com Microsoft Entra ID.
-- HMAC tem custos próprios: o segredo é compartilhado, e a rotação precisa ser combinada (aceite o atual e o anterior durante a troca). O Learn não tem um guia genérico de HMAC com timestamp para webhook de entrada, e o APIM não tem política pronta de validação HMAC: o exemplo mais próximo é o do Teams.
-
-### Referências
-- [Create an outgoing webhook (Teams)](https://learn.microsoft.com/microsoftteams/platform/webhooks-and-connectors/how-to/add-outgoing-webhook)
-- [Authenticate event delivery in Azure Event Grid](https://learn.microsoft.com/azure/event-grid/security-authentication)
-- [Mitigate OWASP API security top 10 in Azure API Management](https://learn.microsoft.com/azure/api-management/mitigate-owasp-api-threats)
-- [ip-filter policy](https://learn.microsoft.com/azure/api-management/ip-filter-policy)
-- [validate-client-certificate policy](https://learn.microsoft.com/azure/api-management/validate-client-certificate-policy)
-- [validate-jwt policy](https://learn.microsoft.com/azure/api-management/validate-jwt-policy) e [validate-azure-ad-token policy](https://learn.microsoft.com/azure/api-management/validate-azure-ad-token-policy)
-- [Secure APIs using client certificate authentication in API Management](https://learn.microsoft.com/azure/api-management/api-management-howto-mutual-certificates-for-clients)
-- [Feature-based comparison of Azure API Management tiers](https://learn.microsoft.com/azure/api-management/api-management-features)
-- Pesquisa, pergunta 19; `docs/adr/0007-http-triggers-anonymous-e-apim-sem-subscription.md`, item 4 de "O que mudaria em produção"
-
-### Transição
-De volta ao slide 13: a assinatura é a defesa que vocês ligam agora; as outras entram em produção, somadas a ela.

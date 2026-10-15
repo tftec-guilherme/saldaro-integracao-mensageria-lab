@@ -1,6 +1,6 @@
 # ADR-0008: Portal primeiro, com o Bicep e os scripts como plano B
 
-**Status:** Aceita · **Data:** 2026-10-14 · **Decisão:** professor da aula · **Origem:** experiência em projetos de consultoria da TFTEC · **Version-anchor:** Q4-2026
+**Status:** Aceita · **Data:** 2026-10-14, atualizada no mesmo dia depois da primeira aula · **Decisão:** professor da aula · **Origem:** experiência em projetos de consultoria da TFTEC · **Version-anchor:** Q4-2026
 
 ## Contexto
 
@@ -25,9 +25,15 @@ O kit nasceu "tudo automático": o Lab 0 era um `deploy.ps1 -Cenario 0`, e os co
 
 - O Lab 0 em casa passa de ~30 min (script) para ~3 h (Portal), com o script como atalho para quem não puder. A chamada para o Lab 0 precisa sair com antecedência.
 - O ambiente montado à mão precisa bater com o Bicep para os incidentes e o plano B funcionarem; o guia de montagem lista o que fica diferente, e a validação manual confere.
-- Role assignments criadas à mão travam o Bicep (`RoleAssignmentExists`) num `deploy.ps1` posterior: o guia manda apagá-las antes, e o script deve passar a tratar isso.
+- O `deploy.ps1` não roda por cima de um ambiente montado à mão: o plano Flex que o Portal cria tem nome gerado (Conflict 59602) e as role assignments criadas à mão travam o Bicep (`RoleAssignmentExists`). Até o conserto do script (#24), o guia manda rodar o `deploy.ps1` só depois do `limpar.ps1`, num `rg-saldaro-lab` limpo.
 - Rótulos do Portal mudam com mais frequência que o Bicep: os guias carregam marcadores "conferir no Portal" até a validação manual, e cada `Version-anchor` exige reconferir.
 - Os consertos ao vivo pelo Portal não aumentam o tempo de nenhum bloco do encontro (estimativa dos guias dos incidentes).
+
+## Atualização de 2026-10-14: a primeira aula, gravada
+
+- **Formato real da primeira turma.** O professor montou o ambiente **ao vivo** no Portal, seguindo o guia de montagem e explicando o porquê de cada recurso, e os incidentes ficaram para o fim do encontro. A alternativa "montagem no Portal ao vivo", descartada acima, virou o formato desta turma. O deck v19 segue essa ordem: o que a Saldaro precisa resolver, a arquitetura, um slide por tecnologia com "por que esta, e não as alternativas", o custo, a montagem e a Saldaro funcionando, e só então os incidentes. Para caber em 4 h, as notes encurtam os incidentes (30, 45 e 30 minutos).
+- **O que a aula ao vivo ensinou ao guia.** O Passo 8.6 falhou no Windows PowerShell 5.1, e a publicação do código falhou porque o az estava noutra assinatura. O guia agora pede o PowerShell 7, traz um código de segredos que roda nos dois, faz o `az account set` antes de publicar e põe o bloco `az` como plano B declarado do Deploy do VS Code.
+- **A decisão principal continua:** Portal primeiro, com o Bicep e os scripts como plano B.
 
 ## Gatilhos de revisão
 
