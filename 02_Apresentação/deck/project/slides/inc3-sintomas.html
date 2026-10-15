@@ -73,7 +73,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">24</p>
 </div>
-<aside>Tempo previsto: 19 min (o incidente, a preparação, os sintomas e as hipóteses: Partes 1 a 3 do guia). Mostrar: o Contar-Fila e a triagem de aquecimento; as rajadas e a DLQ chegando a ~32; o Service Bus Explorer da fila, aba Dead-letter, Peek from start; Logs com as exceções e o ritmo das reentregas (Passos 3.1 e 3.2); a triagem só leitura.
+<aside>Tempo previsto: 11 min (o incidente, a preparação, os sintomas e as hipóteses: Partes 1 a 3 do guia, 19 no roteiro dele). Mostrar: o Contar-Fila e a triagem de aquecimento; as rajadas e a DLQ chegando a ~32; o Service Bus Explorer da fila, aba Dead-letter, Peek from start; Logs com as exceções e o ritmo das reentregas (Passos 3.1 e 3.2); a triagem só leitura.
 
 Comandos:
 ./scripts/triagem-dlq.ps1   (aquecimento; cada triagem leva uns 2,5 min)
@@ -83,7 +83,7 @@ Comandos:
 
 Quarta-feira, 14h. O banco parceiro publicou uma atualização da API e, sem avisar ninguém, passou a mandar o valor como texto no formato brasileiro: "1.250,00" em vez de 1250.00. O ERP não tem culpa nenhuma; o contrato mudou do lado de quem confirma o pagamento.
 
-O ponto de partida é o estado pronto do Incidente 2; quem chegou agora roda ./scripts/deploy.ps1 -Cenario 4 -Sufixo (seu sufixo), uns 6 minutos, e aquece antes da primeira rajada: no primeiro deploy, sem aquecimento, a rajada de 10 levou 107 segundos, com 6 timeouts do cliente que nem chegaram ao APIM. Antes do incidente, a triagem uma vez: ela compila a ferramenta. Contem uns 2 minutos e meio, nesta e nas próximas (149 segundos na primeira, de 134 a 145 nas seguintes, no primeiro deploy): disparem e sigam a história.
+O ponto de partida é o estado pronto do Incidente 2; quem chegou agora roda ./scripts/deploy.ps1 -Cenario 4 -Sufixo (seu sufixo), uns 6 minutos (quem montou à mão, só depois do limpar.ps1), e aquece antes da primeira rajada: no primeiro deploy, sem aquecimento, a rajada de 10 levou 107 segundos, com 6 timeouts do cliente que nem chegaram ao APIM. Antes do incidente, a triagem uma vez: ela compila a ferramenta. Contem uns 2 minutos e meio, nesta e nas próximas (149 segundos na primeira, de 134 a 145 nas seguintes, no primeiro deploy): disparem e sigam a história.
 
 Primeira rajada, dez faturas com valorComVirgula=true: a "registrada" e a "paga" de cada uma chegam com o valor em texto. Cada uma é veneno: o valor não é número, exceção. O hub abandona, o Service Bus reentrega na hora e, depois da décima entrega, a mensagem vai para a DLQ com o motivo genérico MaxDeliveryCountExceeded e uma descrição que não ajuda: "Message could not be consumed after 10 delivery attempts."
 

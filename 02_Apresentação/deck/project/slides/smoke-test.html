@@ -33,7 +33,11 @@ No Service Bus, as duas confirmações entraram e saíram da sbq-confirmacoes-ba
 
 No Application Insights, esperem de 2 a 5 minutos de ingestão. Em Search, o faturaId entre aspas traz a jornada inteira, de fatura.recebida a fatura.baixada. Abram o POST: o End-to-end transaction details mostra só a parte síncrona, APIM, hub e banco simulado, porque o webhook sai de uma fila de Storage e o Event Grid inicia operações novas, com outro operation_Id. Não é erro: o faturaId é a correlação de negócio, e é ele que prova a jornada. Por fim, o Application map: é a arquitetura do slide "O que vamos montar", viva, com chamadas e latência em cada seta.
 
+Reparem no que mais é ingênuo de propósito: a connection string é a RootManageSharedAccessKey, a fila de confirmações não tem sessions nem duplicate detection, e não existe alerta nenhum.
+
 Pergunta para a turma: olhando essa jornada, qual peça vocês acham que vai nos trair primeiro?
+
+Se perguntarem "notificação a qual parceiro?": aqui, "parceiro" é o termo guarda-chuva para banco parceiro e ERP, e a notificação vai sempre ao ERP da empresa cliente, pelo callbackUrl da fatura, nunca ao banco.
 
 Transição: sexta-feira, 18h. O banco entrou em manutenção.</aside>
 </section>

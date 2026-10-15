@@ -97,7 +97,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">17</p>
 </div>
-<aside>Tempo previsto: 20 min (a prova, o post-mortem de 3 min e as lições de 2 min: Partes 5 a 7 do guia). Mostrar: o POST do Passo 5.1 (banco a 60 s, cronômetro no cliente) e o status com curl.exe (Passo 5.2); o erp-simulado com 1.000 faturas e o relatório; o Overview da sbq-faturas-recebidas enchendo e esvaziando; o faturas-por-referencia-erp.kql depois que a fila drenar; o reenvio com a mesma Idempotency-Key (Passo 5.5).
+<aside>Tempo previsto: 12 min (a prova e o post-mortem de 3 min: Partes 5 e 6 do guia, 20 no roteiro dele com as lições; para caber, o Passo 5.6 vira leitura para casa e as lições cabem numa frase; não pulem os Passos 5.3 e 5.4). Mostrar: o POST do Passo 5.1 (banco a 60 s, cronômetro no cliente) e o status com curl.exe (Passo 5.2); o erp-simulado com 1.000 faturas e o relatório; o Overview da sbq-faturas-recebidas enchendo e esvaziando; o faturas-por-referencia-erp.kql depois que a fila drenar; o reenvio com a mesma Idempotency-Key (Passo 5.5).
 
 Comandos:
 curl.exe -s -w " | HTTP %{http_code} %{redirect_url}" $statusUrl

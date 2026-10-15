@@ -30,7 +30,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">7</p>
 </div>
-<aside>Tempo previsto: 2 min. Mostrar no Portal: o kv-saldaro do seu sufixo, na Overview (Soft-delete = Enabled, Purge protection = Disabled) e na aba Properties (Permission model = Azure role-based access control); depois o func-saldaro-hub, em Settings, Environment variables, com WebhookSecret e BancoApiKey em texto. Cuidado de telão: em Environment variables, use Show value só na linha; o Show values mostra todos os segredos no telão.
+<aside>Tempo previsto: 2 min. Mostrar: o slide; no Portal, o kv-saldaro-(sufixo) na Overview (Soft-delete = Enabled, Purge protection = Disabled) e na aba Properties (Permission model = Azure role-based access control); depois o func-saldaro-hub-(sufixo) → Settings → Environment variables, com WebhookSecret e BancoApiKey em texto (o professor mostra nas Etapas 6 e 8 da montagem). Cuidado de telão: em Environment variables, Show value só na linha; nunca o Show values da barra, que mostra todos os segredos no telão.
 
 O que falar: dois segredos sustentam a conversa entre o hub e o banco. O BancoApiKey vai no header x-api-key quando o hub registra a cobrança; o WebhookSecret é a chave do HMAC com que o banco assina cada webhook. No baseline, os dois estão em texto nos app settings, e o hub fala com Service Bus e Storage por connection string. É ingênuo de propósito: é a herança que a Leitura 3.5 conserta.
 
@@ -42,5 +42,5 @@ O cofre nasce agora, vazio e com RBAC, porque duas escolhas não têm volta: o p
 
 Custo: o cofre cobra por operação, US$ 0,03 por 10 mil operações de segredo, e a plataforma guarda as references em cache, então as leituras são poucas. A identidade gerenciada não tem custo extra.
 
-Transição: guarde a frase "segredo que expira às 3h"; ela volta na Leitura 3.5, quando o cofre deixa de estar vazio. Vamos para a próxima peça da Saldaro.</aside>
+Transição: guardem a frase "segredo que expira às 3h": ela volta na Leitura 3.5, quando o cofre deixa de estar vazio. Próxima peça: como avisar o parceiro quando a fatura é baixada.</aside>
 </section>

@@ -31,7 +31,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">9</p>
 </div>
-<aside>Tempo previsto: 2 min. Mostrar no Portal: o func-saldaro-hub do seu sufixo, em Settings, Scale and concurrency (Instance memory = 512 MB, On demand maximum instance count = 10); no func-saldaro-banco, a mesma tela com teto 5. Se der tempo, Diagnose and solve problems, buscando Flex Consumption Quota. Cuidado de telão: em Environment variables, use Show value só na linha; o Show values mostra todos os segredos no telão.
+<aside>Tempo previsto: 2 min. Mostrar: o slide; no Portal, o func-saldaro-hub-(sufixo) → Settings → Scale and concurrency (Instance memory = 512 MB, On demand maximum instance count = 10); no func-saldaro-banco-(sufixo), a mesma tela com teto 5; se der tempo, Diagnose and solve problems, buscando Flex Consumption Quota (o professor mostra no Passo 8.3 da montagem). Cuidado de telão: em Environment variables, Show value só na linha; o Show values mostra todos os segredos no telão.
 
 O que falar: o hub é código orientado a eventos com regra de negócio: idempotência, máquina de estados, HMAC. Tem triggers nativos de HTTP, Service Bus e Timer e passa boa parte do tempo parado. É o perfil do Azure Functions. O Logic Apps brilha quando a integração se monta com conectores e com gente no meio, em baixo volume; o Container Apps, quando o time quer controlar a imagem; o App Service, para API web síncrona e contínua num plano dedicado; o AKS, quando o time já opera Kubernetes.
 
@@ -43,5 +43,7 @@ A configuração tem um porquê de Free Trial: lá, a cota do Flex é de 15 núc
 
 Custo: o Flex cobra por GB-s e por execução. A franquia é de 100 mil GB-s e 250 mil execuções por mês, por assinatura, e o lab fica em ~R$ 0. A ressalva: a página de preços diz que ela vale em assinaturas pagas e não cita o Free Trial; se não valer, o pouco que os apps executam sai do crédito de US$ 200.
 
-Transição: guarde o teto de 10 instâncias; ele volta no Incidente 1, quando a rajada chegar. Vamos para a próxima peça da Saldaro.</aside>
+Pergunta para a turma: quem tem Function em produção no plano Consumption, ou em .NET 8? Qual é o plano de migração, e para quando?
+
+Transição: guardem o teto de 10 instâncias: ele volta no Incidente 1, quando a rajada chegar. Última peça: a porta de entrada.</aside>
 </section>

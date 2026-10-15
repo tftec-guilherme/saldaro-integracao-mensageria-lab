@@ -61,7 +61,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">15</p>
 </div>
-<aside>Tempo previsto: 15 min (sintomas e hipóteses: Partes 2 e 3 do guia). Mostrar: o terminal com o erp-simulado e o relatório (1 fatura, 2 tentativas, 504|504 e nenhum faturaId devolvido); stsaldaro(sufixo) → Storage browser → Tables → faturas (duas linhas com a mesma referenciaErp e faturaId diferentes); appi-saldaro-(sufixo) → Logs com kql/faturas-por-referencia-erp.kql e a consulta de requests e dependencies (APIM com 504 aos ~30 s, PostFatura com ~45 s e resultCode 499, um PostCobranca por tentativa); apim-saldaro-(sufixo) → APIs → saldaro → Design → Backend (forward-request timeout="30" e o on-error que devolve o 504).
+<aside>Tempo previsto: 9 min (sintomas e hipóteses: Partes 2 e 3 do guia, 15 no roteiro dele; para caber, o professor faz o Passo 3.1 sozinho na tela). Mostrar: o terminal com o erp-simulado e o relatório (1 fatura, 2 tentativas, 504|504 e nenhum faturaId devolvido); stsaldaro(sufixo) → Storage browser → Tables → faturas (duas linhas com a mesma referenciaErp e faturaId diferentes); appi-saldaro-(sufixo) → Logs com kql/faturas-por-referencia-erp.kql e a consulta de requests e dependencies (APIM com 504 aos ~30 s, PostFatura com ~45 s e resultCode 499, um PostCobranca por tentativa); apim-saldaro-(sufixo) → APIs → saldaro → Design → Backend (forward-request timeout="30" e o on-error que devolve o 504). Telão: o Logs numa aba própria, em KQL mode e sem o Agent; no ensaio, sair dele com consulta não salva travou a aba.
 
 Comandos:
 ./scripts/erp-simulado.ps1 -Faturas 1 -MaxTentativas 2 -Caos "latencia=45"

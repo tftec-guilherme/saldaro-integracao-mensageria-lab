@@ -42,15 +42,19 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">12</p>
 </div>
-<aside>Tempo previsto: 3 a 5 min. Mostrar: o guia de montagem aberto na Etapa 2 e um dos quadros "Por que este recurso" aberto, para a turma ver o formato (objetivo, descrição, papel, por que este e não alternativas, configuração, custos, produção e fontes).
+<aside>Tempo previsto: 3 min (o que passar disso sai da montagem). Mostrar: o guia de montagem aberto na Etapa 2 e um dos quadros "Por que este recurso" aberto, para a turma ver o formato (objetivo, descrição, papel, por que este e não alternativas, configuração, custos, produção e fontes).
 
 Treze etapas, e a ordem não é estética: cada peça depende da anterior. Primeiro o Resource Group, porque tudo o que nasce junto morre junto, e a limpeza no fim é um clique. Depois os olhos, Log Analytics e Application Insights, porque a gente quer enxergar o sistema antes de quebrá-lo. Depois o estado, no Storage; a mensageria, no Service Bus; o segredo, no Key Vault; e o aviso ao parceiro, no Event Grid. Só então os dois Function Apps, que já nascem apontando para tudo isso. Por último, o APIM, a porta única. Uma dica de quem já montou: comece a criar o APIM cedo, porque ele leva alguns minutos para ativar; na validação do kit, ele ativou em uns 2 minutos. Em cada etapa, o guia tem um quadro "Por que este recurso", com o objetivo, o papel na Saldaro, as alternativas, cada opção do formulário e o custo. Eu vou montando aqui, e explicando o porquê de cada peça.
 
-Tempos de cada etapa no guia, para quem monta pela primeira vez: 1, máquina, Portal e sufixo, ~15 min (~5 se já fez o Lab 0); 2, Resource Group, ~3; 3, Log Analytics e App Insights, ~8; 4, Storage, ~12; 5, Service Bus, ~15; 6, Key Vault, ~5; 7, Event Grid, ~12; 8, Function Apps no Flex, ~35; 9, publicar o código, ~15; 10, API Management, ~30 com a espera da ativação; 11, roles do seu usuário, ~8; 12, .env.local e a prova, ~15; 13, post-mortem e pré-mortem, ~5.
+Tempos de cada etapa no guia, para quem monta pela primeira vez: 1, máquina, Portal e sufixo, ~15 min (~5 se já fez o Lab 0); 2, Resource Group, ~3; 3, Log Analytics e App Insights, ~8; 4, Storage, ~12; 5, Service Bus, ~15; 6, Key Vault, ~5; 7, Event Grid, ~12; 8, Function Apps no Flex, ~35; 9, publicar o código, ~15; 10, API Management, ~30 com a espera da ativação; 11, roles do seu usuário, ~8; 12, .env.local e a prova, ~15; 13, post-mortem e pré-mortem, ~5. Ao vivo, eu chego com a Etapa 1 pronta e deixo a 13 para casa.
 
 Insight do mundo real: na validação do kit, a montagem inteira pelo Portal levou cerca de 75 minutos sem pausa; um aluno, com leitura e cuidado, leva umas 3 horas. Em produção, isso nasce de código (o Bicep do kit faz o mesmo em uns 10 minutos), e o Portal fica para explorar.
 
-Se perguntarem por que APIM e não WAF: FAQ-1. Por que Service Bus e não Storage Queue: FAQ-2. Por que Functions e não Logic Apps: FAQ-7.
+Se perguntarem por que APIM e não WAF, por que Service Bus e não Storage Queue, ou por que Functions e não Logic Apps: as respostas estão nos slides do API Management, do Service Bus e do Functions; voltem a eles numa frase e sigam.
+
+Na montagem ao vivo, um aviso: o deploy.ps1 não roda por cima de um ambiente montado à mão, porque o Portal batiza sozinho o plano Flex de cada app e cria as role assignments com outro nome, e o Bicep para nos dois (guia de montagem, "Antes do primeiro deploy.ps1"). Para quem montou à mão, o plano B dos incidentes é o limpar.ps1 e depois o deploy.ps1 -Cenario N -Pronto. Dois cuidados da primeira turma: tudo roda no pwsh, e não no Windows PowerShell 5.1 (confiram com $PSVersionTable.PSVersion); e, antes de publicar na Etapa 9, az account set na assinatura da montagem, porque com o az noutra assinatura a publicação não acha o Resource Group. Se o Deploy do VS Code travar, o bloco az da Etapa 9 é o plano B.
+
+Cuidados de telão na montagem: Show value só na linha, nunca o Show values nem o Advanced edit; os segredos do Passo 8.6 ficam na memória da sessão e vão ao Portal pelo clipboard; nas telas de chave, mostrem onde ela mora, sem revelar o valor; e o aviso da policy do APIM é só aviso.
 
 Transição: vamos montar. E, no fim, o smoke test prova que a casa está de pé.</aside>
 </section>

@@ -91,7 +91,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">26</p>
 </div>
-<aside>Tempo previsto: 18 min (a prova, o post-mortem de 3 min e as lições de 2 min: Partes 5 e 6 do guia). Mostrar: a sonda de aquecimento, as duas rajadas e o Contar-Fila (DLQ de ~32 para ~52); a triagem com o grupo novo SchemaInvalida (20) e uma dessas mensagens no Explorer (DeliveryCount 1); appi-saldaro-(sufixo) → Logs com mensagem.deadletter, mensagem.retry.agendado e kql/dlq-por-motivo.kql; o -Reprocessar e a DLQ em zero; a tabela faturas e a consulta final do guia; maxDeliveryCount no Portal e no Bicep.
+<aside>Tempo previsto: 11 min (a prova e o post-mortem de 3 min: Partes 5 e 6 do guia, 18 no roteiro dele com as lições). Mostrar: a sonda de aquecimento, as duas rajadas e o Contar-Fila (DLQ de ~32 para ~52); a triagem com o grupo novo SchemaInvalida (20) e uma dessas mensagens no Explorer (DeliveryCount 1); appi-saldaro-(sufixo) → Logs com mensagem.deadletter, mensagem.retry.agendado e kql/dlq-por-motivo.kql; o -Reprocessar e a DLQ em zero; a tabela faturas e a consulta final do guia; maxDeliveryCount no Portal e no Bicep.
 
 Comandos:
 1..3 | ForEach-Object { (Invoke-WebRequest "$($cfg.SALDARO_APIM_URL)/faturas/aquecimento/status" -SkipHttpErrorCheck).StatusCode }   (aquecimento, obrigatório depois do plano B: 404 é o esperado)
@@ -101,7 +101,7 @@ Comandos:
 ./scripts/triagem-dlq.ps1 -Reprocessar
 ./scripts/triagem-dlq.ps1
 
-Cinco critérios: as mesmas duas rajadas, outro desfecho. Antes, o aquecimento: o hub acabou de reiniciar com os toggles, e quem foi pelo plano B acabou de reaplicar o APIM. No primeiro deploy do kit, logo depois de um deploy.ps1, a primeira sonda levou 1,9 segundo e as seguintes, uns 130 ms, e as rajadas saíram limpas, 10 faturas em 5 segundos e 20 em menos de um. Cada triagem leva uns 2 minutos e meio, e a prova tem três: disparem e sigam a conversa.
+Cinco critérios: as mesmas duas rajadas, outro desfecho. Antes, o aquecimento: o hub acabou de reiniciar com os toggles, e quem foi pelo plano B acabou de reaplicar o APIM. No primeiro deploy do kit, a primeira sonda levou 1,9 segundo e as seguintes, uns 130 ms, e as rajadas saíram limpas, 10 faturas em 5 segundos e 20 em menos de um. Cada triagem leva uns 2 minutos e meio, e a prova tem três: disparem e sigam a conversa.
 
 Um: o veneno sai na primeira entrega. A DLQ ganha 20 mensagens em uns 20 segundos (de 32 para 52 no primeiro deploy), e o consumidor executa uma vez por mensagem, sem falha. Cada mensagem nova tem DeadLetterReason = SchemaInvalida, DeliveryCount 1 e, na descrição, o campo que não converteu.
 Dois: os transientes nunca chegam à DLQ. No Contar-Fila, as agendadas ficam acima de zero por uns 35 a 50 segundos (pico de 11 no primeiro deploy) e zeram uns 70 segundos depois da rajada. O mensagem.retry.agendado mostra as tentativas 1 e 2, com 10 e 20 segundos, umas 10 mensagens em cada (11 no primeiro deploy; varia com o sorteio), e logo depois a fatura.baixada. A tentativa 3, de 40 segundos, pode nem aparecer: quando ela chegaria, a falha de 45 já tinha passado. A DLQ não cresce, nenhuma TentativasEsgotadas aparece e as 20 faturas baixam.

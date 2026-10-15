@@ -88,28 +88,28 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">25</p>
 </div>
-<aside>Tempo previsto: 12 min (o conserto: Parte 4 do guia). Mostrar: VS Code com ProcessadorDeBaixa.cs, ClassificadorDeConfirmacao.cs e PoliticaDeRetry.cs (procure CONCEITO:); os dois toggles em Environment variables do hub (Passo 4.2); sbq-confirmacoes-banco → Overview → seção Settings → (change) ao lado de Max delivery count, de 10 para 3, OK (Passo 4.3); os dois .bicepparam; o Passo 4.4 e o Contar-Fila com as ~32 do incidente na DLQ.
+<aside>Tempo previsto: 7 min (o conserto: Parte 4 do guia, 12 no roteiro dele). Mostrar: VS Code com ProcessadorDeBaixa.cs, ClassificadorDeConfirmacao.cs e PoliticaDeRetry.cs (procure CONCEITO:); os dois toggles em Environment variables do hub (Passo 4.2); o (change) do Max delivery count no Overview da fila (Passo 4.3); os dois .bicepparam; o Passo 4.4 e o Contar-Fila com as ~32 do incidente na DLQ.
 
 Comandos (@fila e Contar-Fila vêm do Passo 1.1):
 git diff --no-index infra/parameters/cenario-3-pronto.bicepparam infra/parameters/cenario-4-pronto.bicepparam
 az servicebus queue update @fila --max-delivery-count 3 -o none   (sem o (change) do Portal)
 az servicebus queue show @fila --query "{maxDeliveryCount:maxDeliveryCount, lockDuration:lockDuration}" -o table
 Contar-Fila
-Plano B: ./scripts/deploy.ps1 -Cenario 4 -Pronto -SemPublicar
+./scripts/deploy.ps1 -Cenario 4 -Pronto -SemPublicar   (plano B, com a fila parada, uns 4 minutos; no what-if, a fila aparece como Deploy (!), sem valores: nada é recriado; quem montou à mão: limpar.ps1 e depois -Cenario 4 -Pronto)
 
 O conserto começa por uma pergunta que o worker não fazia: este erro passa sozinho ou não?
 
 Permanente é o que se repete igual em toda tentativa: schema inválido, regra de negócio violada. Com Cenario:DlqComMotivo, o worker manda a mensagem para a DLQ na primeira entrega, com DeadLetterMessageAsync e deadLetterReason SchemaInvalida, e a descrição leva a mensagem do erro. Os triggers usam AutoCompleteMessages = false e recebem ServiceBusMessageActions: quem decide o destino da mensagem é o código, não o runtime.
 
-Transiente é o que passa com o tempo, e reentregar na hora é inútil: dez tentativas em segundos contra uma falha de 45. Com Cenario:RetryAgendado, o worker envia uma cópia agendada para daqui a 5 segundos vezes 2 elevado a n, com a propriedade tentativa, e completa a original. Dez, vinte, quarenta: setenta segundos de fôlego contra uma falha de 45. No primeiro deploy, a terceira nem foi usada. Se nem a terceira resolver, DLQ com TentativasEsgotadas. A cópia sai com MessageId = {idEvento}-t{n}: com o mesmo MessageId, o duplicate detection, agora ligado, a descartaria em silêncio, porque mensagem agendada também passa pela detecção.
+Transiente é o que passa com o tempo, e reentregar na hora é inútil: dez tentativas em segundos contra uma falha de 45. Com Cenario:RetryAgendado, o worker envia uma cópia agendada para daqui a 5 segundos vezes 2 elevado a n, com a propriedade tentativa, e completa a original. Dez, vinte, quarenta: setenta segundos de fôlego contra uma falha de 45. Se nem a terceira resolver, DLQ com TentativasEsgotadas. A cópia sai com MessageId = {idEvento}-t{n}: com o mesmo MessageId, o duplicate detection, agora ligado, a descartaria em silêncio, porque mensagem agendada também passa pela detecção.
 
-Aplicar, tudo no Portal. Os toggles: no func-saldaro-hub-(sufixo), Environment variables, Cenario__DlqComMotivo e Cenario__RetryAgendado em true, e o app reinicia, uns 20 a 35 segundos. A política da fila: no Overview da sbq-confirmacoes-banco, na seção Settings, (change) ao lado de Max delivery count, de 10 para 3, e OK. Três cliques, menos de um minuto. Ao contrário de sessions, essa propriedade muda numa fila existente: nada é recriado, e a DLQ do incidente continua lá. O queue show do Passo 4.4 confere 3 e PT1M. E o Bicep? O cenario-3-pronto e o cenario-4-pronto diferem em três linhas, os dois toggles e maxDeliveryCount = 3: o arquivo do estado pronto já declara o que vocês clicaram; o último deployment, não. É drift de propósito: um deploy.ps1 -Cenario 4, o estado inicial, devolveria o 10 e desligaria os toggles, e quem fecha a conta é um deploy do cenario-4-pronto. Por que três? O maxDeliveryCount vira rede de segurança para o erro que ninguém previu. Plano B: deploy.ps1 -Cenario 4 -Pronto -SemPublicar, com a fila parada, uns 4 minutos no primeiro deploy; no what-if, a fila aparece como Deploy (!), sem valores: nada é recriado. Para todos, a prova começa pelo aquecimento: o hub acabou de reiniciar, e o plano B ainda reaplicou o APIM.
+Aplicar, tudo no Portal. Os toggles: no func-saldaro-hub-(sufixo), Environment variables, Cenario__DlqComMotivo e Cenario__RetryAgendado em true, e o app reinicia, de 5 a 35 segundos (no ensaio, 7). A política da fila: no Overview da sbq-confirmacoes-banco, na seção Settings, (change) ao lado de Max delivery count, de 10 para 3, e OK. Ao contrário de sessions, essa propriedade muda numa fila existente: nada é recriado, e a DLQ do incidente continua lá. O queue show do Passo 4.4 confere 3 e PT1M. E o Bicep? O cenario-3-pronto e o cenario-4-pronto diferem em três linhas, os dois toggles e maxDeliveryCount = 3: o arquivo já declara o que vocês clicaram; o último deployment, não. É drift de propósito: um deploy.ps1 -Cenario 4, o estado inicial, devolveria o 10 e desligaria os toggles. Por que três? O maxDeliveryCount vira rede de segurança para o erro que ninguém previu. Para todos, a prova começa pelo aquecimento: o hub acabou de reiniciar, e o plano B ainda reaplicou o APIM.
 
 O que ficou de antes é a triagem, que vocês executam na prova: o triagem-dlq.ps1 faz peek na DLQ e agrupa por DeadLetterReason. Com -Reprocessar, corrige o valor em texto para número e reprocessa com MessageId = {original}-r{n}, o mesmo SessionId e reprocessadoDe, e só então completa a da DLQ; a inbox olha o idEvento do corpo, não o MessageId, e nada é baixado duas vezes. O -DescartarMotivo joga fora, e essa decisão é de negócio, nunca do script.
 
 Pergunta para a turma: que outros erros do hub vocês classificariam como permanentes? E um 429 do banco parceiro: permanente ou transiente?
 
-Se perguntarem: "Por que retry agendado à mão? O Functions não tem retry policy?" → FAQ-6.
+Se perguntarem: "Por que retry agendado à mão? O Functions não tem retry policy?" As retry policies do Functions não valem para o trigger de Service Bus, e o clientRetryOptions só refaz as chamadas ao broker, não a execução.
 
 Transição: prova.</aside>
 </section>

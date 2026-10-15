@@ -81,7 +81,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">20</p>
 </div>
-<aside>Tempo previsto: 12 min (a camada da assinatura: Parte 4 do guia). Mostrar: VS Code com a validação de assinatura do Saldaro.Hub (Dominio/AssinaturaWebhook.cs, lógica pura, chamada pelo Functions/WebhookBanco.cs antes de qualquer JsonDocument); Portal → func-saldaro-hub-(sufixo) → Settings → Environment variables → Cenario__WebhookHmac = true; o terminal repetindo o POST forjado (agora 401) e ./scripts/smoke-test.ps1 (o webhook assinado do banco continua passando).
+<aside>Tempo previsto: 7 min (a camada da assinatura: Parte 4 do guia, 12 no roteiro dele). Mostrar: VS Code com a validação de assinatura do Saldaro.Hub (Dominio/AssinaturaWebhook.cs, lógica pura, chamada pelo Functions/WebhookBanco.cs antes de qualquer JsonDocument); Portal → func-saldaro-hub-(sufixo) → Settings → Environment variables → Cenario__WebhookHmac = true; o terminal repetindo o POST forjado (agora 401) e ./scripts/smoke-test.ps1 (o webhook assinado do banco continua passando).
 
 Segredo fixo num header não é assinatura. Ele prova só que quem mandou conhecia o segredo em algum momento: o segredo aparece em log, em proxy, em print de suporte, e não protege o corpo. Quem tem o header copia, troca o valor ou o faturaId e manda de novo quantas vezes quiser.
 
@@ -89,7 +89,7 @@ A assinatura de verdade amarra o segredo ao conteúdo e ao momento. O banco calc
 
 Três detalhes derrubam implementações reais. Um: validar antes de desserializar. Se o código faz parse do JSON e serializa de novo para assinar, a ordem dos campos ou um espaço muda e nenhuma assinatura confere; por isso o WebhookBanco lê o corpo bruto. Dois: comparar com CryptographicOperations.FixedTimeEquals, que leva o mesmo tempo qualquer que seja o conteúdo; um == comum para no primeiro byte diferente e vaza, pelo tempo de resposta, quantos bytes o atacante já acertou. Três: assinatura inválida é 401 e nada entra na fila. Não existe "aceita e marca como suspeita".
 
-Vamos ver funcionando. No Portal, func-saldaro-hub-(sufixo), Settings, Environment variables: Cenario__WebhookHmac = true. É o caminho da aula, e é drift: no próximo slide a mesma linha vai para o arquivo de parâmetros do Bicep, para o arquivo dizer o que está no ar; sem ela, o próximo deploy.ps1 deste estado desligaria o HMAC em silêncio. Esperem o app reiniciar, uns 20 a 35 segundos, confiram no /saude e mandem o POST forjado de novo: 401, e a fatura de estudo não muda. Agora o smoke test: o webhook do banco, que sempre assinou, continua passando.
+Vamos ver funcionando. No Portal, func-saldaro-hub-(sufixo), Settings, Environment variables: Cenario__WebhookHmac = true. É o caminho da aula, e é drift: no próximo slide a mesma linha vai para o arquivo de parâmetros do Bicep, para o arquivo dizer o que está no ar; sem ela, o próximo deploy.ps1 deste estado desligaria o HMAC em silêncio. Esperem o app reiniciar, de 5 a 35 segundos (no ensaio, 13), confiram no /saude e mandem o POST forjado de novo: 401, e a fatura de estudo não muda. Agora o smoke test: o webhook do banco, que sempre assinou, continua passando.
 
 E onde mora o segredo? Hoje, numa app setting em texto. No guia de leitura 3.5 ele vai para o Key Vault como referência, e a rotação deixa de exigir redeploy.
 
@@ -97,7 +97,7 @@ E quem pode chamar o webhook? No kit, qualquer um: a Function é Anonymous e a A
 
 Pergunta para a turma: por que o timestamp entra no conteúdo assinado, e não só num header separado?
 
-Se perguntarem: "Por que HMAC no webhook, e não mTLS, OAuth ou lista de IPs?" → FAQ-10.
+Se perguntarem: "Por que HMAC no webhook, e não mTLS, OAuth ou lista de IPs?" Cada um responde uma pergunta: o HMAC prova que o corpo veio de quem tem o segredo; o mTLS, quem abriu a conexão; a lista de IPs, quem consegue chegar; o OAuth, quem chama, com um token que expira. Em produção, HMAC mais IPs ou mTLS, conforme o contrato com o banco (ADR 0007).
 
 Transição: segunda e terceira camadas: o broker e o consumidor.</aside>
 </section>

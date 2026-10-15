@@ -66,29 +66,28 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">21</p>
 </div>
-<aside>Tempo previsto: 30 min (as camadas do broker e do consumidor: Partes 5 e 6 do guia). Mostrar: sbq-confirmacoes-banco → Overview → Essentials e o erro do queue update (SubCode=40000); os contadores em zero e o Delete no Overview; Queues → + Queue com as duas caixas marcadas (Passo 5.5); VS Code com os dois .bicepparam, service-bus.bicep, os triggers ProcessarConfirmacao* e o host.json; o queue show do Passo 5.6; Environment variables do hub.
+<aside>Tempo previsto: 18 min (Partes 5 e 6 do guia, 30 no roteiro dele; em ritmo de demonstração). Mostrar: o Essentials da fila e o erro SubCode=40000; os contadores em zero e o Delete; o + Queue com as duas caixas (Passo 5.5); no VS Code, os dois .bicepparam, o service-bus.bicep, os triggers e o host.json; o queue show do Passo 5.6; as Environment variables do hub.
 
 Comandos ($rg e $sb vêm do Passo 0.1; o queue show completo é o do Passo 5.6):
 az servicebus queue update -g $rg --namespace-name $sb -n sbq-confirmacoes-banco --enable-session true   (Passo 5.1: SubCode=40000)
 az servicebus queue show -g $rg --namespace-name $sb -n sbq-confirmacoes-banco --query countDetails -o jsonc   (Passo 5.2: drenar)
-Plano B: ./scripts/deploy.ps1 -Cenario 3 -Sufixo $cfg.SALDARO_SUFIXO -SemPublicar, ou -Cenario 3 -Pronto
+./scripts/deploy.ps1 -Cenario 3 -Sufixo $cfg.SALDARO_SUFIXO -SemPublicar   (plano B: o Bicep recria a fila com o .bicepparam do Passo 5.4; o aviso amarelo de consumidor sem sessão é esperado)
 
-Com a assinatura, sobrou a confirmação repetida, assinada pelo próprio banco. Três camadas: o broker descarta a cópia (janela de 10 minutos, maior que os 5 do timestamp); a sessão dá um consumidor por fatura, na ordem de chegada, que não é ordem de negócio; a inbox e a máquina de estados com ETag fecham a conta.
+Sobrou a confirmação repetida, assinada pelo próprio banco. Três camadas: o broker descarta a cópia (janela de 10 minutos, maior que os 5 do timestamp); a sessão dá um consumidor por fatura, na ordem de chegada, que não é ordem de negócio (partição não resolve: é throughput, e sem chave espalha as mensagens); a inbox e a máquina de estados com ETag fecham a conta.
 
-Tentem ligar sessions na fila que existe: no Overview, bloco Essentials, Sessions e Duplicate detection estão Disabled, sem onde ligar (não em Settings → Properties). O CLI responde: The value for the RequiresSession property of an existing Queue cannot be changed. O caminho do lab, todo no Portal: drenar (ativas e DLQ em 0) e apagar a fila, no Delete do Overview. Antes de criar de novo, no cenario-2-pronto.bicepparam, três linhas em true: webhookHmac (o que vocês ligaram no slide anterior), filaComSessions e filaDupDetection. Esse arquivo registra o que vocês vão criar à mão; sem ele, o próximo deploy pararia na propriedade imutável ou desligaria o HMAC em silêncio.
+Tentem ligar sessions na fila que existe: no Essentials do Overview, Sessions e Duplicate detection estão Disabled, sem onde ligar (não em Settings → Properties). O CLI recusa: RequiresSession não muda numa fila existente. O caminho do lab, todo no Portal: drenar (ativas e DLQ em 0) e apagar a fila, no Delete do Overview. Antes de criar de novo, no cenario-2-pronto.bicepparam, três linhas em true: webhookHmac (ligado no slide anterior), filaComSessions e filaDupDetection. Sem essas linhas, o próximo deploy pararia na propriedade imutável ou desligaria o HMAC em silêncio.
 
-A fila nova: Queues, + Queue. Nome exato sbq-confirmacoes-banco e os valores do Bicep: Max delivery count 10, Lock duration 1 minuto, Enable dead lettering on message expiration marcado, Enable partitioning desmarcado (também só na criação) e as duas caixas do dia, Enable duplicate detection, janela de 10 minutos, e Enable sessions. Esqueceu uma? Apaga e recria, uns dois minutos a mais. O queue show confere True, True, PT10M, 10 e PT1M; lock ou max delivery com o padrão do painel se acertam no (change) da seção Settings do Overview. Nada reiniciou o hub, mas o Azure e o último deployment discordam: é drift (o check-drift.ps1 mostra), e o arquivo editado faz o próximo deploy confirmar a fila.
+A fila nova: Queues, + Queue. Nome exato sbq-confirmacoes-banco e os valores do Bicep: Max delivery count 10, Lock duration 1 minuto, Enable dead lettering on message expiration marcado, Enable partitioning desmarcado (também só na criação) e as duas caixas do dia, Enable duplicate detection, janela de 10 minutos, e Enable sessions. Esqueceu uma? Apaga e recria. O queue show confere True, True, PT10M, 10 e PT1M; lock ou max delivery com o padrão do painel se acertam no (change) da seção Settings do Overview. Nada reiniciou o hub, mas é drift (o check-drift.ps1 mostra), e o arquivo editado faz o próximo deploy confirmar a fila.
 
-Plano B: o -Cenario 3 -SemPublicar recria a fila pelo Bicep com esse arquivo, uns 3 minutos e meio com a fila apagada (o aviso amarelo de consumidor sem sessão é esperado; fila não apagada para o script com IMUTÁVEL); o -Cenario 3 -Pronto entrega as três camadas e recria a fila sozinho.
+Plano B: o -SemPublicar dos Comandos leva uns 3 minutos e meio com a fila já apagada (sem apagar, o script para com IMUTÁVEL); o -Cenario 3 -Pronto entrega as três camadas e recria a fila sozinho. Quem montou à mão: limpar.ps1 e depois o -Pronto.
 
 host.json: maxConcurrentCalls = 4 (sem sessão), maxConcurrentSessions = 8 (com sessão) e sessionIdleTimeout de 10 s; receptor sem sessão numa fila com sessões não funciona, por isso dois triggers, um ligado.
 
-Troquem o consumidor no Portal, chaves sempre opostas: AzureWebJobs.ProcessarConfirmacaoSemSessao.Disabled = true e AzureWebJobs.ProcessarConfirmacaoComSessao.Disabled = false. O app reinicia (20 a 35 s): aqueçam antes de rodar; quem veio pelo plano B aquece de qualquer jeito, porque o deploy reaplicou o APIM. As 20 faturas de novo: a duplicata some, mas a desordem não; regra de negócio mora no consumidor. Liguem Cenario__Inbox e levem workerComSessao e inbox para o mesmo .bicepparam: ele fica igual ao cenario-3-pronto, o ponto de partida do Incidente 3.
+Troquem o consumidor no Portal, chaves sempre opostas: AzureWebJobs.ProcessarConfirmacaoSemSessao.Disabled = true e AzureWebJobs.ProcessarConfirmacaoComSessao.Disabled = false. O app reinicia (5 a 35 s; no ensaio, 7): aqueçam antes de rodar; quem veio pelo plano B também, porque o deploy reaplicou o APIM. As 20 faturas de novo: a duplicata some, mas a desordem não; regra de negócio mora no consumidor. Liguem Cenario__Inbox e levem workerComSessao e inbox para o mesmo .bicepparam: ele fica igual ao cenario-3-pronto, o ponto de partida do Incidente 3.
 
 Pergunta para a turma: se o duplicate detection já descarta a confirmação repetida, para que a inbox? Deem um cenário em que só ela salva.
 
-Se perguntarem: "Se a fila é FIFO, por que precisa de sessão? E partição não resolve a ordem?" → FAQ-4.
-Se perguntarem: "Se a fila tem duplicate detection, para que inbox e ETag?" → FAQ-5.
+Se perguntarem: "Se a fila tem duplicate detection, para que inbox e ETag?" A detecção só olha o MessageId, só dentro da janela e só no envio: a reentrega da mesma mensagem e a confirmação repetida depois da janela passam. Quem impede a baixa dupla é a gravação condicional com ETag; a inbox é atalho e auditoria.
 
 Transição: prova.</aside>
 </section>

@@ -70,7 +70,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">19</p>
 </div>
-<aside>Tempo previsto: 18 min (a história, os sintomas e as hipóteses: Partes 1 a 3 do guia). Mostrar: o baixa-duplicada.kql filtrado pelo início da execução; a fatura pela API; a tabela faturas filtrada por status = registrada; o POST forjado respondendo 202; as consultas de hipóteses e o host.json.
+<aside>Tempo previsto: 11 min (Partes 1 a 3 do guia, 18 no roteiro dele; o professor reproduz, e quem tem ambiente repete junto). Mostrar: o baixa-duplicada.kql filtrado pelo início da execução; a fatura pela API; a tabela faturas filtrada por status = registrada; o POST forjado respondendo 202; as consultas de hipóteses e o host.json.
 
 Comandos:
 ./scripts/erp-simulado.ps1 -Faturas 20 -Caos "duplicar=3;embaralhar=true"
@@ -80,21 +80,21 @@ Invoke-RestMethod "$($cfg.SALDARO_APIM_URL)/faturas/$faturaId" | Format-List
 $forjado = [ordered]@{ idEvento = [guid]::NewGuid().ToString(); tipo = 'cobranca.paga'; faturaId = $faturaId; idCobranca = 'COB-00000000'; valor = 1.00; ocorridoEm = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); simulaTransiente = $false; transienteAte = $null } | ConvertTo-Json
 Invoke-WebRequest -Method Post -Uri "$($cfg.SALDARO_APIM_URL)/webhooks/banco" -ContentType 'application/json' -Body $forjado -SkipHttpErrorCheck | Select-Object StatusCode
 
-Dia 10, 9h30, pico de vencimentos. O banco teve um timeout do lado dele e, quando voltou, repetiu de uma vez 1.200 confirmações: parte chegou em várias cópias, parte fora de ordem. E, no meio da confusão, alguém mandou uma confirmação que o banco nunca enviou.
+Dia 10, 9h30, pico de vencimentos: o banco voltou de um timeout e repetiu de uma vez 1.200 confirmações, parte em várias cópias, parte fora de ordem. E alguém mandou uma confirmação que o banco nunca enviou.
 
-O ponto de partida é o estado pronto do Incidente 1; diferença pequena (o toggle do Incidente 1 desligado) se corrige no Portal, Passo 0.3; quem chegou agora roda ./scripts/deploy.ps1 -Cenario 3 -Sufixo (seu sufixo) na pausa: uns 6 minutos num ambiente que já existe, 8 a 10 num novo, e depois o aquecimento. Vinte faturas com duplicar=3;embaralhar=true: cada evento sai três vezes com o mesmo idEvento, o "paga" em 1 segundo e o "registrada" uns 8 segundos depois. Os 1.200 da história viram 120: 20 faturas, 2 eventos, 3 cópias. O ERP fez tudo certo; o estrago é entre o banco e o hub.
+Ponto de partida: o estado pronto do Incidente 1 (o toggle desligado se corrige no Portal, Passo 0.3); o deploy.ps1 de quem chegou agora leva uns 6 minutos num ambiente que já existe e 8 a 10 num novo, mais o aquecimento. Vinte faturas com duplicar=3;embaralhar=true: cada evento sai três vezes com o mesmo idEvento, o "paga" em 1 segundo e o "registrada" uns 8 segundos depois. Os 1.200 da história viram 120: 20 faturas, 2 eventos, 3 cópias. O ERP fez tudo certo; o estrago é entre o banco e o hub.
 
 Um minuto de telemetria e o baixa-duplicada.kql com o filtro do início: perto de 20 linhas, cada uma com três fatura.baixada. Peguem um faturaId dali: é a fatura de estudo. Pela API, o mais provável é notificada, com quantidadeBaixas em geral 3: um pagamento, três baixas e três avisos ao ERP. A desordem não aparece em toda fatura: o status final depende de quem grava por último, o "registrada" atrasado ou a notificação, que no baseline marca notificada por cima de qualquer status. No primeiro deploy, 2 das 20 terminaram registrada, com baixadaEm preenchido. Achem as de vocês no Storage browser, filtrando por status. Se o quantidadeBaixas mostrar menos baixas do que o KQL, é lost update: no primeiro deploy, três fatura.baixada no KQL e quantidadeBaixas = 2 na tabela.
 
 Em paralelo porque o host.json tem maxConcurrentCalls = 4: as três cópias do "paga" correm juntas.
 
-Agora o pior: o POST forjado para a fatura de estudo, sem assinatura, dizendo que alguém pagou um real. Resposta: 202. Uns 25 segundos depois, o quantidadeBaixas subiu mais um, de 3 para 4 no primeiro deploy, e o ERP do cliente recebeu mais um aviso de pagamento. Na Saldaro 1.0, a "assinatura" era um segredo fixo num header; na 2.0, nem isso. E nada barrou o remetente antes do hub: no kit, o webhook é Anonymous e a API saldaro-webhooks do APIM não pede subscription, simplificação de laboratório da ADR 0007; em produção, o APIM só deixaria passar o banco, e eu volto nisso no próximo slide.
+Agora o pior: o POST forjado para a fatura de estudo, sem assinatura, dizendo que alguém pagou um real. Resposta: 202. Uns 25 segundos depois, o quantidadeBaixas subiu mais um, de 3 para 4 no primeiro deploy, e o ERP do cliente recebeu mais um aviso de pagamento. Na Saldaro 1.0, a "assinatura" era um segredo fixo num header; na 2.0, nem isso. E nada barrou o remetente: o webhook é Anonymous e a API saldaro-webhooks do APIM não pede subscription, simplificação de laboratório da ADR 0007 que retomo no próximo slide.
 
 Hipóteses, com as consultas do guia: o banco tem uma cobrança por fatura, então o ERP não duplicou; cada idEvento chegou três vezes; o "registrada" chegou por último e, onde a notificação gravou antes dele, desfez a baixa; as baixas da mesma fatura caíram a milissegundos uma da outra; e o webhook aceita qualquer remetente.
 
 Pergunta para a turma: desses três sintomas (duplicata, desordem e forjada), qual vocês resolveriam primeiro? E qual dá para resolver só com configuração, sem código?
 
-Se perguntarem: "Se a fila é FIFO, por que a fatura desbaixou?" → FAQ-4.
+Se perguntarem: "Se a fila é FIFO, por que a fatura desbaixou?" FIFO é ordem de chegada, não de negócio: o banco mandou o "paga" antes do "registrada", e é nessa ordem que eles saem. A ordem de negócio fica com a máquina de estados.
 
 Transição: primeira camada: a assinatura.</aside>
 </section>

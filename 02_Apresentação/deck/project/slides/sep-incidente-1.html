@@ -28,7 +28,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">14</p>
 </div>
-<aside>Tempo previsto: 5 min (a história e o terminal pronto: Parte 1 do guia). Mostrar: o separador; o terminal da turma com os Passos 1.1 e 1.2 do guia (.env.local carregado e AsyncRequestReply = False no /saude).
+<aside>Tempo previsto: 3 min (a história e o terminal pronto: Parte 1 do guia, que tem 5 no roteiro dele). Mostrar: o separador; o terminal da turma com os Passos 1.1 e 1.2 do guia (.env.local carregado e AsyncRequestReply = False no /saude).
 
 Comandos:
 $cfg = Get-Content ./scripts/.env.local -Raw | ConvertFrom-StringData
@@ -39,6 +39,8 @@ Incidente 1: “O timeout de sexta às 18h”. A partir de agora vocês estão d
 Sexta-feira, 18h02. O banco parceiro avisou, numa caixa de e-mail que ninguém monitorava, que entraria em janela de manutenção, e passou a responder em 40, 60, às vezes 90 segundos. O POST /faturas da Saldaro era síncrono: só respondia ao ERP depois que o banco devolvia a cobrança. Às 19h10, quando o banco voltou ao normal, umas 800 faturas dos ERPs tinham virado duas ou três faturas no hub, cada uma com a sua cobrança no banco, e o suporte passou a noite atendendo pagadores com dois boletos.
 
 Enquanto eu conto, preparem o terminal, na raiz do repositório: carreguem o scripts/.env.local numa variável $cfg e perguntem ao hub, no endpoint /saude, em que estado ele está. O toggle AsyncRequestReply tem que aparecer False: é o baseline do Lab 0. Se aparecer True, alguém já consertou; o guia diz como voltar.
+
+Duas regras para os três incidentes. Uma: aqueçam antes de cada rajada, e sempre depois de um deploy.ps1. O APIM Consumption e o hub acordam devagar: no primeiro deploy, a primeira chamada levou uns 2 segundos, e as seguintes, uns 130 ms; uma sonda que responde 404, como a do Passo 5.1, ou o próprio smoke test resolve. Duas: o plano B de cada incidente é o deploy.ps1 com o estado pronto, mas quem montou à mão, como eu acabei de fazer, só o usa depois do limpar.ps1: o script não roda por cima de um ambiente montado no Portal.
 
 Transição: sintomas.</aside>
 </section>

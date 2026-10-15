@@ -27,7 +27,7 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">11</p>
 </div>
-<aside>Tempo previsto: 3 min. Mostrar no Portal: rg-saldaro-lab → Overview, com a lista de recursos e o botão Delete resource group, que é por onde a aula termina.
+<aside>Tempo previsto: 3 min. Mostrar: a tabela do slide. O ambiente que vamos montar ainda não existe no Portal do professor: ele nasce na montagem e é apagado ao vivo no fim do dia; quem montou em casa pode abrir o seu na Overview, com o botão Delete resource group, que é por onde a aula termina.
 
 Antes de montar, a conta. Só um medidor corre por hora neste kit: o Service Bus Standard, uns R$ 0,07 por hora, com ou sem tráfego. É ele que responde por uns R$ 55 dos ~R$ 60 por mês que o ambiente custa se alguém esquecer o Resource Group ligado. Todo o resto cobra por uso, e o volume do lab cabe na franquia gratuita: o APIM Consumption até 1 milhão de chamadas por mês, o Event Grid até 100 mil operações, o Log Analytics até 5 GB, e o Application Insights entra junto com o Log Analytics. O Key Vault não tem franquia, mas no lab custa centavos; o Storage fica perto de R$ 1 por mês se ficar ligado.
 
@@ -35,7 +35,9 @@ Uma ressalva no Flex Consumption: a franquia é de 100 mil GB-s e 250 mil execu�
 
 Na prática: montar e apagar no mesmo dia sai uns R$ 0,20 a 1; montar na véspera e apagar no fim da aula, uns R$ 2 a 3. Montar à mão leva umas 3 horas contra uns 10 minutos do script, e a diferença na conta são uns R$ 0,20 de Service Bus. Os valores usam ~R$ 5,50 por dólar e preços de lista de Brazil South em outubro de 2026; confiram na calculadora na data da aula.
 
-A regra de ouro: o rg-saldaro-lab só vive até o fim da aula. Rodem pwsh ./scripts/limpar.ps1 com o seu sufixo ou, pelo Portal, apaguem o Resource Group e purguem o Key Vault e o APIM, que senão ficam presos no soft-delete com o nome reservado. E evitem APIM Developer, Service Bus Premium, Functions Premium e Defender for Storage: o kit não precisa de nenhum deles.
+A regra de ouro: o ambiente que vamos montar só vive até o fim da aula. Rodem pwsh ./scripts/limpar.ps1 com o seu sufixo ou, pelo Portal, apaguem o Resource Group e purguem o Key Vault e o APIM, que senão ficam presos no soft-delete com o nome reservado. E evitem APIM Developer, Service Bus Premium, Functions Premium e Defender for Storage: o kit não precisa de nenhum deles.
+
+Pergunta para a turma: quem já viu uma fila "esquecida" gerar conta no fim do mês? Deixe alguém contar em 30 segundos.
 
 Transição: com a conta na cabeça, a ordem da montagem. Treze etapas, e cada peça resolve um problema.</aside>
 </section>

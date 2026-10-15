@@ -65,13 +65,13 @@
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">Integração e Mensageria no Azure — um dia de incidente na Saldaro</p>
 <p style="font-size:24px;line-height:1.4;color:rgba(255,255,255,0.4)">3</p>
 </div>
-<aside>Tempo previsto: 3 min. Mostrar: o diagrama deste slide e, ao lado, o Portal aberto na assinatura, ainda sem o rg-saldaro-lab.
+<aside>Tempo previsto: 3 min. Mostrar: o diagrama deste slide e, ao lado, o Portal aberto na assinatura do professor, ainda sem o rg-saldaro-lab.
 
 Antes de clicar em qualquer coisa, a planta da casa. A Saldaro 2.0 tem cinco papéis. A porta única é o APIM: o ERP da empresa cliente e o banco parceiro só falam com ele. O processamento são dois Function Apps no Flex Consumption: o hub, que é a Saldaro, e o banco simulado, que faz o papel do parceiro. A mensageria é o Service Bus, com três filas, e o Event Grid, que avisa o parceiro quando a fatura é baixada. O estado mora no Storage, em tabelas, e os segredos no Key Vault. E os olhos são o Application Insights, gravando num workspace do Log Analytics. Cada peça que a gente criar hoje responde a uma pergunta: o que quebra se ela não existir?
 
-Insight do mundo real: quem já montou isso em projeto sabe que o desenho cabe num slide, mas a ordem de criação e as permissões entre as peças é que derrubam a primeira tentativa. É por isso que a montagem tem ordem.
+Insight do mundo real: quem já montou isso em projeto sabe que o desenho cabe num slide, mas a ordem de criação e as permissões entre as peças é que derrubam a primeira tentativa. É por isso que a montagem tem ordem. E o Portal decide algumas coisas sozinho, como o nome do plano Flex e o GUID das role assignments: o ambiente fica funcionalmente igual ao do Bicep, mas não idêntico, e é por isso que o deploy.ps1 não roda por cima dele.
 
-Referências: guia 01_Aulas/Lab0_Montagem_no_Portal_Guia.md (diagrama e Tabela de Recursos); FAQ das tecnologias, perguntas 1, 4 e 10.
+Referências: guia 01_Aulas/Lab0_Montagem_no_Portal_Guia.md (diagrama, Tabela de Recursos e "O que fica diferente do Bicep"); FAQ das tecnologias, em docs/research/2026-10-14-duvidas-das-tecnologias.md, perguntas 1, 4 e 10.
 
-Transição: em que ordem a gente monta, e por quê.</aside>
+Transição: antes de montar, o porquê de cada peça, na ordem em que ela entra. Primeiro, os olhos.</aside>
 </section>

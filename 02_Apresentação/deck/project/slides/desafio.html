@@ -88,7 +88,9 @@ O desafio para casa é o incidente que não coube hoje e que, na minha experiên
 
 Os outros quatro cenários ficam como guias de leitura: rate limit com 429, no limite de 60 chamadas/min por chave de cada cliente, e retry com teto; Managed Identity e Key Vault no lugar de connection string; Bicep, what-if e drift; e a decisão Premium ou Standard com um ADR. Façam no ritmo de vocês; cada um cabe numa noite.
 
-E agora o passo mais importante do dia: apaguem o rg-saldaro-lab. Todos juntos, agora, ao vivo. Service Bus Standard cobra por hora e não dorme: R$ 0,07/h.
+E agora o passo mais importante do dia: apaguem o rg-saldaro-lab. Todos juntos, agora, ao vivo. Service Bus Standard cobra por hora e não dorme: R$ 0,07/h. Quem montou à mão confere também se apareceu um DefaultResourceGroup-CQ, que o assistente do Function App pode criar fora do lab, e só o apaga se estiver vazio.
+
+Se perguntarem: "Por que Service Bus Standard? Um hub de pagamentos não usaria Premium?" Voltem ao slide do Service Bus: o Standard tem tudo o que os incidentes usaram, e a ADR 0003 fixa os cinco gatilhos que pedem o Premium. A Leitura 3.8 transforma essa conversa num ADR.
 
 Transição: encerramento.</aside>
 </section>
